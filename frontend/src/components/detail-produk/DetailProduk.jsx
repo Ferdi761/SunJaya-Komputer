@@ -1,11 +1,9 @@
 import React from 'react';
-import Navbar from '../navbar/Navbar';
 import cpu from '../../img/produk/cpu-corei3.png';
 
 const DetailProduk = () => {
   return (
     <>
-      <Navbar />
       <div className='container m-5 px-5'>
         <div className='row'>
           <div className='col-8'>
@@ -13,7 +11,9 @@ const DetailProduk = () => {
               className='card'
               style={{ width: '50rem', height: '25rem' }}
             >
-              <img src={cpu} alt='...' style={{ width: '15rem' }} />
+              <div className='text-center bg-black rounded-top'>
+                <img src={cpu} alt='cpu' style={{ width: '15rem' }} />
+              </div>
               <div className='card-body'>
                 <h5 className='card-title fw-bold border-bottom py-2'>
                   Deskripsi
@@ -34,9 +34,11 @@ const DetailProduk = () => {
                   Stok sisa: 4 buah <br />
                   Berat: 200 gram
                 </p>
-                <button className='btn btn-primary'>
-                  Masukkan keranjang
-                </button>
+                <div className='text-center'>
+                  <button className='btn btn-primary rounded-pill'>
+                    Masukkan keranjang
+                  </button>
+                </div>
               </div>
             </div>
           </div>

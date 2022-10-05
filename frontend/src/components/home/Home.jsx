@@ -6,12 +6,11 @@ import casing from '../../img/casing.png';
 import Card from './Card';
 import Category from './Category';
 import ProductsForYou from './ProductsForYou';
-import Navbar from '../navbar/Navbar';
+import { Link } from 'react-router-dom';
 
 const Home = () => {
   return (
     <>
-      <Navbar />
       <section
         className='container-fluid text-white py-5'
         style={{ minHeight: '120vh', backgroundColor: '#0E0E0E' }}
@@ -58,9 +57,9 @@ const Home = () => {
                   </button>
                   <ul className='dropdown-menu'>
                     <li>
-                      <a className='dropdown-item' href='/'>
+                      <Link className='dropdown-item' to='/chat'>
                         Via Website
-                      </a>
+                      </Link>
                     </li>
                     <li>
                       <a className='dropdown-item' href='/'>

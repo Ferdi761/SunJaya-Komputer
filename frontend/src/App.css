@@ -3,6 +3,7 @@
 }
 
 .nav-link:hover {
+  color: black;
   background-color: white;
 }
 
@@ -33,4 +34,8 @@
 .form-label {
   color: black;
   font-weight: bold;
+}
+
+.pesanan:hover {
+  cursor: pointer;
 }

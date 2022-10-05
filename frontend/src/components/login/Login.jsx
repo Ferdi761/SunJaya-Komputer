@@ -5,12 +5,10 @@ const Login = () => {
   return (
     <>
       <div
-        className='container-fluid'
+        className='container-fluid d-flex align-items-center'
         style={{
           backgroundColor: '#0E0E0E',
-          marginBottom: '-0.5rem',
-          height: '75vh',
-          paddingTop: '7rem',
+          height: '100vh',
         }}
       >
         <div
@@ -64,7 +62,11 @@ const Login = () => {
                   <button className='btn btn-dark'>Reset</button>
                 </div>
                 <div className='col-6'>
-                  <button className='btn btn-primary'>Submit</button>
+                  <Link to='/'>
+                    <button className='btn btn-primary'>
+                      Submit
+                    </button>
+                  </Link>
                 </div>
               </div>
             </div>

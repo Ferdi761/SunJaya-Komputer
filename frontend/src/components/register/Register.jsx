@@ -4,8 +4,11 @@ import { Link } from 'react-router-dom';
 const Register = () => {
   return (
     <div
-      className='container-fluid py-5'
-      style={{ backgroundColor: '#0E0E0E', marginBottom: '-0.5rem' }}
+      className='container-fluid d-flex align-items-center'
+      style={{
+        backgroundColor: '#0E0E0E',
+        height: '100vh',
+      }}
     >
       <div
         className='container bg-secondary p-5 rounded-5'
@@ -114,7 +117,9 @@ const Register = () => {
                 <button className='btn btn-dark'>Reset</button>
               </div>
               <div className='col-6'>
-                <button className='btn btn-primary'>Submit</button>
+                <Link to='/'>
+                  <button className='btn btn-primary'>Submit</button>
+                </Link>
               </div>
             </div>
           </div>
