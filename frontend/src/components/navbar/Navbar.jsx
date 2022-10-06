@@ -58,9 +58,7 @@ const Navbar = () => {
               </Link>
             </li>
             <li className='nav-item bg-secondary'>
-
               <Link className='nav-link' to='/login'>
-
                 <i className='bi bi-person-circle'></i> Login
               </Link>
             </li>
