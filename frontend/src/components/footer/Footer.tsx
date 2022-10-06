@@ -1,6 +1,9 @@
-import React from 'react';
+import { useLocation } from 'react-router-dom'
 
 const Footer = () => {
+  const location = useLocation()
+  if (location.pathname === '/keranjang') return null
+
   return (
     <footer className='container-fluid bg-black text-white py-3'>
       <div className='container'>
@@ -47,7 +50,7 @@ const Footer = () => {
         </div>
       </div>
     </footer>
-  );
-};
+  )
+}
 
-export default Footer;
+export default Footer

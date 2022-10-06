@@ -1,8 +1,8 @@
-import React from 'react';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import dataPesanan from '../../data/dataProduk';
-import RincianPesanan from './RincianPesanan';
+import React from 'react'
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
+import dataPesanan from '../../data/dataProduk'
+import RincianPesanan from './RincianPesanan'
 
 const PesananSaya = () => {
   const statusPesanan = [
@@ -26,13 +26,13 @@ const PesananSaya = () => {
       id: 5,
       status: 'Selesai',
     },
-  ];
+  ]
 
-  const [value, setValue] = useState(1);
+  const [value, setValue] = useState(1)
 
-  const valueChange = (event) => {
-    setValue(event.target.value);
-  };
+  const valueChange = (event: React.MouseEvent) => {
+    setValue(parseInt((event.target as HTMLInputElement).value))
+  }
 
   return (
     <>
@@ -48,47 +48,42 @@ const PesananSaya = () => {
               <ul className='list-group list-group-horizontal'>
                 <li
                   className={`pesanan list-group-item border-0 ${
-                    statusPesanan[0].id === value ? 'fw-bold' : ''
+                    statusPesanan[0].id === value && 'fw-bold'
                   }`}
                   value={1}
-                  onClick={valueChange}
-                >
+                  onClick={valueChange}>
                   Menunggu konfirmasi
                 </li>
                 <li
                   className={`pesanan list-group-item border-0 ${
-                    statusPesanan[1].id === value ? 'fw-bold' : ''
+                    statusPesanan[1].id === value && 'fw-bold'
                   }`}
                   value={2}
-                  onClick={valueChange}
-                >
+                  onClick={valueChange}>
                   Bayar
                 </li>
                 <li
                   className={`pesanan list-group-item border-0 ${
-                    statusPesanan[2].id === value ? 'fw-bold' : ''
+                    statusPesanan[2].id === value && 'fw-bold'
                   }`}
                   value={3}
-                  onClick={valueChange}
-                >
+                  onClick={valueChange}>
                   Diproses
                 </li>
                 <li
                   className={`pesanan list-group-item border-0 ${
-                    statusPesanan[3].id === value ? 'fw-bold' : ''
+                    statusPesanan[3].id === value && 'fw-bold'
                   }`}
                   value={4}
-                  onClick={valueChange}
-                >
+                  onClick={valueChange}>
                   Dikirim
                 </li>
                 <li
                   className={`pesanan list-group-item border-0 ${
-                    statusPesanan[4].id === value ? 'fw-bold' : ''
+                    statusPesanan[4].id === value && 'fw-bold'
                   }`}
                   value={5}
-                  onClick={valueChange}
-                >
+                  onClick={valueChange}>
                   Selesai
                 </li>
               </ul>
@@ -99,14 +94,12 @@ const PesananSaya = () => {
                 style={{
                   backgroundColor: '#F9F9F9',
                   boxShadow: 'rgba(0, 0, 0, 0.24) 5px 5px 6px',
-                }}
-              >
+                }}>
                 {dataPesanan.map((data) => {
                   return (
                     <div
                       className='mx-3 row border-top'
-                      key={data._id}
-                    >
+                      key={data._id}>
                       <div className='col-3 py-2 mb-3'>
                         <img
                           src={data.gambar}
@@ -123,18 +116,21 @@ const PesananSaya = () => {
                             {data.jumlah} buah
                           </span>
                         </p>
-                        <p className='float-end text-primary fw-bold'>
-                          Total: {data.harga}
-                        </p>
-                        <Link
-                          to='/garansi'
-                          className='fw-bold text-decoration-none'
-                        >
-                          Ajukan Garansi
-                        </Link>
+                        <div className='fw-bold text-end'>
+                          <p className='text-primary fw-bold'>
+                            Total: {data.harga}
+                          </p>
+                          {statusPesanan[4].id === value && (
+                            <Link
+                              to='/garansi'
+                              className='fw-bold text-decoration-none'>
+                              Ajukan Garansi
+                            </Link>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  );
+                  )
                 })}
                 <ul className='list-group border-top p-2 border-bottom'>
                   {statusPesanan[4].id === value ? (
@@ -164,8 +160,7 @@ const PesananSaya = () => {
                   style={{
                     backgroundColor: '#F9F9F9',
                     boxShadow: 'rgba(0, 0, 0, 0.24) 5px 5px 6px',
-                  }}
-                >
+                  }}>
                   <div className='row border-top'>
                     <div className='col-3 py-2 mb-3'>
                       <img
@@ -212,7 +207,7 @@ const PesananSaya = () => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default PesananSaya;
+export default PesananSaya

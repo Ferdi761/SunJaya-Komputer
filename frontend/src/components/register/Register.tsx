@@ -117,7 +117,7 @@ const Register = () => {
                 <button className='btn btn-dark'>Reset</button>
               </div>
               <div className='col-6'>
-                <Link to='/'>
+                <Link to='/login'>
                   <button className='btn btn-primary'>Submit</button>
                 </Link>
               </div>

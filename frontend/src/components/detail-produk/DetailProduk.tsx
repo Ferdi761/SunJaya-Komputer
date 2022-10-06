@@ -1,7 +1,21 @@
-import React from 'react';
-import cpu from '../../img/produk/cpu-corei3.png';
+import React from 'react'
+import { useShoppingCart } from '../cart/ShoppingCartContext'
+import cpu from '../../img/produk/cpu-corei3.png'
 
-const DetailProduk = () => {
+type StoreItemProps = {
+  id: number
+  name: string
+  price: number
+  imgUrl: string
+}
+
+const DetailProduk = ({
+  id,
+  name,
+  price,
+  imgUrl,
+}: StoreItemProps) => {
+  const { getItemQuantity, increaseCartQuantity } = useShoppingCart()
   return (
     <>
       <div className='container m-5 px-5'>
@@ -9,10 +23,13 @@ const DetailProduk = () => {
           <div className='col-8'>
             <div
               className='card'
-              style={{ width: '50rem', height: '25rem' }}
-            >
+              style={{ width: '50rem', height: '25rem' }}>
               <div className='text-center bg-black rounded-top'>
-                <img src={cpu} alt='cpu' style={{ width: '15rem' }} />
+                <img
+                  src={imgUrl}
+                  alt='cpu'
+                  style={{ width: '15rem' }}
+                />
               </div>
               <div className='card-body'>
                 <h5 className='card-title fw-bold border-bottom py-2'>
@@ -28,14 +45,17 @@ const DetailProduk = () => {
           <div className='col-4'>
             <div className='card'>
               <div className='card-body'>
-                <h5 className='card-title'>Rp 950.000</h5>
+                <h5 className='card-title'>{price}</h5>
                 <p className='card-text'>
-                  Core i3-7100 3.9 GHz - Socket 1151 <br />
+                  {name}
+                  <br />
                   Stok sisa: 4 buah <br />
                   Berat: 200 gram
                 </p>
                 <div className='text-center'>
-                  <button className='btn btn-primary rounded-pill'>
+                  <button
+                    className='btn btn-primary rounded-pill'
+                    onClick={() => increaseCartQuantity(id)}>
                     Masukkan keranjang
                   </button>
                 </div>
@@ -45,7 +65,7 @@ const DetailProduk = () => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default DetailProduk;
+export default DetailProduk

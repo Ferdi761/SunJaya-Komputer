@@ -1,20 +1,18 @@
-import React from 'react';
-import caseImage from '../../img/case.png';
-import hdd from '../../img/hdd.png';
-import monitor from '../../img/monitor.png';
-import casing from '../../img/casing.png';
-import Card from './Card';
-import Category from './Category';
-import ProductsForYou from './ProductsForYou';
-import { Link } from 'react-router-dom';
+import caseImage from '../../img/case.png'
+import hdd from '../../img/hdd.png'
+import monitor from '../../img/monitor.png'
+import casing from '../../img/casing.png'
+import Card from './Card'
+import Category from './Category'
+import ProductsForYou from './ProductsForYou'
+import { Link } from 'react-router-dom'
 
 const Home = () => {
   return (
     <>
       <section
         className='container-fluid text-white py-5'
-        style={{ minHeight: '120vh', backgroundColor: '#0E0E0E' }}
-      >
+        style={{ minHeight: '120vh', backgroundColor: '#0E0E0E' }}>
         <div className='row ms-5'>
           <div className='col-6' style={{ marginTop: '7rem' }}>
             <h1 style={{ fontSize: '70px', marginBottom: '1rem' }}>
@@ -29,8 +27,7 @@ const Home = () => {
                 fontSize: '16px',
                 opacity: '75%',
                 marginBottom: '1.5rem',
-              }}
-            >
+              }}>
               Dapatkan seluruh perangkat komputer yang anda butuhkan
               untuk menunjang seluruh aktifitas keseharian anda. siap
               untuk kami kirim.
@@ -39,8 +36,7 @@ const Home = () => {
               <div className='col-4'>
                 <button
                   className='btn btn-primary p-3'
-                  style={{ fontSize: '18px' }}
-                >
+                  style={{ fontSize: '18px' }}>
                   Produk Terlaris
                 </button>
               </div>
@@ -51,8 +47,7 @@ const Home = () => {
                     type='button'
                     data-bs-toggle='dropdown'
                     aria-expanded='false'
-                    style={{ fontSize: '18px' }}
-                  >
+                    style={{ fontSize: '18px' }}>
                     Hubungi Kami
                   </button>
                   <ul className='dropdown-menu'>
@@ -78,8 +73,7 @@ const Home = () => {
                 maxWidth: '540px',
                 backgroundColor: '#0E0E0E',
                 float: 'right',
-              }}
-            >
+              }}>
               <div className='row g-0'>
                 <div className='col-8'>
                   <div className='card-body'>
@@ -101,8 +95,7 @@ const Home = () => {
               style={{
                 maxWidth: '540px',
                 float: 'left',
-              }}
-            >
+              }}>
               <div className='row g-0'>
                 <div className='col-8'>
                   <div className='card-body text-dark'>
@@ -130,8 +123,7 @@ const Home = () => {
                 maxWidth: '540px',
                 float: 'right',
                 backgroundColor: '#E5E5E5',
-              }}
-            >
+              }}>
               <div className='row g-0'>
                 <div className='col-4'>
                   <img
@@ -157,8 +149,7 @@ const Home = () => {
                 maxWidth: '640px',
                 float: 'left',
                 backgroundColor: '#0E0E0E',
-              }}
-            >
+              }}>
               <div className='row g-0'>
                 <div className='col-8'>
                   <div className='card-body text-white'>
@@ -183,7 +174,7 @@ const Home = () => {
       <Category />
       <ProductsForYou />
     </>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home

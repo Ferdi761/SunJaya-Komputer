@@ -1,5 +1,5 @@
-import React from 'react';
-import SideScroll from './SideScroll';
+import React from 'react'
+import SideScroll from './SideScroll'
 
 const ProductsForYou = () => {
   return (
@@ -11,7 +11,7 @@ const ProductsForYou = () => {
       <h1 className='home-h1'>Produk Terbaru</h1>
       <SideScroll />
     </div>
-  );
-};
+  )
+}
 
-export default ProductsForYou;
+export default ProductsForYou
