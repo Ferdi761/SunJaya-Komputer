@@ -1,6 +1,14 @@
 import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
 
 const Navbar = () => {
+  const location = useLocation();
+  if (
+    location.pathname === '/login' ||
+    location.pathname === '/register'
+  )
+    return null;
+
   return (
     <nav className='navbar navbar-expand-lg bg-black'>
       <div className='container-fluid'>
@@ -20,9 +28,9 @@ const Navbar = () => {
           id='navbarSupportedContent'
         >
           <ul className='navbar-nav mx-auto mb-2 mb-lg-0 mx-auto'>
-            <a className='navbar-brand text-white' href='/'>
+            <Link className='navbar-brand text-white' to='/'>
               Sun Jaya Com
-            </a>
+            </Link>
             <li className='nav-item'>
               <form className='d-flex' role='search'>
                 <input
@@ -39,20 +47,22 @@ const Navbar = () => {
                 </button>
               </form>
             </li>
-            <li className='nav-item'>
-              <a className='nav-link' aria-current='page' href='/'>
+            <li className='nav-item bg-black'>
+              <Link className='nav-link' to='/cart'>
                 <i className='bi bi-cart-fill'></i>
-              </a>
+              </Link>
             </li>
-            <li className='nav-item'>
-              <a className='nav-link' href='/'>
+            <li className='nav-item bg-black'>
+              <Link className='nav-link' to='/pesanan-saya'>
                 <i className='bi bi-bag-fill'></i>
-              </a>
+              </Link>
             </li>
             <li className='nav-item bg-secondary'>
-              <a className='nav-link' href='/login'>
+
+              <Link className='nav-link' to='/login'>
+
                 <i className='bi bi-person-circle'></i> Login
-              </a>
+              </Link>
             </li>
           </ul>
         </div>

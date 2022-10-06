@@ -6,7 +6,7 @@ const Card = () => {
   return (
     <div className='container'>
       <div
-        className='card mb-5 bg-dark p-3'
+        className='card mb-5 bg-dark'
         style={{ marginTop: '-12rem' }}
       >
         <div className='row g-0'>
@@ -77,8 +77,12 @@ const Card = () => {
             </div>
           </div>
           <div
-            className='col-4'
-            style={{ marginTop: '2rem', backgroundColor: '#302E2F' }}
+            className='col-5'
+            style={{
+              paddingTop: '2rem',
+              backgroundColor: '#302E2F',
+              paddingRight: '5rem',
+            }}
           >
             <img
               src={people}
