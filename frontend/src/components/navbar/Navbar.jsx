@@ -50,7 +50,7 @@ const Navbar = () => {
               </a>
             </li>
             <li className='nav-item bg-secondary'>
-              <a className='nav-link' href='/'>
+              <a className='nav-link' href='/login'>
                 <i className='bi bi-person-circle'></i> Login
               </a>
             </li>
