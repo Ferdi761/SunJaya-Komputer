@@ -2,7 +2,11 @@ import { useLocation } from 'react-router-dom'
 
 const Footer = () => {
   const location = useLocation()
-  if (location.pathname === '/keranjang') return null
+  if (
+    location.pathname === '/keranjang' ||
+    location.pathname.startsWith('/admin')
+  )
+    return null
 
   return (
     <footer className='container-fluid bg-black text-white py-3'>

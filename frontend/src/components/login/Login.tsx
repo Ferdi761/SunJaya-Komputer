@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react'
+import { Link } from 'react-router-dom'
 
 const Login = () => {
   return (
@@ -9,18 +9,15 @@ const Login = () => {
         style={{
           backgroundColor: '#0E0E0E',
           height: '100vh',
-        }}
-      >
+        }}>
         <div
           className='container bg-secondary p-5 rounded-5'
-          style={{ maxWidth: '40%' }}
-        >
+          style={{ maxWidth: '40%' }}>
           <h1 className='text-white'>LOGIN ACCOUNT</h1>
           <div className='mb-3'>
             <label
               htmlFor='formGroupExampleInput2'
-              className='form-label'
-            >
+              className='form-label'>
               Nama atau Email
             </label>
             <input
@@ -33,48 +30,36 @@ const Login = () => {
           <div className='mb-3'>
             <label
               htmlFor='formGroupExampleInput2'
-              className='form-label'
-            >
+              className='form-label'>
               Password
             </label>
             <input
               type='password'
               className='form-control'
-              id='formGroupExampleInput2'
+              id='password'
               placeholder='Password'
             />
           </div>
-          <div className='row'>
-            <div className='col-8'>
-              <button className='btn btn-dark'>
-                <Link
-                  to='/register'
-                  className='text-white'
-                  style={{ textDecoration: 'none' }}
-                >
-                  REGISTER
-                </Link>
-              </button>
-            </div>
-            <div className='col-4'>
-              <div className='row'>
-                <div className='col-6'>
-                  <button className='btn btn-dark'>Reset</button>
-                </div>
-                <div className='col-6'>
-                  <Link to='/'>
-                    <button className='btn btn-primary'>
-                      Submit
-                    </button>
-                  </Link>
-                </div>
-              </div>
+          <div className='d-flex justify-content-between'>
+            <button className='btn btn-dark'>
+              <Link
+                to='/register'
+                className='text-white'
+                style={{ textDecoration: 'none' }}>
+                REGISTER
+              </Link>
+            </button>
+            <div>
+              <button className='btn btn-dark me-4'>Reset</button>
+              <Link to='/'>
+                <button className='btn btn-primary'>Submit</button>
+              </Link>
             </div>
           </div>
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default Login;
+export default Login

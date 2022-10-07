@@ -6,8 +6,15 @@ import Card from './Card'
 import Category from './Category'
 import ProductsForYou from './ProductsForYou'
 import { Link } from 'react-router-dom'
+import { useRef } from 'react'
 
 const Home = () => {
+  const ref = useRef<HTMLDivElement>(null)
+
+  const handleClick = () => {
+    ref.current?.scrollIntoView({ behavior: 'smooth' })
+  }
+
   return (
     <>
       <section
@@ -36,7 +43,8 @@ const Home = () => {
               <div className='col-4'>
                 <button
                   className='btn btn-primary p-3'
-                  style={{ fontSize: '18px' }}>
+                  style={{ fontSize: '18px' }}
+                  onClick={handleClick}>
                   Produk Terlaris
                 </button>
               </div>
@@ -172,7 +180,9 @@ const Home = () => {
       </section>
       <Card />
       <Category />
-      <ProductsForYou />
+      <div ref={ref}>
+        <ProductsForYou />
+      </div>
     </>
   )
 }

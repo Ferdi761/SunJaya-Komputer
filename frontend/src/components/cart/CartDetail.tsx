@@ -61,6 +61,7 @@ const CartDetail = ({ id, quantity }: CartItemProps) => {
             name='quant[1]'
             className='form-control input-number'
             value={jumlah}
+            readOnly
             min='1'
             max='10'
           />

@@ -4,9 +4,11 @@ import { useShoppingCart } from '../cart/ShoppingCartContext'
 
 const Navbar = () => {
   const location = useLocation()
+
   if (
     location.pathname === '/login' ||
-    location.pathname === '/register'
+    location.pathname === '/register' ||
+    location.pathname.startsWith('/admin')
   )
     return null
 
@@ -14,7 +16,7 @@ const Navbar = () => {
 
   return (
     <nav className='navbar navbar-expand-lg bg-black'>
-      <div className='container-fluid'>
+      <div className='container'>
         <button
           className='navbar-toggler'
           type='button'
@@ -39,6 +41,7 @@ const Navbar = () => {
                   type='search'
                   placeholder='Search'
                   aria-label='Search'
+                  style={{ width: '40rem' }}
                 />
                 <button
                   className='btn btn-outline-primary'
@@ -47,7 +50,7 @@ const Navbar = () => {
                 </button>
               </form>
             </li>
-            <li className='nav-item bg-black'>
+            <li className='mx-2 nav-item bg-black'>
               <Link
                 to='/keranjang'
                 className='nav-link'
@@ -69,7 +72,7 @@ const Navbar = () => {
                 )}
               </Link>
             </li>
-            <li className='nav-item bg-black'>
+            <li className='nav-item bg-black mx-2'>
               <Link className='nav-link' to='/pesanan-saya'>
                 <i className='bi bi-bag-fill'></i>
               </Link>

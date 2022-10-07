@@ -5,7 +5,7 @@ import { formatCurrency } from '../../util/formatCurrency'
 
 const SideScroll = () => {
   return (
-    <div className='side-scroll d-flex w-100'>
+    <div className='side-scroll d-flex w-100 mb-3'>
       {storeItems.map((item) => {
         return (
           <div

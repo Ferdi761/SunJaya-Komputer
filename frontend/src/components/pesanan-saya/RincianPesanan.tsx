@@ -2,6 +2,7 @@ import React from 'react'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Rating } from 'react-simple-star-rating'
+import { formatDate } from '../../util/formatDate'
 
 type RincianPesananProps = {
   dataPesanan: {
@@ -28,26 +29,6 @@ const RincianPesanan = ({
   }
 
   const date = new Date()
-
-  function padTo2Digits(num: number) {
-    return num.toString().padStart(2, '0')
-  }
-
-  function formatDate(date: Date) {
-    return (
-      [
-        date.getFullYear(),
-        padTo2Digits(date.getMonth() + 1),
-        padTo2Digits(date.getDate()),
-      ].join('-') +
-      ' ' +
-      [
-        padTo2Digits(date.getHours()),
-        padTo2Digits(date.getMinutes()),
-        padTo2Digits(date.getSeconds()),
-      ].join(':')
-    )
-  }
 
   return (
     <>

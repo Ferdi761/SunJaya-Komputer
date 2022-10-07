@@ -9,8 +9,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.10.4",
+    "@emotion/styled": "^11.10.4",
+    "@mui/system": "^5.10.8",
     "bootstrap": "^5.2.2",
+    "ra-data-json-server": "^4.4.0",
     "react": "^18.2.0",
+    "react-admin": "^4.4.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.4.2",
     "react-simple-star-rating": "^5.1.0"

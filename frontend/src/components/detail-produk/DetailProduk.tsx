@@ -1,6 +1,5 @@
-import React from 'react'
+import { formatCurrency } from '../../util/formatCurrency'
 import { useShoppingCart } from '../cart/ShoppingCartContext'
-import cpu from '../../img/produk/cpu-corei3.png'
 
 type StoreItemProps = {
   id: number
@@ -28,7 +27,7 @@ const DetailProduk = ({
                 <img
                   src={imgUrl}
                   alt='cpu'
-                  style={{ width: '15rem' }}
+                  style={{ width: '15rem', height: '15rem' }}
                 />
               </div>
               <div className='card-body'>
@@ -45,7 +44,9 @@ const DetailProduk = ({
           <div className='col-4'>
             <div className='card'>
               <div className='card-body'>
-                <h5 className='card-title'>{price}</h5>
+                <h5 className='card-title fw-bold'>
+                  {formatCurrency(price)}
+                </h5>
                 <p className='card-text'>
                   {name}
                   <br />
