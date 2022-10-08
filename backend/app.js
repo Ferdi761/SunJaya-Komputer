@@ -1,10 +1,14 @@
 const express = require("express");
 const app = express();
+const cors = require("cors");
 const homeController = require("./controllers/home");
 
 // use dotenv
 require("dotenv").config();
 const port = process.env.PORT || 8080;
+
+// using cors middleware
+app.use(cors());
 
 app.get("/", (req, res) => {
     res.status(201).send("sukses");
