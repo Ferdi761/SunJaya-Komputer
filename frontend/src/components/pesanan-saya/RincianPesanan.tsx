@@ -1,44 +1,40 @@
-import React from 'react';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Rating } from 'react-simple-star-rating';
+import React from 'react'
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
+import { Rating } from 'react-simple-star-rating'
+import { formatDate } from '../../util/formatDate'
 
-const RincianPesanan = ({ dataPesanan, statusPesanan, value }) => {
-  const [rating, setRating] = useState(0);
+type RincianPesananProps = {
+  dataPesanan: {
+    _id: number
+    gambar: string
+    nama: string
+    jumlah: number
+    harga: string
+  }[]
+  statusPesanan: { id: number; status: string }[]
+  value: number
+}
 
-  const handleRating = (rate) => {
-    setRating(rate);
-    console.log(rating);
-  };
+const RincianPesanan = ({
+  dataPesanan,
+  statusPesanan,
+  value,
+}: RincianPesananProps) => {
+  const [rating, setRating] = useState(0)
 
-  const date = new Date();
-
-  function padTo2Digits(num) {
-    return num.toString().padStart(2, '0');
+  const handleRating = (rate: number) => {
+    setRating(rate)
+    console.log(rating)
   }
 
-  function formatDate(date) {
-    return (
-      [
-        date.getFullYear(),
-        padTo2Digits(date.getMonth() + 1),
-        padTo2Digits(date.getDate()),
-      ].join('-') +
-      ' ' +
-      [
-        padTo2Digits(date.getHours()),
-        padTo2Digits(date.getMinutes()),
-        padTo2Digits(date.getSeconds()),
-      ].join(':')
-    );
-  }
+  const date = new Date()
 
   return (
     <>
       <div
         className='p-3 text-white rounded pb-5'
-        style={{ backgroundColor: '#262626' }}
-      >
+        style={{ backgroundColor: '#262626' }}>
         <h5 className='mb-3'>Rincian Pesanan</h5>
         <ul className='list-group mb-2'>
           <li className='list-group-item bg-transparent text-white p-0'>
@@ -72,8 +68,7 @@ const RincianPesanan = ({ dataPesanan, statusPesanan, value }) => {
                   <div className='col-9'>
                     <p
                       className='fw-bold'
-                      style={{ fontSize: '14px' }}
-                    >
+                      style={{ fontSize: '14px' }}>
                       {data.nama}
                     </p>
                     <p style={{ fontSize: '12px' }}>
@@ -84,14 +79,13 @@ const RincianPesanan = ({ dataPesanan, statusPesanan, value }) => {
                     </p>
                     <p
                       className='float-end text-primary fw-bold'
-                      style={{ fontSize: '12px' }}
-                    >
+                      style={{ fontSize: '12px' }}>
                       Total: {data.harga}
                     </p>
                   </div>
                 </div>
               </li>
-            );
+            )
           })}
         </ul>
 
@@ -162,13 +156,11 @@ const RincianPesanan = ({ dataPesanan, statusPesanan, value }) => {
               ) : (
                 ''
               )}
-              {statusPesanan[4].id === value ? (
+              {statusPesanan[4].id === value && (
                 <li className='list-group-item d-flex justify-content-between align-items-start bg-transparent text-white-50 p-0 border-0'>
                   <p>Waktu Sampai</p>
                   <p>{formatDate(date)}</p>
                 </li>
-              ) : (
-                ''
               )}
             </ul>
             {statusPesanan[4].id === value ? (
@@ -181,8 +173,7 @@ const RincianPesanan = ({ dataPesanan, statusPesanan, value }) => {
                   placeholder='Tulis ulasanmu disini'
                   className='form-control bg-transparent rounded-0 text-white'
                   id='exampleFormControlTextarea1'
-                  rows='5'
-                ></textarea>
+                  rows={5}></textarea>
               </>
             ) : (
               <>
@@ -198,7 +189,12 @@ const RincianPesanan = ({ dataPesanan, statusPesanan, value }) => {
             statusPesanan[4].id === value ? (
               ''
             ) : (
-              <Link to='/chat'>
+              <Link
+                to={`/${
+                  statusPesanan[3].id === value
+                    ? 'chat'
+                    : 'pembayaran'
+                }`}>
                 <button className='btn btn-primary col-12 rounded-pill'>
                   {statusPesanan[3].id === value
                     ? 'Konfirmasi Barang Sampai'
@@ -212,7 +208,7 @@ const RincianPesanan = ({ dataPesanan, statusPesanan, value }) => {
         )}
       </div>
     </>
-  );
-};
+  )
+}
 
-export default RincianPesanan;
+export default RincianPesanan

@@ -1,17 +1,22 @@
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React from 'react'
+import { Link, useLocation } from 'react-router-dom'
+import { useShoppingCart } from '../cart/ShoppingCartContext'
 
 const Navbar = () => {
-  const location = useLocation();
+  const location = useLocation()
+
   if (
     location.pathname === '/login' ||
-    location.pathname === '/register'
+    location.pathname === '/register' ||
+    location.pathname.startsWith('/admin')
   )
-    return null;
+    return null
+
+  const { cartQuantity } = useShoppingCart()
 
   return (
     <nav className='navbar navbar-expand-lg bg-black'>
-      <div className='container-fluid'>
+      <div className='container'>
         <button
           className='navbar-toggler'
           type='button'
@@ -19,14 +24,12 @@ const Navbar = () => {
           data-bs-target='#navbarSupportedContent'
           aria-controls='navbarSupportedContent'
           aria-expanded='false'
-          aria-label='Toggle navigation'
-        >
+          aria-label='Toggle navigation'>
           <span className='navbar-toggler-icon'></span>
         </button>
         <div
           className='collapse navbar-collapse'
-          id='navbarSupportedContent'
-        >
+          id='navbarSupportedContent'>
           <ul className='navbar-nav mx-auto mb-2 mb-lg-0 mx-auto'>
             <Link className='navbar-brand text-white' to='/'>
               Sun Jaya Com
@@ -38,21 +41,38 @@ const Navbar = () => {
                   type='search'
                   placeholder='Search'
                   aria-label='Search'
+                  style={{ width: '40rem' }}
                 />
                 <button
                   className='btn btn-outline-primary'
-                  type='submit'
-                >
+                  type='submit'>
                   Search
                 </button>
               </form>
             </li>
-            <li className='nav-item bg-black'>
-              <Link className='nav-link' to='/cart'>
+            <li className='mx-2 nav-item bg-black'>
+              <Link
+                to='/keranjang'
+                className='nav-link'
+                style={{ position: 'relative' }}>
                 <i className='bi bi-cart-fill'></i>
+                {cartQuantity > 0 && (
+                  <div
+                    className='rounded-circle bg-danger d-flex justify-content-center align-item-center text-white'
+                    style={{
+                      width: '1.5rem',
+                      height: '1.5rem',
+                      position: 'absolute',
+                      bottom: '0',
+                      right: '0',
+                      transform: 'translate(25%,25%)',
+                    }}>
+                    {cartQuantity}
+                  </div>
+                )}
               </Link>
             </li>
-            <li className='nav-item bg-black'>
+            <li className='nav-item bg-black mx-2'>
               <Link className='nav-link' to='/pesanan-saya'>
                 <i className='bi bi-bag-fill'></i>
               </Link>
@@ -66,7 +86,7 @@ const Navbar = () => {
         </div>
       </div>
     </nav>
-  );
-};
+  )
+}
 
-export default Navbar;
+export default Navbar

@@ -39,3 +39,7 @@
 .pesanan:hover {
   cursor: pointer;
 }
+
+.side-scroll {
+  overflow-x: scroll;
+}
