@@ -1,25 +1,21 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const homeController = require("./controllers/home");
+const routerSignup = require("./routes/routeSignup");
+const routerLogin = require("./routes/routeLogin");
+const routerBarang = require("./routes/routeBarang");
 
 // use dotenv
 require("dotenv").config();
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 8000;
 
 // using cors middleware
 app.use(cors());
 
-app.get("/", (req, res) => {
-    res.status(201).send("sukses");
-    return;
-});
+app.use("/signup", routerSignup);
+app.use("/login", routerLogin);
+app.use("/barang", routerBarang);
 
-app.get("/test", homeController);
-
-app.get("/ok", (req, res) => {
-    console.log("halaman ok sukses");
-});
 
 const start = async () => {
     await app.listen(port, () => {
