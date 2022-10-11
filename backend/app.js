@@ -1,6 +1,10 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
+
+// postgres db
+const db = require("./db/db");
+
 const routerSignup = require("./routes/routeSignup");
 const routerLogin = require("./routes/routeLogin");
 const routerBarang = require("./routes/routeBarang");

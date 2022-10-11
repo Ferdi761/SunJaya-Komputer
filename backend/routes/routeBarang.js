@@ -2,21 +2,17 @@ const express = require("express");
 const routerBarang = express.Router();
 
 const {
-    tampilanTambahBarang,
     tambahBarang,
-    tampilanDetailBarang,
-    tampilanUbahDataBarang,
+    detailBarang,
     ubahDataBarang,
     hapusBarang,
-    tampilanDataBarang,
     cariBarang
 } = require("../controllers/controllerBarang");
 
-routerBarang.route("/").get(tampilanDataBarang);
-routerBarang.route("/tambah").get(tampilanTambahBarang).post(tambahBarang);
-routerBarang.route("/:id").get(tampilanDetailBarang);
-routerBarang.route("/:id/ubah").get(tampilanUbahDataBarang).post(ubahDataBarang);
-routerBarang.route("/:id/hapus").post(hapusBarang);
+routerBarang.route("/tambah").post(tambahBarang);
+routerBarang.route("/:id").get(detailBarang);
+routerBarang.route("/:id/ubah").put(ubahDataBarang);
+routerBarang.route("/:id/hapus").delete(hapusBarang);
 
 module.exports = routerBarang;
 

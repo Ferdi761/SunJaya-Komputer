@@ -1,7 +1,3 @@
-const tampilanTambahBarang = (req, res) => {
-    res.end("okok");
-};
-
 const tambahBarang = (req, res) => {
     const {
         namaBarang,
@@ -16,10 +12,7 @@ const tambahBarang = (req, res) => {
     };
 };
 
-const tampilanDetailBarang = async (req, res) => {
-};
-
-const tampilanUbahDataBarang = (req, res) => {};
+const detailBarang = (req, res) => {};
 
 const ubahDataBarang = (req, res) => {
 
@@ -29,16 +22,12 @@ const hapusBarang = (req, res) => {
 
 };
 
-const tampilanDataBarang = (req, res) => {};
-
 const cariBarang = (req, res) => {};
 
 module.exports = {
-    tampilanTambahBarang,
     tambahBarang,
-    tampilanDetailBarang,
-    tampilanUbahDataBarang,
+    detailBarang,
     ubahDataBarang,
     hapusBarang,
-    tampilanDataBarang,
-    cariBarang};
+    cariBarang
+};
