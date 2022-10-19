@@ -8,6 +8,10 @@ const port = process.env.PORT || 8000;
 // use dotenv
 require("dotenv").config();
 
+app.use(express.json());
+
+app.use(bodyParser.urlencoded({ extended: true }));
+
 // postgres db
 const sequelize = require("./db/sequelize");
 
@@ -20,7 +24,6 @@ const routerBarang = require("./routes/routeBarang");
 // app.use(cors(corsOptions));
 app.use(cors());
 
-
 app.use("/signup", routerSignup);
 app.use("/login", routerLogin);
 app.use("/barang", routerBarang);
@@ -28,9 +31,10 @@ app.use("/barang", routerBarang);
 
 const start = async () => {
     try {
-        await sequelize.authenticate().then(() => {
-            console.log("Connection has been established successfully.");
-        });
+        await sequelize.sync({ force: true });
+
+        await sequelize.authenticate();
+        console.log("Connection has been established successfully.");
         
         await app.listen(port, () => {
             console.log(`server is listening on http://localhost:${port}`);
