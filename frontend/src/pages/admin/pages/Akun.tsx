@@ -22,7 +22,8 @@ const Akun = () => {
               height='20'
               fill='currentColor'
               className='absolute right-3 top-1/2 -mt-2.5 text-slate-400 pointer-events-none group-focus-within:text-black'
-              aria-hidden='true'>
+              aria-hidden='true'
+            >
               <path
                 fillRule='evenodd'
                 clipRule='evenodd'
@@ -31,8 +32,9 @@ const Akun = () => {
             </svg>
           </form>
           <Link
-            to='/tambah-akun'
-            className='text-blue-600 hover:text-blue-800 font-semibold underline underline-offset-4'>
+            to='/admin/tambah-akun'
+            className='text-blue-600 hover:text-blue-800 font-semibold underline underline-offset-4'
+          >
             Tambah Akun
           </Link>
         </div>
@@ -75,8 +77,9 @@ const Akun = () => {
               </div>
               <div className='flex flex-row gap-10 justify-center items-center mt-5'>
                 <Link
-                  to='/edit-akun'
-                  className='text-blue-700 flex flex-row gap-2 text-lg'>
+                  to='/admin/edit-akun'
+                  className='text-blue-700 flex flex-row gap-2 text-lg'
+                >
                   <HiPencil className='w-6 h-6' /> edit
                 </Link>
                 <button className='bg-pink-500 hover:bg-pink-600 rounded-lg p-2'>
@@ -123,8 +126,9 @@ const Akun = () => {
               </div>
               <div className='flex flex-row gap-10 justify-center items-center mt-5'>
                 <Link
-                  to='/edit-akun'
-                  className='text-blue-700 flex flex-row gap-2 text-lg'>
+                  to='/admin/edit-akun'
+                  className='text-blue-700 flex flex-row gap-2 text-lg'
+                >
                   <HiPencil className='w-6 h-6' /> edit
                 </Link>
                 <button className='bg-pink-500 hover:bg-pink-600 rounded-lg p-2'>

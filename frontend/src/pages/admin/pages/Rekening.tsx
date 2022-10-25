@@ -23,7 +23,8 @@ const Rekening = () => {
           height='20'
           fill='currentColor'
           className='absolute right-3 top-1/2 -mt-2.5 text-slate-400 pointer-events-none group-focus-within:text-black'
-          aria-hidden='true'>
+          aria-hidden='true'
+        >
           <path
             fillRule='evenodd'
             clipRule='evenodd'
@@ -48,8 +49,9 @@ const Rekening = () => {
             </div>
             <div className='flex flex-row gap-10 justify-center mt-5'>
               <Link
-                to='/edit-akun'
-                className='text-blue-700 flex flex-row gap-2 text-lg mt-2'>
+                to='/admin/edit-akun'
+                className='text-blue-700 flex flex-row gap-2 text-lg mt-2'
+              >
                 <HiPencil className='w-6 h-6' /> edit
               </Link>
               <button className='bg-pink-500 hover:bg-pink-600 rounded-lg p-2'>
@@ -74,8 +76,9 @@ const Rekening = () => {
             </div>
             <div className='flex flex-row gap-10 justify-center mt-5'>
               <Link
-                to='/edit-akun'
-                className='text-blue-700 flex flex-row gap-2 text-lg mt-2'>
+                to='/admin/edit-akun'
+                className='text-blue-700 flex flex-row gap-2 text-lg mt-2'
+              >
                 <HiPencil className='w-6 h-6' /> edit
               </Link>
               <button className='bg-pink-500 hover:bg-pink-600 rounded-lg p-2'>

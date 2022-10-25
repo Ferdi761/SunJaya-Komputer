@@ -21,7 +21,8 @@ const Barang = () => {
             height='20'
             fill='currentColor'
             className='absolute right-3 top-1/2 -mt-2.5 text-slate-400 pointer-events-none group-focus-within:text-black'
-            aria-hidden='true'>
+            aria-hidden='true'
+          >
             <path
               fillRule='evenodd'
               clipRule='evenodd'
@@ -30,8 +31,9 @@ const Barang = () => {
           </svg>
         </form>
         <Link
-          to='/tambah-barang'
-          className='text-blue-600 hover:text-blue-800 font-semibold underline'>
+          to='/admin/tambah-barang'
+          className='text-blue-600 hover:text-blue-800 font-semibold underline'
+        >
           Tambah Barang
         </Link>
       </div>

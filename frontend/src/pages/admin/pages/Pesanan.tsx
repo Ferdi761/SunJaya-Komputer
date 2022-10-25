@@ -18,8 +18,9 @@ const Pesanan = () => (
           <li className='text-lg'>Selesai</li>
         </ul>
         <Link
-          to='/garansi'
-          className='text-blue-600 font-semibold hover:text-blue-700'>
+          to='/admin/garansi'
+          className='text-blue-600 font-semibold hover:text-blue-700'
+        >
           Daftar Klaim Garansi
         </Link>
       </div>
@@ -29,7 +30,8 @@ const Pesanan = () => (
           height='20'
           fill='currentColor'
           className='absolute left-3 top-1/2 -mt-2.5 text-slate-400 pointer-events-none group-focus-within:text-black'
-          aria-hidden='true'>
+          aria-hidden='true'
+        >
           <path
             fillRule='evenodd'
             clipRule='evenodd'
