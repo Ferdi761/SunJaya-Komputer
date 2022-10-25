@@ -6,25 +6,29 @@ const Dashboard = () => (
     <h1 className='font-bold text-2xl'>Buka Penyimpanan</h1>
     <div className='flex flex-row gap-10'>
       <Link
-        to='/barang'
-        className='p-20 border text-lg font-semibold border-black rounded-lg my-5 shadow-xl'>
+        to='/admin/barang'
+        className='p-20 border text-lg font-semibold border-black rounded-lg my-5 shadow-xl'
+      >
         BARANG
       </Link>
       <Link
-        to='/akun'
-        className='p-20 border text-lg font-semibold border-black rounded-lg my-5 shadow-xl'>
+        to='/admin/akun'
+        className='p-20 border text-lg font-semibold border-black rounded-lg my-5 shadow-xl'
+      >
         AKUN
       </Link>
     </div>
     <div className='flex flex-row gap-10'>
       <Link
-        to='/rekening'
-        className='p-20 border text-lg font-semibold border-black rounded-lg my-5 shadow-xl'>
+        to='/admin/rekening'
+        className='p-20 border text-lg font-semibold border-black rounded-lg my-5 shadow-xl'
+      >
         REKENING
       </Link>
       <Link
-        to='/jenis-barang'
-        className='p-20 border text-lg font-semibold border-black rounded-lg my-5 shadow-xl text-center'>
+        to='/admin/jenis-barang'
+        className='p-20 border text-lg font-semibold border-black rounded-lg my-5 shadow-xl text-center'
+      >
         JENIS
         <br />
         BARANG
