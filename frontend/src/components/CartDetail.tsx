@@ -56,7 +56,8 @@ const CartDetail = ({ id, quantity }: CartItemProps) => {
               data-type='minus'
               disabled={jumlah === 1 && true}
               data-field='quant[1]'
-              onClick={() => decreaseCartQuantity(id)}>
+              onClick={() => decreaseCartQuantity(id)}
+            >
               <AiFillMinusCircle />
             </button>
             <input
@@ -74,7 +75,8 @@ const CartDetail = ({ id, quantity }: CartItemProps) => {
               data-type='plus'
               disabled={jumlah >= sisa && true}
               data-field='quant[1]'
-              onClick={() => increaseCartQuantity(id)}>
+              onClick={() => increaseCartQuantity(id)}
+            >
               <AiFillPlusCircle />
             </button>
           </form>
@@ -85,7 +87,8 @@ const CartDetail = ({ id, quantity }: CartItemProps) => {
         <div className='w-1/3 flex justify-center items-center'>
           <button
             className='p-3 bg-red-600 text-white rounded-lg'
-            onClick={() => removeFromCart(item.id)}>
+            onClick={() => removeFromCart(item.id)}
+          >
             <HiTrash />
           </button>
         </div>
