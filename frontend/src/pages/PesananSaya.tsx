@@ -92,6 +92,9 @@ const PesananSaya = () => {
                 style={{
                   boxShadow: 'rgba(0, 0, 0, 0.24) 5px 5px 6px',
                 }}>
+                  <div className='px-2 m-0 w-11/12'>
+                    <p>ID: #12</p>
+                  </div>
                 {dataPesanan.map((data) => {
                   return (
                     <div
@@ -158,6 +161,9 @@ const PesananSaya = () => {
                     backgroundColor: '#F9F9F9',
                     boxShadow: 'rgba(0, 0, 0, 0.24) 5px 5px 6px',
                   }}>
+                  <div className='px-2 m-0 w-11/12'>
+                    <p>ID: #7</p>
+                  </div>
                   <div className='flex flex-row gap-3 w-11/12 p-2 border-t items-center'>
                     <div className='w-3/12 py-2 mb-3'>
                       <img
