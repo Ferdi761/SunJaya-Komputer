@@ -1,7 +1,6 @@
 import Card from '../components/home/Card'
 import Category from '../components/home/Category'
 import ProductsForYou from '../components/home/ProductsForYou'
-import { Link } from 'react-router-dom'
 import { useRef } from 'react'
 
 const Home = () => {

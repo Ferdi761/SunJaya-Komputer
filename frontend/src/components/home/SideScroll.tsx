@@ -1,4 +1,3 @@
-import React from 'react'
 import { Link } from 'react-router-dom'
 import storeItems from '../../data/items.json'
 import { formatCurrency } from '../../util/formatCurrency'
