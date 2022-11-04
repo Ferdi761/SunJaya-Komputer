@@ -12,6 +12,10 @@ module.exports = {
         form: '#808080',
         formInput: '#D1D1D1',
       },
+      padding: {
+        '1/2': '50%',
+        full: '100%',
+      },
     },
   },
   plugins: [],

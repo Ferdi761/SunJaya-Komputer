@@ -1,7 +1,12 @@
+import { useRef } from 'react'
+
 import Card from '../components/home/Card'
 import Category from '../components/home/Category'
 import ProductsForYou from '../components/home/ProductsForYou'
-import { useRef } from 'react'
+
+import hdd from '../assets/img/hdd.png'
+import caseImage from '../assets/img/case.png'
+import monitor from '../assets/img/monitor.png'
 
 const Home = () => {
   const ref = useRef<HTMLDivElement>(null)
@@ -40,8 +45,8 @@ const Home = () => {
             </div>
             <div className='flex-none w-36 h-36 relative mr-5'>
               <img
-                src='img/hdd.png'
-                alt=''
+                src={hdd}
+                alt='hard drive'
                 className='absolute inset-0 w-full h-full object-cover'
                 loading='lazy'
               />
@@ -59,7 +64,7 @@ const Home = () => {
             </div>
             <div className='flex-none w-48 h-48 relative mr-5'>
               <img
-                src='img/case.png'
+                src={caseImage}
                 alt=''
                 className='absolute inset-0 w-full h-full object-cover'
                 loading='lazy'
@@ -70,7 +75,7 @@ const Home = () => {
           <div className='flex font-sans py-10 pl-2 gap-5 ml-20 -z-0 bg-darkGrey -mt-7'>
             <div className='flex-none w-48 h-36 relative mr-5'>
               <img
-                src='img/monitor.png'
+                src={monitor}
                 alt=''
                 className='absolute inset-0 w-full h-full object-cover'
                 loading='lazy'

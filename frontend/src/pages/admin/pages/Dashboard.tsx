@@ -1,4 +1,3 @@
-import React from 'react'
 import { Link } from 'react-router-dom'
 
 const Dashboard = () => (
@@ -21,13 +20,13 @@ const Dashboard = () => (
     <div className='flex flex-row gap-10'>
       <Link
         to='/admin/rekening'
-        className='p-20 border text-lg font-semibold border-black rounded-lg my-5 shadow-xl'
+        className='p-[4.35rem] border text-lg font-semibold border-black rounded-lg my-5 shadow-xl'
       >
         REKENING
       </Link>
       <Link
         to='/admin/jenis-barang'
-        className='p-20 border text-lg font-semibold border-black rounded-lg my-5 shadow-xl text-center'
+        className='p-[4.35rem] border text-lg font-semibold border-black rounded-lg my-5 shadow-xl text-center'
       >
         JENIS
         <br />

@@ -1,4 +1,4 @@
-import React from 'react'
+import people from '../../assets/img/people.png'
 
 const Card = () => {
   return (
@@ -32,8 +32,9 @@ const Card = () => {
         </div>
         <div
           className='py-20 pl-10'
-          style={{ backgroundColor: '#302E2F' }}>
-          <img src='img/people.png' alt='people' />
+          style={{ backgroundColor: '#302E2F' }}
+        >
+          <img src={people} alt='people' />
         </div>
       </div>
     </div>
