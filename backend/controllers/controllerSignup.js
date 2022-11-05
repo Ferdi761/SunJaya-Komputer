@@ -1,41 +1,29 @@
-const bcrypt = require("bcrypt");
-const Akun = require("../db/models/Akun");
+const { sequelize, Akun } = require("../database/models");
 
 const register = async (req, res) => {
-    const saltRounds = 10;
-
     const {
         nama,
         email,
         password,
         izin,
-        telp,
+        noTelp,
     } = req.body;
-
-    try {
-        const passwordHashed = await bcrypt.hash(password, saltRounds, (err, hash) => {
-            if (err) {
-                throw err;
-            };
-            return hash;
-        });
     
-        const data = {
+    try {
+        const akun = await Akun.create({
             nama,
             email,
-            passwordHashed,
+            passwordHashed: password,
             izin,
-            telp,
-        };
-
-        const akun = await Akun.create(data);
+            noTelp,
+        });
         console.log(akun);
+
+        res.status(201).json(akun).end();
     }
     catch (err) {
         console.log(err);
     }
-
-    res.end();
 };
 
 module.exports = register;

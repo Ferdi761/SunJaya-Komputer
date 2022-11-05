@@ -3,31 +3,58 @@ const app = express();
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const multer = require("multer");
+const Sequelize = require("sequelize");
 const port = process.env.PORT || 8000;
+
+// setting up express router
+const routerSignup = require("./routes/routeSignup");
+const routerLogin = require("./routes/routeLogin");
+const routerBarang = require("./routes/routeBarang");
+const routerLogout = require("./routes/routeLogout");
+// test all akun
+const routerAkun = require("./routes/routeAkun");
 
 // use dotenv
 require("dotenv").config();
 
-app.use(express.json());
-
-app.use(bodyParser.urlencoded({ extended: true }));
-
-// postgres db
-const sequelize = require("./db/sequelize");
-
-const routerSignup = require("./routes/routeSignup");
-const routerLogin = require("./routes/routeLogin");
-const routerBarang = require("./routes/routeBarang");
-
 // using cors middleware
-// let corsOptions = { origin: "http://localhost:3000" };
+// let corsOptions = { origin: "http://localhost:8000" };
 // app.use(cors(corsOptions));
 app.use(cors());
 
+// postgres db Connection
+const { 
+    database,
+    username,
+    password,
+    host,
+    dialect
+ } = require("./database/config/config.json").development;
+const sequelize = new Sequelize(
+    database,
+    username,
+    password,
+    {
+        host,
+        dialect,
+    }
+);
+
+// setting up express middleware
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+
+// setting up bodyParser
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+
+// express router middleware
 app.use("/signup", routerSignup);
 app.use("/login", routerLogin);
 app.use("/barang", routerBarang);
-
+app.use("/logout", routerLogout);
+app.use("/akun", routerAkun);
 
 const start = async () => {
     try {
