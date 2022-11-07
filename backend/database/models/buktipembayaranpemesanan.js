@@ -14,9 +14,11 @@ module.exports = (sequelize, DataTypes) => {
       BuktiPembayaranPemesanan.belongsTo(models.Pemesanan);
     }
   }
+
   BuktiPembayaranPemesanan.init({
     buktiPembayaran: DataTypes.STRING
-  }, {
+  },
+  {
     sequelize,
     modelName: 'BuktiPembayaranPemesanan',
     tableName: 'BuktiPembayaranPemesanan',
