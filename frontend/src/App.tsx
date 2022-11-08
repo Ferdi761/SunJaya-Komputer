@@ -1,6 +1,6 @@
 import { Route, Routes } from 'react-router-dom'
-import Cart from './pages/Cart'
 import { ShoppingCartProvider } from './util/ShoppingCartContext'
+import Cart from './pages/Cart'
 import ChatPage from './pages/ChatPage'
 import DetailProduk from './pages/DetailProduk'
 import Footer from './components/Footer'

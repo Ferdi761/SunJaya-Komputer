@@ -1,4 +1,4 @@
-import { useLocation } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { HiLocationMarker } from 'react-icons/hi'
 import { AiOutlineClockCircle } from 'react-icons/ai'
 import { RiWhatsappFill } from 'react-icons/ri'
@@ -13,7 +13,9 @@ const Footer = () => {
 
   return (
     <footer className='w-full bg-primary text-white p-10 flex flex-col gap-3'>
-      <h3 className='text-2xl font-bold ml-32'>Sun Jaya Komputer</h3>
+      <Link to='/' className='text-2xl font-bold ml-32'>
+        Sun Jaya Komputer
+      </Link>
       <ul className='flex flex-row gap-5 ml-32'>
         <li className='w-1/3'>Alamat</li>
         <li className='w-1/3'>Jam Operasional Kantor</li>

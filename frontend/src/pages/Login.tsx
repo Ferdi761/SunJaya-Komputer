@@ -1,15 +1,17 @@
 import React from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 const Login = () => {
   const [akun, setAkun] = React.useState({ email: '', password: '' })
 
+  const navigate = useNavigate()
+
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault()
     if (akun.email === 'admin' && akun.password === 'admin') {
-      window.location.href = '/admin'
+      navigate('/admin')
     } else {
-      window.location.href = '/'
+      navigate('/')
     }
   }
 
@@ -17,7 +19,8 @@ const Login = () => {
     <div className='flex justify-center items-center h-screen bg-primary'>
       <form
         className='bg-form rounded-lg w-1/2 p-10'
-        onSubmit={handleSubmit}>
+        onSubmit={handleSubmit}
+      >
         <h1 className='mb-4 text-3xl text-white uppercase font-bold'>
           login account
         </h1>
@@ -55,18 +58,21 @@ const Login = () => {
           <Link
             to='/register'
             className='bg-primary hover:bg-white hover:text-black text-white font-bold py-2 px-4 rounded transition-all duration-300 uppercase'
-            type='submit'>
+            type='submit'
+          >
             register
           </Link>
           <div className='flex flex-row gap-5'>
             <button
               className='bg-primary hover:bg-white hover:text-black text-white font-bold py-2 px-4 rounded transition-all duration-300'
-              type='submit'>
+              type='submit'
+            >
               Reset
             </button>
             <button
               className='bg-blue-700 hover:bg-blue-900 text-white font-bold py-2 px-4 rounded transition-all duration-300'
-              type='submit'>
+              type='submit'
+            >
               Submit
             </button>
           </div>
