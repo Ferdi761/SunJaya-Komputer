@@ -11,7 +11,11 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Barang.belongsTo(models.JenisBarang);
+      Barang.belongsTo(models.JenisBarang, {
+        foreignKey: {
+          name: 'jenisId'
+        }
+      });
 
       Barang.belongsToMany(models.Akun, {
         through: models.Keranjang,
@@ -29,7 +33,8 @@ module.exports = (sequelize, DataTypes) => {
 
       Barang.hasOne(models.FotoBarang, {
         foreignKeys: {
-          name: 'barangId'
+          name: 'barangId',
+          field: 'barangId'
         }
       });
     }

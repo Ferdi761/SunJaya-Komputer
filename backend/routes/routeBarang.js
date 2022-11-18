@@ -1,7 +1,27 @@
 const express = require("express");
 const routerBarang = express.Router();
+const path = require("path");
+
+// setup multer storage
+const multer = require("multer");
+
+destFotoBarang = path.join(__dirname, '..', 'assets', 'imgBarang');
+console.log(destFotoBarang);
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, destFotoBarang);
+    },
+    filename: function (req, file, cb) {
+      const namaFile = Date.now() + '-' + file.originalname;
+      cb(null, namaFile);
+    }
+  });
+  
+const upload = multer({ storage: storage });
 
 const {
+    daftarBarang,
     tambahBarang,
     detailBarang,
     ubahDataBarang,
@@ -9,10 +29,12 @@ const {
     cariBarang
 } = require("../controllers/controllerBarang");
 
-routerBarang.route("/tambah").post(tambahBarang);
-routerBarang.route("/:id").get(detailBarang);
-routerBarang.route("/:id/ubah").put(ubahDataBarang);
-routerBarang.route("/:id/hapus").delete(hapusBarang);
+routerBarang.route("/").get(daftarBarang);
+routerBarang.route("/cari").get(cariBarang);
+routerBarang.route("/tambah").post(upload.single('foto'), tambahBarang);
+routerBarang.route("/detail").get(detailBarang);
+routerBarang.route("/edit/:id").put(ubahDataBarang);
+routerBarang.route("/hapus/:id").delete(hapusBarang);
 
 module.exports = routerBarang;
 

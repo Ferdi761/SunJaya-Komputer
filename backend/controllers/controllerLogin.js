@@ -1,4 +1,4 @@
-const { sequelize, Akun } = require("../database/models");
+const { Akun } = require("../database/models");
 const jwt = require("jsonwebtoken");
 
 const login = async (req, res) => {
@@ -11,16 +11,16 @@ const login = async (req, res) => {
         // console.log(`email: ${akun.email} \n password: ${akun.passwordHashed}`);
         // console.log("--------------------------------");
         const id = akun.id;
-        const token = jwt.sign({ id }, 'roleAuth', {
+        const token = jwt.sign({ id }, 'jwtAkunId', {
             expiresIn: oneWeek
         });
 
-        res.cookie('roleAuth', token, {
+        res.cookie('logged_account', token, {
             httpOnly: true,
             maxAge: oneWeek 
         });
 
-        res.status(201).json(akun);
+        res.status(201).json(akun).end();
 
         // const akun = await Akun.findOne({
         //     raw: true,
@@ -41,12 +41,9 @@ const login = async (req, res) => {
         // }   
     }
     catch (err) {
-        // console.log(err);
-        res.status(500).json({ err });
-        // res.send(err);
+        console.log(err);
+        res.status(500).json({ msg: err });
     }
-
-    res.end();
 };
 
 module.exports = login;

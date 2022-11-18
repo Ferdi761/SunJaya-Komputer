@@ -17,7 +17,11 @@ module.exports = (sequelize, DataTypes) => {
         }
       });
 
-      Garansi.belongsTo(models.BarangYangDipesan);
+      Garansi.belongsTo(models.BarangYangDipesan, {
+        foreignKey: {
+          name: 'bydId'
+        }
+      });
     }
   }
   Garansi.init({

@@ -1,6 +1,7 @@
-const { sequelize, Akun } = require("../database/models");
+const { Akun } = require("../database/models");
 
-const register = async (req, res) => {
+// buat akun
+const registrasi = async (req, res) => {
     const {
         nama,
         email,
@@ -24,6 +25,9 @@ const register = async (req, res) => {
     catch (err) {
         console.log(err);
     }
+
+// console.log(req.files);
 };
 
-module.exports = register;
+
+module.exports = registrasi;

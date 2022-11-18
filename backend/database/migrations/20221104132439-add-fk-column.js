@@ -43,7 +43,8 @@ module.exports = {
       onDelete: 'SET NULL'
     });
 
-    await queryInterface.addColumn('FotoBarang', 'barangId', {
+    // barangid b nya kecil harusnya
+    await queryInterface.addColumn('FotoBarang', 'BarangId', {
       type: Sequelize.INTEGER,
       references: {
         model: 'Barang',

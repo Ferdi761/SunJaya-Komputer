@@ -1,8 +1,13 @@
-const jwt = require("jsonwebtoken");
-
 const logout = (req, res) => {
-    res.cokie('roleAuth', '', { maxAge: 1 });
-    res.end();
+    try {
+        res.status(200).clearCookie('logged_account').end();
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).json({
+            msg: err
+        }).end();
+    }
 };
 
 module.exports = logout;

@@ -1,16 +1,25 @@
 const express = require("express");
 const app = express();
+// const http = require("http");
+// const server = http.createServer(app);
 const cors = require("cors");
+const path = require("path");
 const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
 const multer = require("multer");
 const Sequelize = require("sequelize");
 const port = process.env.PORT || 8000;
+
+// middleware
+app.use(cookieParser());
 
 // setting up express router
 const routerSignup = require("./routes/routeSignup");
 const routerLogin = require("./routes/routeLogin");
 const routerBarang = require("./routes/routeBarang");
 const routerLogout = require("./routes/routeLogout");
+const routerJenisBarang = require("./routes/routeJenisBarang");
+const routerRekening = require("./routes/routeRekening");
 // test all akun
 const routerAkun = require("./routes/routeAkun");
 
@@ -40,21 +49,22 @@ const sequelize = new Sequelize(
     }
 );
 
-// setting up express middleware
-app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+// setting up express middleware
+app.use(express.urlencoded({ extended: true }));
 
 // setting up bodyParser
-app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // express router middleware
-app.use("/signup", routerSignup);
-app.use("/login", routerLogin);
-app.use("/barang", routerBarang);
-app.use("/logout", routerLogout);
-app.use("/akun", routerAkun);
+app.use("/api/signup", routerSignup);
+app.use("/api/login", routerLogin);
+app.use("/api/barang", routerBarang);
+app.use("/api/logout", routerLogout);
+app.use("/api/akun", routerAkun);
+app.use("/api/jenis", routerJenisBarang);
+app.use("/api/rekening", routerRekening);
 
 const start = async () => {
     try {
