@@ -1,18 +1,39 @@
 import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useStore } from '../util/useStore'
 
 const Login = () => {
+  const { setUser } = useStore()
   const [akun, setAkun] = React.useState({ email: '', password: '' })
 
   const navigate = useNavigate()
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault()
-    if (akun.email === 'admin' && akun.password === 'admin') {
-      navigate('/admin')
-    } else {
-      navigate('/')
-    }
+
+    fetch('http://localhost:8000/api/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(akun),
+    })
+      .then(async (response) => {
+        const data = await response.json()
+
+        if (response.ok) {
+          setUser(data.data)
+        } else {
+          alert(data.message)
+        }
+      })
+      .catch((error) => {
+        alert(error.message)
+      })
+      .finally(() => {
+        setAkun({ email: '', password: '' })
+        navigate('/')
+      })
   }
 
   return (
@@ -26,13 +47,13 @@ const Login = () => {
         </h1>
         <div className='mb-4'>
           <label className='block text-black font-semibold text-lg mb-2'>
-            Nama atau Email
+            Email
           </label>
           <input
             className='focus:ring-2 focus:ring-black focus:outline-none appearance-none w-full text-sm leading-6 text-slate-900 placeholder-primary rounded-md py-2 pl-5 ring-1 ring-slate-200 shadow-sm bg-formInput'
-            type='text'
-            aria-label='nama atau email'
-            placeholder='nama atau email'
+            type='email'
+            aria-label='email'
+            placeholder='Email'
             value={akun.email}
             onChange={(e) =>
               setAkun({ ...akun, email: e.target.value })
