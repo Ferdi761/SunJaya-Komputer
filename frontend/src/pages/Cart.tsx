@@ -30,20 +30,23 @@ const Cart = () => {
 
           <div className='flex flex-row gap-5'>
             <div className='w-7/12'>
-              {cartQuantity > 0 
-                ? cartItems.map((item) => (
+              {cartQuantity > 0 ? (
+                cartItems.map((item) => (
                   <CartDetail key={item.id} {...item} />
                 ))
-                : <div className='flex justify-center items-start bg-transparent text-black p-0'>
-                  <p className='text-2xl mb-3'>- Keranjang Kosong -</p>
+              ) : (
+                <div className='flex justify-center items-start bg-transparent text-black p-0'>
+                  <p className='text-2xl mb-3'>
+                    - Keranjang Kosong -
+                  </p>
                 </div>
-              }
+              )}
             </div>
             <div className='w-5/12'>
               <div className='p-10 text-white bg-dark rounded-xl'>
-                <p className='text-2xl mb-3'>Rincian Keranjang</p>
-                {cartQuantity > 0 
-                  ? <>
+                {cartQuantity > 0 ? (
+                  <>
+                    <p className='text-2xl mb-3'>Rincian Keranjang</p>
                     <ul>
                       <li className='flex justify-between items-start bg-transparent text-white p-0'>
                         <p>Total Barang</p>
@@ -90,14 +93,13 @@ const Cart = () => {
                       Pesan
                     </button>
                   </>
-                  : <>
-                    <ul>
-                      <li className='flex justify-center items-start bg-transparent text-white p-0'>
-                        <p>- Keranjang Kosong</p>
-                      </li>
-                    </ul>
+                ) : (
+                  <>
+                    <p className='text-center text-2xl'>
+                      - Keranjang Kosong
+                    </p>
                   </>
-                }
+                )}
               </div>
             </div>
           </div>

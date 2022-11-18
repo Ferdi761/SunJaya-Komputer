@@ -20,7 +20,6 @@ import PesananPembayaran from './pages/detail-pesanan/PesananPembayaran'
 import PesananBelumDikirim from './pages/detail-pesanan/PesananBelumDikirim'
 import PesananDikirim from './pages/detail-pesanan/PesananDikirim'
 import PesananSelesai from './pages/detail-pesanan/PesananSelesai'
-import Login from './pages/Login'
 
 const Admin = () => (
   <>
@@ -58,7 +57,6 @@ const Admin = () => (
       <Route path='/edit-akun' element={<EditAkun />} />
       <Route path='/rekening' element={<Rekening />} />
       <Route path='/jenis-barang' element={<JenisBarang />} />
-      <Route path='/login' element={<Login />} />
     </Routes>
   </>
 )
