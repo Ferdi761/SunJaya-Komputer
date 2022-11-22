@@ -5,8 +5,10 @@ import { FaShoppingCart } from 'react-icons/fa'
 import { AiOutlineSearch } from 'react-icons/ai'
 import { RiShoppingBagFill } from 'react-icons/ri'
 import { BsChatTextFill } from 'react-icons/bs'
+import { useStore } from '../util/useStore'
 
 const Navbar = () => {
+  const { user, clearUser } = useStore()
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -40,7 +42,8 @@ const Navbar = () => {
         />
         <button
           type='submit'
-          className='absolute right-3 text-white bg-blue-500 py-3 px-5 -mr-3 rounded-lg'>
+          className='absolute right-3 text-white bg-blue-500 py-3 px-5 -mr-3 rounded-lg'
+        >
           <AiOutlineSearch />
         </button>
       </form>
@@ -64,11 +67,20 @@ const Navbar = () => {
           <BsChatTextFill />
         </button>
       </Link>
-      <Link to='/login'>
-        <button className='text-white bg-dark text-lg font-semibold py-3 px-10 rounded-md hover:bg-gray-700'>
-          Login
+      {user ? (
+        <button
+          className='text-white bg-dark text-lg font-semibold py-3 px-10 rounded-md hover:bg-gray-700'
+          onClick={clearUser}
+        >
+          Logout
         </button>
-      </Link>
+      ) : (
+        <Link to='/login'>
+          <button className='text-white bg-dark text-lg font-semibold py-3 px-10 rounded-md hover:bg-gray-700'>
+            Login
+          </button>
+        </Link>
+      )}
     </nav>
   )
 }
