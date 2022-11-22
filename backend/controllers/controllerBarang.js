@@ -1,12 +1,14 @@
 const { Barang, JenisBarang, FotoBarang } = require('../database/models');
+const { Op } = require("sequelize");
 const fs = require("fs");
 
+// for all
 const daftarBarang = async (req, res) => {
     try {
         const semuaBarang = await FotoBarang.findAll({
             include: {
                 model: Barang,
-                right: true, // right outer join
+                required: true,
                 include: {
                     model: JenisBarang,
                     required: true // inner join
@@ -22,6 +24,7 @@ const daftarBarang = async (req, res) => {
     }
 };
 
+// admin only
 const tambahBarang = async (req, res) => {
     const {
         namaBarang,
@@ -37,9 +40,7 @@ const tambahBarang = async (req, res) => {
 
     try {
         const jenisId = await JenisBarang.findOne({
-            where: {
-                nama: jenis
-            }
+            where: { nama: jenis }
         });
 
         if (jenisId === null) {
@@ -75,6 +76,7 @@ const tambahBarang = async (req, res) => {
                 deskripsi
             };
             const barang = await Barang.create(data);
+            console.log(barang);
             
             if (!barang) {
                 throw 'Gagal menambahkan barang!';
@@ -84,7 +86,7 @@ const tambahBarang = async (req, res) => {
 
                 const fotoBarang = await FotoBarang.create({
                     foto: foto,
-                    BarangId: barang.id
+                    BarangId: barang.id // masih error juka b nya lowercase
                 });
                 console.log(fotoBarang);
                 console.log(__dirname);
@@ -102,17 +104,17 @@ const tambahBarang = async (req, res) => {
 
 };
 
+// for all
 const detailBarang = async (req, res) => {
     const id = req.query.id;
 
     try {
         const infoBarang = await FotoBarang.findOne({
             where: {
-                BarangId: id
+                barangId: id
             },
             include: {
                 model: Barang,
-                right: true, // right outer join
                 include: {
                     model: JenisBarang,
                     required: true, // create an inner join
@@ -129,10 +131,11 @@ const detailBarang = async (req, res) => {
     }
 };
 
+// edit masih bermasalah (admin only)
 const ubahDataBarang = async (req, res) => {
     const id = req.params.id;
     const {
-        nama,
+        namaBarang,
         merek,
         berat,
         jenis,
@@ -149,21 +152,19 @@ const ubahDataBarang = async (req, res) => {
         });
 
         if (barang) {
-            const jenisId = await JenisBarang.findOne({
-                where: {
-                    nama: jenis
-                }
-            });
+            const jenisId = await JenisBarang.findOne({ where: { nama: jenis } });
         
             if (jenisId === null) {
                 throw 'jenis tidak ditemukan!';
             }
 
+            const fotoBarang = await FotoBarang.findOne({ where: { BarangId: id } });
+
             const newData = {
-                nama,
+                nama: namaBarang,
                 merek,
                 berat,
-                jenisId: jenisId[id],
+                jenisId: jenisId.id,
                 harga,
                 stok,
                 deskripsi
@@ -174,6 +175,13 @@ const ubahDataBarang = async (req, res) => {
                     id: id
                 }
             });
+
+            if (!updateBarang) throw 'Gagal mengubah data barang!';
+            else {
+                // if (!req.file.path) {
+                    
+                // }
+            }
 
             res.status(200).json(updateBarang).end();
         }
@@ -205,7 +213,7 @@ const hapusBarang = async (req, res) => {
         else {
             const fotoBarang = await FotoBarang.findOne({
                 where: {
-                    BarangId: id
+                    barangId: id
                 }
             });
             
@@ -230,7 +238,27 @@ const hapusBarang = async (req, res) => {
     }
 };
 
-const cariBarang = (req, res) => {};
+const cariBarang = async (req, res) => {
+    const cari = req.query.cari;
+
+    try {
+        const foundBarang = await Barang.findAll({
+            where: { 
+                nama: {
+                    [Op.substring]: cari
+                }
+             }
+        });
+
+        res.status(201).json(foundBarang).end();
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).json({
+            msg: [err]
+        }).end();
+    }
+};
 
 module.exports = {
     daftarBarang,

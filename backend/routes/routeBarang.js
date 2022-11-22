@@ -13,7 +13,7 @@ const storage = multer.diskStorage({
       cb(null, destFotoBarang);
     },
     filename: function (req, file, cb) {
-      const namaFile = Date.now() + '-' + file.originalname;
+      const namaFile = `${ Math.random() * 10 }-${ Date.now() }-${ file.originalname }`;  //Date.now() + '-' + file.originalname;
       cb(null, namaFile);
     }
   });
@@ -30,7 +30,7 @@ const {
 } = require("../controllers/controllerBarang");
 
 routerBarang.route("/").get(daftarBarang);
-routerBarang.route("/cari").get(cariBarang);
+routerBarang.route("cari").get(cariBarang);
 routerBarang.route("/tambah").post(upload.single('foto'), tambahBarang);
 routerBarang.route("/detail").get(detailBarang);
 routerBarang.route("/edit/:id").put(ubahDataBarang);

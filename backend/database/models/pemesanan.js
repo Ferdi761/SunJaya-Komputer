@@ -13,14 +13,14 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       Pemesanan.hasOne(models.BuktiPembayaranPemesanan, {
         foreignKey: {
-          name: 'PemesananId'
+          name: 'pemesananId'
         }
       });
 
       Pemesanan.belongsToMany(models.Barang, {
         through: models.BarangYangDipesan,
         foreignKey: {
-          name: 'BarangId'
+          name: 'barangId'
         }
       });
 

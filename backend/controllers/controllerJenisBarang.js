@@ -7,7 +7,7 @@ const tambahJenis = async (req, res) => {
     try {
         const addJenis = await JenisBarang.create({ nama });
         console.log("\n\nini errornya!\n\n");
-        console.log(addJenis.nama);
+        console.log(addJenis);
         res.status(200).json(addJenis).end();
     }
     catch (err) {
