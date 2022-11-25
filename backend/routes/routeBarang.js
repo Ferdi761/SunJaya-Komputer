@@ -6,14 +6,14 @@ const path = require("path");
 const multer = require("multer");
 
 destFotoBarang = path.join(__dirname, '..', 'assets', 'imgBarang');
-console.log(destFotoBarang);
+// console.log(destFotoBarang);
 
 const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
+    destination: (req, file, cb) => {
       cb(null, destFotoBarang);
     },
-    filename: function (req, file, cb) {
-      const namaFile = `${ Math.random() * 10 }-${ Date.now() }-${ file.originalname }`;  //Date.now() + '-' + file.originalname;
+    filename: (req, file, cb) => {
+      const namaFile = `${Date.now()}-${file.originalname}`;
       cb(null, namaFile);
     }
   });

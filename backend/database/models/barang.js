@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
 
       Barang.hasOne(models.FotoBarang, {
         foreignKeys: {
-          name: 'BarangId'
+          name: 'barangId'
         }
       });
     }

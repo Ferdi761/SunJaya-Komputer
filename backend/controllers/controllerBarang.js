@@ -145,6 +145,13 @@ const ubahDataBarang = async (req, res) => {
     } = req.body;
 
     try {
+        const fotoBarang = await FotoBarang.findOne({ where: { BarangId: id } });
+
+        if (req.file) {
+            if (fotoBarang.foto) fs.unlinkSync(`${fotoBarang.foto}`);
+            await fotoBarang.update({ foto: req.file.path }, { where: { BarangId: id } });
+        }
+
         const barang = await Barang.findOne({
             where: {
                 id: id
@@ -157,9 +164,6 @@ const ubahDataBarang = async (req, res) => {
             if (jenisId === null) {
                 throw 'jenis tidak ditemukan!';
             }
-
-            const fotoBarang = await FotoBarang.findOne({ where: { BarangId: id } });
-
             const newData = {
                 nama: namaBarang,
                 merek,
@@ -175,13 +179,7 @@ const ubahDataBarang = async (req, res) => {
                     id: id
                 }
             });
-
             if (!updateBarang) throw 'Gagal mengubah data barang!';
-            else {
-                // if (!req.file.path) {
-                    
-                // }
-            }
 
             res.status(200).json(updateBarang).end();
         }

@@ -1,4 +1,4 @@
-const { Akun } = require("../database/models");
+const { Akun, Keranjang } = require("../database/models");
 
 // buat akun
 const registrasi = async (req, res) => {
@@ -19,8 +19,15 @@ const registrasi = async (req, res) => {
             noTelp,
         });
         console.log(akun);
+        
+        const keranjang = await Keranjang.create({
+            jumlah: 0,
+            akunId: akun.id
+        });
 
-        res.status(201).json(akun).end();
+        console.log(keranjang);
+
+        res.status(201).json(keranjang).end();
     }
     catch (err) {
         console.log(err);
