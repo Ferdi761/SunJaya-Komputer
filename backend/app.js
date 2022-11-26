@@ -20,6 +20,7 @@ const routerBarang = require("./routes/routeBarang");
 const routerLogout = require("./routes/routeLogout");
 const routerJenisBarang = require("./routes/routeJenisBarang");
 const routerRekening = require("./routes/routeRekening");
+const routerKeranjang = require("./routes/routeKeranjang");
 // test all akun
 const routerAkun = require("./routes/routeAkun");
 
@@ -65,6 +66,7 @@ app.use("/api/logout", routerLogout);
 app.use("/api/akun", routerAkun);
 app.use("/api/jenis", routerJenisBarang);
 app.use("/api/rekening", routerRekening);
+app.use("/api/keranjang", routerKeranjang);
 
 const start = async () => {
     try {

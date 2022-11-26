@@ -33,8 +33,7 @@ module.exports = (sequelize, DataTypes) => {
 
       Barang.hasOne(models.FotoBarang, {
         foreignKeys: {
-          name: 'barangId',
-          field: 'barangId'
+          name: 'barangId'
         }
       });
     }
@@ -48,8 +47,8 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DECIMAL,
       allowNull: false
     },
-    deskripsi: { 
-      type: DataTypes.TEXT 
+    deskripsi: {
+      type: DataTypes.TEXT
     },
     stok: {
       type: DataTypes.INTEGER,

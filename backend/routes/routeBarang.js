@@ -6,14 +6,14 @@ const path = require("path");
 const multer = require("multer");
 
 destFotoBarang = path.join(__dirname, '..', 'assets', 'imgBarang');
-console.log(destFotoBarang);
+// console.log(destFotoBarang);
 
 const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
+    destination: (req, file, cb) => {
       cb(null, destFotoBarang);
     },
-    filename: function (req, file, cb) {
-      const namaFile = Date.now() + '-' + file.originalname;
+    filename: (req, file, cb) => {
+      const namaFile = `${Date.now()}-${file.originalname}`;
       cb(null, namaFile);
     }
   });
@@ -30,7 +30,7 @@ const {
 } = require("../controllers/controllerBarang");
 
 routerBarang.route("/").get(daftarBarang);
-routerBarang.route("/cari").get(cariBarang);
+routerBarang.route("cari").get(cariBarang);
 routerBarang.route("/tambah").post(upload.single('foto'), tambahBarang);
 routerBarang.route("/detail").get(detailBarang);
 routerBarang.route("/edit/:id").put(ubahDataBarang);

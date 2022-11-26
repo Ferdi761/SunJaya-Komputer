@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
       Akun.belongsToMany(models.Barang, {
         through: models.Keranjang,
         foreignKey: {
-          name: 'barangId'
+          name: 'akunId'
         }
       });
     }
@@ -43,9 +43,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
-      validate: {
-        isEmail: true,
-      }
+      validate: { isEmail: true, }
     },
     passwordHashed: {
       type: DataTypes.STRING,

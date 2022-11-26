@@ -11,13 +11,16 @@ const isAdmin = async (req, res, next) => {
         
     }
     try {
-        const decode = jwt.verify(logged_account, 'jwtAkunId');
+        // compare id from cookies and jwt
+        const decoded = jwt.verify(logged_account, 'jwtAkunId');
         // console.log(decode["id"]);
 
-        const admin = await Akun.findByPk(decode["id"]);
+        const admin = await Akun.findByPk(decoded["id"]);
+        // id not found
         if (!admin) {
             throw 'Admin tidak ditemukan!';
         }
+        // izin !== admin
         else if (admin.izin !== 'admin') {
             // console.log(admin.izin);
             throw 'Bukan admin!';
