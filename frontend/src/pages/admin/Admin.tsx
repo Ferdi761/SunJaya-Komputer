@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Dashboard from './pages/Dashboard'
@@ -20,45 +21,58 @@ import PesananPembayaran from './pages/detail-pesanan/PesananPembayaran'
 import PesananBelumDikirim from './pages/detail-pesanan/PesananBelumDikirim'
 import PesananDikirim from './pages/detail-pesanan/PesananDikirim'
 import PesananSelesai from './pages/detail-pesanan/PesananSelesai'
+import { useStore } from '../../util/useStore'
 
-const Admin = () => (
-  <>
-    <Navbar />
-    <Routes>
-      <Route path='/' element={<Dashboard />} />
-      <Route path='/pesanan' element={<Pesanan />} />
-      <Route path='/pesanan/diskusi' element={<PesananDiskusi />} />
-      <Route
-        path='/pesanan/pembayaran'
-        element={<PesananPembayaran />}
-      />
-      <Route
-        path='/pesanan/belum-dikirim'
-        element={<PesananBelumDikirim />}
-      />
-      <Route path='/pesanan/dikirim' element={<PesananDikirim />} />
-      <Route path='/pesanan/selesai' element={<PesananSelesai />} />
-      <Route path='/garansi' element={<Garansi />} />
-      <Route
-        path='/garansi/pembayaran'
-        element={<GaransiPembayaran />}
-      />
-      <Route path='/garansi/diskusi' element={<GaransiDiskusi />} />
-      <Route
-        path='/garansi/belum-dikirim'
-        element={<GaransiBelumDikirim />}
-      />
-      <Route path='/garansi/dikirim' element={<GaransiDikirim />} />
-      <Route path='/garansi/selesai' element={<GaransiSelesai />} />
-      <Route path='/barang' element={<Barang />} />
-      <Route path='/tambah-barang' element={<TambahBarang />} />
-      <Route path='/akun' element={<Akun />} />
-      <Route path='/tambah-akun' element={<TambahAkun />} />
-      <Route path='/edit-akun' element={<EditAkun />} />
-      <Route path='/rekening' element={<Rekening />} />
-      <Route path='/jenis-barang' element={<JenisBarang />} />
-    </Routes>
-  </>
-)
+const Admin = () => {
+  const { user, getUser } = useStore()
+
+  useEffect(() => {
+    getUser()
+  }, [])
+
+  if (user?.izin !== 'admin') {
+    return <h1>Anda tidak memiliki akses ke halaman ini</h1>
+  }
+
+  return (
+    <>
+      <Navbar />
+      <Routes>
+        <Route path='/' element={<Dashboard />} />
+        <Route path='/pesanan' element={<Pesanan />} />
+        <Route path='/pesanan/diskusi' element={<PesananDiskusi />} />
+        <Route
+          path='/pesanan/pembayaran'
+          element={<PesananPembayaran />}
+        />
+        <Route
+          path='/pesanan/belum-dikirim'
+          element={<PesananBelumDikirim />}
+        />
+        <Route path='/pesanan/dikirim' element={<PesananDikirim />} />
+        <Route path='/pesanan/selesai' element={<PesananSelesai />} />
+        <Route path='/garansi' element={<Garansi />} />
+        <Route
+          path='/garansi/pembayaran'
+          element={<GaransiPembayaran />}
+        />
+        <Route path='/garansi/diskusi' element={<GaransiDiskusi />} />
+        <Route
+          path='/garansi/belum-dikirim'
+          element={<GaransiBelumDikirim />}
+        />
+        <Route path='/garansi/dikirim' element={<GaransiDikirim />} />
+        <Route path='/garansi/selesai' element={<GaransiSelesai />} />
+        <Route path='/barang' element={<Barang />} />
+        <Route path='/tambah-barang' element={<TambahBarang />} />
+        <Route path='/akun' element={<Akun />} />
+        <Route path='/tambah-akun' element={<TambahAkun />} />
+        <Route path='/edit-akun' element={<EditAkun />} />
+        <Route path='/rekening' element={<Rekening />} />
+        <Route path='/jenis-barang' element={<JenisBarang />} />
+      </Routes>
+    </>
+  )
+}
 
 export default Admin
