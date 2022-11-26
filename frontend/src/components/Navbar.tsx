@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useShoppingCart } from '../util/ShoppingCartContext'
 import { FaShoppingCart } from 'react-icons/fa'
@@ -8,8 +8,6 @@ import { BsChatTextFill } from 'react-icons/bs'
 import { useStore } from '../util/useStore'
 
 const Navbar = () => {
-  const { user, clearUser } = useStore()
-  const navigate = useNavigate()
   const location = useLocation()
 
   if (
@@ -18,6 +16,13 @@ const Navbar = () => {
     location.pathname.startsWith('/admin')
   )
     return null
+
+  const { user, clearUser, getUser } = useStore()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    getUser()
+  }, [])
 
   const { cartQuantity } = useShoppingCart()
 
@@ -42,7 +47,7 @@ const Navbar = () => {
         />
         <button
           type='submit'
-          className='absolute right-3 text-white bg-blue-500 py-3 px-5 -mr-3 rounded-lg'
+          className='absolute right-0 text-white bg-blue-500 hover:bg-blue-600 py-3 px-5 rounded-lg'
         >
           <AiOutlineSearch />
         </button>
