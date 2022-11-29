@@ -15,7 +15,6 @@ import Search from './pages/Search'
 import storeItems from './data/items.json'
 import Example from './pages/Example'
 import Admin from './pages/admin/Admin'
-
 const App = () => (
   <ShoppingCartProvider>
     <Navbar />
