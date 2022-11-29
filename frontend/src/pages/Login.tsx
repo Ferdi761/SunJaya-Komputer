@@ -52,6 +52,7 @@ const Login = () => {
           <input
             className='focus:ring-2 focus:ring-black focus:outline-none appearance-none w-full text-sm leading-6 text-slate-900 placeholder-primary rounded-md py-2 pl-5 ring-1 ring-slate-200 shadow-sm bg-formInput'
             type='email'
+            id='email'
             aria-label='email'
             placeholder='Email'
             value={akun.email}
