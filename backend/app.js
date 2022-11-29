@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
-// const http = require("http");
-// const server = http.createServer(app);
+const http = require("http");
+const server = http.createServer(app);
 const cors = require("cors");
 const path = require("path");
 const bodyParser = require("body-parser");
@@ -44,10 +44,7 @@ const sequelize = new Sequelize(
     database,
     username,
     password,
-    {
-        host,
-        dialect,
-    }
+    { host, dialect }
 );
 
 app.use(express.json());
@@ -75,7 +72,7 @@ const start = async () => {
         await sequelize.authenticate();
         console.log("Connection has been established successfully.");
         
-        await app.listen(port, () => {
+        await server.listen(port, () => {
             console.log(`server is listening on http://localhost:${port}`);
         });
     }

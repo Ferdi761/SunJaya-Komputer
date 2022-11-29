@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
       Barang.belongsToMany(models.Akun, {
         through: models.Keranjang,
         foreignKey: {
-          name: 'akunId'
+          name: 'barangId'
         }
       });
 

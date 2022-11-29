@@ -19,6 +19,7 @@ const storage = multer.diskStorage({
   });
   
 const upload = multer({ storage: storage });
+const loginCheck = require('../middlewares/loginCheck');
 
 const {
     daftarBarang,
@@ -27,12 +28,20 @@ const {
     ubahDataBarang,
     hapusBarang,
     cariBarang
-} = require("../controllers/controllerBarang");
+} = require('../controllers/controllerBarang');
+
+const {
+  tambahKeKeranjang,
+  hapusDariKeranjang
+} = require('../controllers/controllerKeranjang');
 
 routerBarang.route("/").get(daftarBarang);
 routerBarang.route("cari").get(cariBarang);
 routerBarang.route("/tambah").post(upload.single('foto'), tambahBarang);
-routerBarang.route("/detail").get(detailBarang);
+routerBarang.route("/detail")
+.get(detailBarang)
+.post(loginCheck, tambahKeKeranjang)
+.delete(loginCheck, hapusDariKeranjang);
 routerBarang.route("/edit/:id").put(ubahDataBarang);
 routerBarang.route("/hapus/:id").delete(hapusBarang);
 

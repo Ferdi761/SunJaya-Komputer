@@ -90,7 +90,11 @@ const tambahBarang = async (req, res) => {
                 });
                 console.log(fotoBarang);
                 console.log(__dirname);
-                res.status(200).json({ msg: "Berhasil menambahkan barang!" }).end();
+                res.status(200).json({
+                    status: "Success",
+                    msg: "Berhasil menambahkan barang!",
+                    data: fotoBarang
+                }).end();
             }
         }
     }
@@ -144,10 +148,12 @@ const ubahDataBarang = async (req, res) => {
         deskripsi
     } = req.body;
 
+    const img = req.file;
+
     try {
         const fotoBarang = await FotoBarang.findOne({ where: { BarangId: id } });
 
-        if (req.file) {
+        if (img) {
             if (fotoBarang.foto) fs.unlinkSync(`${fotoBarang.foto}`);
             await fotoBarang.update({ foto: req.file.path }, { where: { BarangId: id } });
         }

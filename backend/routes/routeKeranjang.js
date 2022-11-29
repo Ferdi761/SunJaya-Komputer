@@ -4,13 +4,10 @@ const routerKeranjang = express.Router();
 const loginCheck = require('../middlewares/loginCheck');
 const {
     daftarKeranjang,
-    tambahBarang,
-    hapusBarang
+    allCartList
 } = require("../controllers/controllerKeranjang");
 
-routerKeranjang.route("/")
-.get(loginCheck, daftarKeranjang)
-.post(loginCheck, tambahBarang)
-.delete(loginCheck, hapusBarang);
+routerKeranjang.route("/").get(loginCheck, daftarKeranjang);
+routerKeranjang.route("/allCart").get(allCartList);
 
 module.exports = routerKeranjang;
