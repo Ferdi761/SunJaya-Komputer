@@ -8,7 +8,17 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const multer = require("multer");
 const Sequelize = require("sequelize");
+const { Server } = require('socket.io');
 const port = process.env.PORT || 8000;
+
+const { ChatSocketController } = require("./controllers/ChatSocketController");
+
+const socketIO = new Server(server, {
+    cors: {
+        origin: "*"
+    }
+});
+const chatSocketController = new ChatSocketController(socketIO);
 
 // middleware
 app.use(cookieParser());
