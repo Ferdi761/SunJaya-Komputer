@@ -6,7 +6,7 @@ const path = require("path");
 const multer = require("multer");
 
 destFotoBarang = path.join(__dirname, '../../frontend/src/assets/img/produk');
-console.log(destFotoBarang);
+// console.log(destFotoBarang);
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {

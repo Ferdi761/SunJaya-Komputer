@@ -77,7 +77,8 @@ const uploadBuktiBayar = async (req, res) => {
     const logged = req.cookies.logged_account;
     // decode cookie's token from jwt to get the id of Akun
     const decoded = jwt.verify(logged, 'jwtAkunId');
-    const pemesananId = req.query;
+    const { pemesananId } = req.query;
+    const imagePath = req.file.path;
 
     try {
         const userCart = await Akun.findOne({
@@ -86,16 +87,33 @@ const uploadBuktiBayar = async (req, res) => {
         });
         if (!userCart) throw 'Pengguna tidak ditemukan!';
 
-        //const pesanan = await 
+        const uploadBukti = await BuktiPembayaranPemesanan.update({
+            buktiPembayaran: imagePath
+        },
+        {
+            where: { pemesananId: pemesananId }
+        });
+
+        res
+        .status(200)
+        .json({
+            status: 'success',
+            message: 'Berhasil mengupload bukti pembayaran!',
+            data: uploadBukti
+        })
+        .end();
     }
     catch(err) {
         console.log(err);
-        res.status(500).json({
+        res
+        .status(500)
+        .json({
             status: 'fail',
             message: [err]
-        }).end();
+        })
+        .end();
     }
     clearTimeout(waktuPembayaran);
 };
 
-module.exports = {checkout};
+module.exports = {checkout, uploadBuktiBayar};
