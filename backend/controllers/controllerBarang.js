@@ -86,14 +86,17 @@ const tambahBarang = async (req, res) => {
 
                 const fotoBarang = await FotoBarang.create({
                     foto: foto,
-                    BarangId: barang.id // masih error juka b nya lowercase
+                    BarangId: barang.id // masih error, harusnya b nya lowercase
                 });
-                console.log(fotoBarang);
-                console.log(__dirname);
+                console.log(fotoBarang);  
                 res.status(200).json({
                     status: "Success",
                     msg: "Berhasil menambahkan barang!",
-                    data: fotoBarang
+                    data: {
+                        fotoId: fotoBarang.id,
+                        fotoPath: fotoBarang.foto,
+                        barang: barang
+                    }
                 }).end();
             }
         }
@@ -115,7 +118,7 @@ const detailBarang = async (req, res) => {
     try {
         const infoBarang = await FotoBarang.findOne({
             where: {
-                barangId: id
+                BarangId: id
             },
             include: {
                 model: Barang,
@@ -125,7 +128,10 @@ const detailBarang = async (req, res) => {
                 }
             }
         });
-        res.status(200).json(infoBarang).end();
+        res.status(200).json({
+            status: "success",
+            data: infoBarang
+        }).end();
     }
     catch (err) {
         console.log(err);
@@ -135,7 +141,7 @@ const detailBarang = async (req, res) => {
     }
 };
 
-// edit masih bermasalah (admin only)
+// edit sudah benar tapi ragu (admin only)
 const ubahDataBarang = async (req, res) => {
     const id = req.params.id;
     const {
@@ -155,7 +161,15 @@ const ubahDataBarang = async (req, res) => {
 
         if (img) {
             if (fotoBarang.foto) fs.unlinkSync(`${fotoBarang.foto}`);
-            await fotoBarang.update({ foto: req.file.path }, { where: { BarangId: id } });
+            const updateData = await fotoBarang.update({ foto: req.file.path }, { where: { BarangId: id } });
+
+            res.status(200).json({
+                status: 'success',
+                msg: 'Berhasil memperbarui barang!',
+                data: updateData
+            }).end();
+
+            return;
         }
 
         const barang = await Barang.findOne({
@@ -187,16 +201,21 @@ const ubahDataBarang = async (req, res) => {
             });
             if (!updateBarang) throw 'Gagal mengubah data barang!';
 
-            res.status(200).json(updateBarang).end();
+            res.status(200).json({
+                status: 'success',
+                msg: 'Berhasil memperbarui barang!',
+                data: updateBarang
+            }).end();
+
+            return;
         }
-        else {
-            throw 'Gagal memperbarui barang!';
-        }
+        else throw 'Gagal memperbarui barang!';
     }
     catch (err) {
         console.log(err);
         res.status(500).json({
-            msg: err
+            status: "failed",
+            msg: [err]
         }).end();
     }
 };
@@ -230,6 +249,7 @@ const hapusBarang = async (req, res) => {
             await barang.destroy();
 
             res.status(200).json({
+                status: 'success',
                 msg: 'Barang berhasil dihapus!'
             }).end();
         }
@@ -237,24 +257,28 @@ const hapusBarang = async (req, res) => {
     catch (err) {
         console.log(err);
         res.status(500).json({
+            status: 'fail',
             msg: [err]
         }).end();
     }
 };
 
 const cariBarang = async (req, res) => {
-    const cari = req.query.cari;
+    // const input = req.body.input;
+    const nama = req.query.nama;
 
     try {
         const foundBarang = await Barang.findAll({
-            where: { 
-                nama: {
-                    [Op.substring]: cari
-                }
+            where: {
+                nama: { [Op.iLike]: `%${nama}%` }
              }
         });
 
-        res.status(201).json(foundBarang).end();
+        console.log(nama);
+        res.status(201).json({
+            status: 'success',
+            data: foundBarang
+        }).end();
     }
     catch (err) {
         console.log(err);

@@ -20,11 +20,15 @@ module.exports = (sequelize, DataTypes) => {
       Pemesanan.belongsToMany(models.Barang, {
         through: models.BarangYangDipesan,
         foreignKey: {
-          name: 'barangId'
+          name: 'pemesananId'
         }
       });
 
-      Pemesanan.belongsTo(models.Akun);
+      Pemesanan.belongsTo(models.Akun, {
+        foreignKey: {
+          name: 'akunId'
+        }
+      });
     }
   }
   Pemesanan.init({

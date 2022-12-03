@@ -62,6 +62,7 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Akun',
     tableName: 'Akun',
+    timestamps: false
   });
 
   Akun.addHook('beforeCreate', passwordHash);

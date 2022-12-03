@@ -27,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
       Barang.belongsToMany(models.Pemesanan, {
         through: models.BarangYangDipesan,
         foreignKeys: {
-          name: 'pemesananId'
+          name: 'barangId'
         }
       });
 
@@ -66,6 +66,7 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Barang',
     tableName: 'Barang',
+    timestamps: false
   });
   return Barang;
 };

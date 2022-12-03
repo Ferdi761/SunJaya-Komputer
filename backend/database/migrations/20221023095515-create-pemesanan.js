@@ -10,22 +10,31 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       alamatTujuan: {
-        type: Sequelize.TEXT
+        type: Sequelize.TEXT,
+        allowNull: false,
       },
       jasaPengiriman: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       totalHargaBarang: {
-        type: Sequelize.DECIMAL
+        type: Sequelize.DECIMAL,
+        allowNull: false,
+        defaultValue: 0,
       },
       biayaPengiriman: {
-        type: Sequelize.DECIMAL
+        type: Sequelize.DECIMAL,
+        allowNull: false,
+        defaultValue: 0,
       },
       totalBiayaYangHarusDibayar: {
-        type: Sequelize.DECIMAL
+        type: Sequelize.DECIMAL,
+        allowNull: false,
+        defaultValue: 0,
       },
       tanggalMulaiMenungguPembayaran: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        allowNull: false,
       },
       pembayaranLunas: {
         type: Sequelize.BOOLEAN

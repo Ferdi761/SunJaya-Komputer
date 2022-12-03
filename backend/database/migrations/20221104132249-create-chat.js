@@ -21,11 +21,7 @@ module.exports = {
       dibaca: {
         type: Sequelize.BOOLEAN
       },
-      createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE
-      },
-      updatedAt: {
+      dibuatPada: {
         allowNull: false,
         type: Sequelize.DATE
       }

@@ -28,13 +28,23 @@ const daftarKeranjang = async (req, res) => {
             include: Barang
         });
         if (!userCart) throw 'Pengguna tidak ditemukan!';
+
+        const { Barangs } = userCart;
+
+        let totalPrice = 0;
+        for(let item in Barangs) {
+            totalPrice += Barangs[item].harga * Barangs[item].Keranjang.jumlah;
+        }
         
         // const keranjang = await Keranjang.findAll({ where: { akunId: user.id } });
         // if (!keranjang) throw 'Keranjang tidak ditemukan!';
         
         res.status(200).json({
             status: "success",
-            data: userCart
+            data: { 
+                userCart,
+                totalHarga: totalPrice
+            }
         }).end();
     }
     catch (err) {
@@ -87,7 +97,7 @@ const hapusDariKeranjang = async (req, res) => {
 
         const hapus = await Keranjang.destroy({
             where: {
-                [Op]: [
+                [Op.and]: [
                     { akunId: akun.id },
                     { barangId: idBarang }
                 ]
@@ -106,9 +116,12 @@ const hapusDariKeranjang = async (req, res) => {
     }
 };
 
+const ubahJumlahBarang = (req, res) => {};
+
 module.exports = {
     daftarKeranjang,
     tambahKeKeranjang,
     hapusDariKeranjang,
+    ubahJumlahBarang,
     allCartList
 };

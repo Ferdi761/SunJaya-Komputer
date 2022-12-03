@@ -5,8 +5,8 @@ const path = require("path");
 // setup multer storage
 const multer = require("multer");
 
-destFotoBarang = path.join(__dirname, '..', 'assets', 'imgBarang');
-// console.log(destFotoBarang);
+destFotoBarang = path.join(__dirname, '../../frontend/src/assets/img/produk');
+console.log(destFotoBarang);
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -30,19 +30,15 @@ const {
     cariBarang
 } = require('../controllers/controllerBarang');
 
-const {
-  tambahKeKeranjang,
-  hapusDariKeranjang
-} = require('../controllers/controllerKeranjang');
+const { tambahKeKeranjang } = require('../controllers/controllerKeranjang');
 
 routerBarang.route("/").get(daftarBarang);
-routerBarang.route("cari").get(cariBarang);
+routerBarang.route("/cari").get(cariBarang);
 routerBarang.route("/tambah").post(upload.single('foto'), tambahBarang);
 routerBarang.route("/detail")
 .get(detailBarang)
-.post(loginCheck, tambahKeKeranjang)
-.delete(loginCheck, hapusDariKeranjang);
-routerBarang.route("/edit/:id").put(ubahDataBarang);
+.post(loginCheck, tambahKeKeranjang);
+routerBarang.route("/edit/:id").put(upload.single('foto'), ubahDataBarang);
 routerBarang.route("/hapus/:id").delete(hapusBarang);
 
 module.exports = routerBarang;

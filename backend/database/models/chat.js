@@ -27,6 +27,9 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Chat',
     tableName: 'Chat',
+    timestamps: true,
+    updatedAt: false,
+    createdAt: 'dibuatPada'
   });
   return Chat;
 };
