@@ -13,14 +13,17 @@ const {
 const daftarKonfirmasiPesanan = async (req, res) => {
     try {
         const waitForConfirm = await BuktiPembayaranPemesanan.findAll({
-            include: Pemesanan
-        },
-        {
             where: {
                 buktiPembayaran: {
                     [Op.not]: null
+                }   
+            },
+            include: {
+                model: Pemesanan,
+                where: {
+                    pembayaranLunas: false
                 }
-            }
+            },
         });
 
         res
@@ -47,27 +50,23 @@ const konfirmasiPesanan = async (req, res) => {
 
     try {
         const pesanan = await BuktiPembayaranPemesanan.findOne({
-            include: Pemesanan
-        },
-        {
             where: {
-                Pemesanan: {
-                    id: id
-                }
-            }
+                pemesananId: id
+            },
+            include: Pemesanan
         });
 
-        const confirm = await pesanan.update({
-            Pemesanan: {
+        await pesanan['Pemesanan'].update({
                 pembayaranLunas: true
-            }
         });
+        await pesanan.save();
 
         res
         .status(200)
         .json({
             status: 'success',
-            message: 'Pembayaran berhasil dikonfirmasi!'
+            message: 'Pembayaran berhasil dikonfirmasi!',
+            data: pesanan
         })
         .end();
     }

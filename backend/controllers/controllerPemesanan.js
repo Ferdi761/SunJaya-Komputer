@@ -42,7 +42,7 @@ const checkout = async (req, res) => {
         const oneDay = 86400000;
 
         const buatPesanan = await BuktiPembayaranPemesanan.create({
-            buktiPembayaran: '',
+            buktiPembayaran: null,
             Pemesanan: {
                 akunId: userCart.id,
                 alamatTujuan,
