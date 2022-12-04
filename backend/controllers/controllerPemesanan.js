@@ -35,7 +35,9 @@ const checkout = async (req, res) => {
         for(let item in Barangs) {
             totalPriceItem += Barangs[item].harga * Barangs[item].Keranjang.jumlah;
         }
+        console.log('total price item: ' + typeof(totalPriceItem));
         let totalAll = totalPriceItem + parseFloat(biayaPengiriman);
+        console.log('total all: ' + typeof(totalAll));
         //const today = new Date();
         const oneDay = 86400000;
 
@@ -63,7 +65,12 @@ const checkout = async (req, res) => {
         res.status(200).json({
             status: "success",
             message: 'Pesanan telah dibuat, menunggu pembayaran hingga 24 jam kedepan!',
-            data: { userCart, buatPesanan, totalHarga: totalPriceItem }
+            data: {
+                userCart,
+                buatPesanan,
+                totalHarga: totalPriceItem,
+                statusPesanan: 'Bayar'
+            }
         }).end();
 
     }
@@ -78,7 +85,7 @@ const uploadBuktiBayar = async (req, res) => {
     // decode cookie's token from jwt to get the id of Akun
     const decoded = jwt.verify(logged, 'jwtAkunId');
     const { pemesananId } = req.query;
-    const imagePath = req.file.path;
+    let imagePath = req.file.path;
 
     try {
         const userCart = await Akun.findOne({
@@ -87,11 +94,17 @@ const uploadBuktiBayar = async (req, res) => {
         });
         if (!userCart) throw 'Pengguna tidak ditemukan!';
 
-        const uploadBukti = await BuktiPembayaranPemesanan.update({
-            buktiPembayaran: imagePath
+        const buktiBayar = await BuktiPembayaranPemesanan.findOne({
+            where: {
+                pemesananId: pemesananId
+            }
         },
         {
-            where: { pemesananId: pemesananId }
+            include: Pemesanan
+        });
+
+        await buktiBayar.update({
+            buktiPembayaran: imagePath
         });
 
         res
@@ -99,7 +112,8 @@ const uploadBuktiBayar = async (req, res) => {
         .json({
             status: 'success',
             message: 'Berhasil mengupload bukti pembayaran!',
-            data: uploadBukti
+            statusPesanan: 'Menunggu konfirmasi',
+            data: buktiBayar
         })
         .end();
     }
@@ -116,4 +130,46 @@ const uploadBuktiBayar = async (req, res) => {
     clearTimeout(waktuPembayaran);
 };
 
-module.exports = {checkout, uploadBuktiBayar};
+const daftarSemuaPesanan = async (req, res) => {
+    const logged = req.cookies.logged_account;
+    // decode cookie's token from jwt to get the id of Akun
+    const decoded = jwt.verify(logged, 'jwtAkunId');
+
+    try {
+        const listPesanan = await BuktiPembayaranPemesanan.findAll({
+            include: Pemesanan,
+        },
+        {
+            where: {
+                Pemesanan: {
+                    akunId: decoded.id
+                }
+            }
+        });
+
+        console.log(listPesanan);
+        res
+        .status(200)
+        .json({
+            status: 'success',
+            data: listPesanan
+        })
+        .end();
+    }
+    catch (err) {
+        console.log(err);
+        res
+        .status(500)
+        .json({
+            status: 'fail',
+            message: [err]
+        })
+        .end();
+    }
+};
+
+module.exports = {
+    checkout,
+    uploadBuktiBayar,
+    daftarSemuaPesanan
+};

@@ -21,12 +21,24 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 const loginCheck = require('../middlewares/loginCheck');
+const isAdmin = require('../middlewares/isAdmin');
 const {
    checkout,
-   uploadBuktiBayar
+   uploadBuktiBayar,
+   daftarSemuaPesanan
 } = require("../controllers/controllerPemesanan");
 
+const {
+  daftarKonfirmasiPesanan,
+  konfirmasiPesanan
+} = require("../controllers/controllerPemesananAdmin");
+
+routerPemesanan.route("/").get(loginCheck, daftarSemuaPesanan);
 routerPemesanan.route("/checkout").post(loginCheck, checkout);
 routerPemesanan.route("/checkout/upload").post(loginCheck,upload.single('buktiPembayaran'), uploadBuktiBayar);
+
+// admin
+routerPemesanan.route("/admin/konfirmasi").get(loginCheck, isAdmin, daftarKonfirmasiPesanan);
+routerPemesanan.route("/admin/konfirmasi").post(loginCheck, isAdmin, konfirmasiPesanan);
 
 module.exports = routerPemesanan;

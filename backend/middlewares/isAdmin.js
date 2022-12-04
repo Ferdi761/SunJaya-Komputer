@@ -7,7 +7,7 @@ const isAdmin = async (req, res, next) => {
   let logged = req.cookies.logged_account;
 
   // console.log(logged_account);
-  if (!logged_account) {
+  if (!logged) {
     return res.status(403).send('Anda belum login!').end()
   }
   try {
