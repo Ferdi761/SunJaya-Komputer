@@ -173,7 +173,7 @@ class ChatSocketController {
                     that.customerOutOfRoom(socketData);
                 }
                 else if (socketData.auth == EMPLOYEE) {
-                    that.employeeOutFromRoom(socketData);
+                    employeeOutFromRoom(socketData);
                 }
 
                 that.socketConnectionData.delete(socket);
