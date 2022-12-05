@@ -121,7 +121,7 @@ class ChatSocketController {
 
                             roomData.employee.emit("readall", "readall");
                             // sedang dalam perbaikan
-                            that.employeeWhoOpenChatMenu.forEarch(function(value) {
+                            that.employeeWhoOpenChatMenu.forEach(function(value) {
                                 value.emit("readed", socketData.id);
                             })
                         }
@@ -147,12 +147,12 @@ class ChatSocketController {
 
                     }
 
-                    that.employeeWhoOpenChatMenu.forEarch(function(value) {
+                    that.employeeWhoOpenChatMenu.forEach(function(value) {
                         value.emit("coming " + read, message);
                     });
                     socket.emit("message self " + read, message);
                 }
-                else if (socketData.auth == EMPLOYEE && socketData.read != -1) {
+                else if (socketData.auth == EMPLOYEE && socketData.read !== -1) {
                     let roomData = that.room.get(socketData.read);
                     
                     let read = "unread";
