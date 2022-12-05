@@ -25,20 +25,27 @@ const isAdmin = require('../middlewares/isAdmin');
 const {
    checkout,
    uploadBuktiBayar,
-   daftarSemuaPesanan
+   daftarSemuaPesanan,
+   umpanBalik
 } = require("../controllers/controllerPemesanan");
 
 const {
   daftarKonfirmasiPesanan,
-  konfirmasiPesanan
+  konfirmasiPesanan,
+  batalkanPesanan,
+  ubahStatusKirim
 } = require("../controllers/controllerPemesananAdmin");
 
 routerPemesanan.route("/").get(loginCheck, daftarSemuaPesanan);
 routerPemesanan.route("/checkout").post(loginCheck, checkout);
-routerPemesanan.route("/checkout/upload").post(loginCheck,upload.single('buktiPembayaran'), uploadBuktiBayar);
+routerPemesanan.route("/checkout/upload/:id").put(loginCheck,upload.single('buktiPembayaran'), uploadBuktiBayar);
+routerPemesanan.route("/ulasan/:id").put(loginCheck, umpanBalik);
+
 
 // admin
 routerPemesanan.route("/admin/konfirmasi").get(loginCheck, isAdmin, daftarKonfirmasiPesanan);
-routerPemesanan.route("/admin/konfirmasi").post(loginCheck, isAdmin, konfirmasiPesanan);
+routerPemesanan.route("/admin/konfirmasi/:id").post(loginCheck, isAdmin, konfirmasiPesanan);
+routerPemesanan.route("/admin/batalkan/:id").delete(loginCheck, isAdmin, batalkanPesanan);
+routerPemesanan.route("/admin/kirim/:id").put(loginCheck, isAdmin, ubahStatusKirim);
 
 module.exports = routerPemesanan;

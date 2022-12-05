@@ -80,11 +80,23 @@ const checkout = async (req, res) => {
     }
 };
 
+ const pesananBelumBayar = async (req, res) => {
+    const logged = req.cookies.logged_account;
+    const decoded = jwt.verify(logged, 'jwtAkunId');
+
+    try {
+        
+    }
+    catch (err) {
+
+    }
+ };
+
 const uploadBuktiBayar = async (req, res) => {
     const logged = req.cookies.logged_account;
     // decode cookie's token from jwt to get the id of Akun
     const decoded = jwt.verify(logged, 'jwtAkunId');
-    const { pemesananId } = req.query;
+    const { id } = req.params;
     let imagePath = req.file.path;
 
     try {
@@ -96,7 +108,7 @@ const uploadBuktiBayar = async (req, res) => {
 
         const buktiBayar = await BuktiPembayaranPemesanan.findOne({
             where: {
-                pemesananId: pemesananId
+                pemesananId: id
             }
         },
         {
@@ -137,7 +149,7 @@ const daftarSemuaPesanan = async (req, res) => {
 
     try {
         const listPesanan = await BuktiPembayaranPemesanan.findAll({
-            include: Pemesanan,
+            include: Pemesanan
         },
         {
             where: {
@@ -152,9 +164,59 @@ const daftarSemuaPesanan = async (req, res) => {
         .status(200)
         .json({
             status: 'success',
-            data: listPesanan
+            data: {
+                pesanan: listPesanan,
+                statusPesanan: 'Semua'
+            }
         })
         .end();
+    }
+    catch (err) {
+        console.log(err);
+        res
+        .status(500)
+        .json({
+            status: 'fail',
+            message: [err]
+        })
+        .end();
+    }
+};
+
+const umpanBalik = async (req, res) => {
+    const { id } = req.params;
+    const {
+        rating,
+        testimoni
+    } = req.body;
+
+    try {
+        const pesanan = await BuktiPembayaranPemesanan.findOne({
+            where: {
+                pemesananId: id
+            }
+        },
+        {
+            include: Pemesanan
+        });
+
+        await pesanan.update({
+            Pemesanan: {
+                rating: parseFloat(rating),
+                testimoni: testimoni
+            }
+        });
+
+        res
+        .status(200)
+        .json({
+            status: 'success',
+            message: 'Berhasil menambahkan ulasan!',
+            data: {
+                pesanan: pesanan,
+                statusPesanan: 'Selesai'
+            }
+        })
     }
     catch (err) {
         console.log(err);
@@ -171,5 +233,6 @@ const daftarSemuaPesanan = async (req, res) => {
 module.exports = {
     checkout,
     uploadBuktiBayar,
-    daftarSemuaPesanan
+    daftarSemuaPesanan,
+    umpanBalik
 };

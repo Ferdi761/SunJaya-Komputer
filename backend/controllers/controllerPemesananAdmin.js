@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const { Op } = require("sequelize");
+const fs = require("fs");
 
 const {
     Akun,
@@ -46,7 +47,7 @@ const daftarKonfirmasiPesanan = async (req, res) => {
 };
 
 const konfirmasiPesanan = async (req, res) => {
-    const { id } = req.query;
+    const { id } = req.params;
 
     try {
         const pesanan = await BuktiPembayaranPemesanan.findOne({
@@ -66,7 +67,90 @@ const konfirmasiPesanan = async (req, res) => {
         .json({
             status: 'success',
             message: 'Pembayaran berhasil dikonfirmasi!',
-            data: pesanan
+            data: {
+                pesanan: pesanan,
+                statusPesanan: 'Diproses'
+            }
+        })
+        .end();
+    }
+    catch (err) {
+        console.log(err);
+        res
+        .status(500)
+        .json({
+            status: 'fail',
+            message: [err]
+        })
+        .end();
+    }
+};
+
+const batalkanPesanan = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const pesanan = await BuktiPembayaranPemesanan.findOne({
+            where: {
+                pemesananId: id
+            }
+        },
+        {
+            include: Pemesanan
+        });
+
+        // delete photo from local storage
+        fs.unlink(`${pesanan.buktiPembayaran}`, (err) => {
+            if (err) throw 'Gagal menghapus foto dari penyimpanan lokal!';
+            else console.log('Berhasil menghapus foto dari penyimpanan lokal!');
+        });
+        
+        await pesanan.destroy();
+
+        res
+        .status(200)
+        .json({
+            status: 'success',
+            message: 'Pesanan berhasil dibatalkan!'
+        })
+        .end();
+    }
+    catch (err) {
+        console.log(err);
+        res
+        .status(500)
+        .json({
+            status: 'fail',
+            message: [err]
+        })
+        .end();
+    }
+};
+
+const  ubahStatusKirim = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const pesanan = await BuktiPembayaranPemesanan.findOne({
+            where: {
+                pemesananId: id
+            }
+        },
+        {
+            include: Pemesanan
+        });
+        
+        await pesanan.update({
+            Pemesanan: {
+                tanggalKirim: Date.now()
+            }
+        });
+
+        res
+        .status(200)
+        .json({
+            status: 'success',
+            message: 'Pesanan berhasil dibatalkan!'
         })
         .end();
     }
@@ -85,4 +169,6 @@ const konfirmasiPesanan = async (req, res) => {
 module.exports = {
     daftarKonfirmasiPesanan,
     konfirmasiPesanan,
+    batalkanPesanan,
+    ubahStatusKirim
 }

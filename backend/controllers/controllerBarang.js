@@ -221,7 +221,7 @@ const ubahDataBarang = async (req, res) => {
 };
 
 const hapusBarang = async (req, res) => {
-    let id = req.params.id;
+    let { id } = req.params;
 
     try {
         const barang = await Barang.findOne({

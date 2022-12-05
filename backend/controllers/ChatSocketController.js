@@ -120,7 +120,8 @@ class ChatSocketController {
                             socketData.read = 0;
 
                             roomData.employee.emit("readall", "readall");
-                            this.employeeWhoOpenChatMenu.forEarch(function(value) {
+                            // sedang dalam perbaikan
+                            that.employeeWhoOpenChatMenu.forEarch(function(value) {
                                 value.emit("readed", socketData.id);
                             })
                         }
