@@ -30,6 +30,9 @@ const checkout = async (req, res) => {
         if (!userCart) throw 'Pengguna tidak ditemukan!';
         
         const { Barangs } = userCart;
+        // const barangYangDipesan = await BarangYangDipesan.create({
+
+        // });
 
         let totalPriceItem = 0;
         for(let item in Barangs) {
@@ -47,8 +50,9 @@ const checkout = async (req, res) => {
                 akunId: userCart.id,
                 alamatTujuan,
                 jasaPengiriman,
-                totalHargaBarang: totalPriceItem,
                 biayaPengiriman,
+                // Barang: [],
+                totalHargaBarang: totalPriceItem,
                 totalBiayaYangHarusDibayar: totalAll,
                 pembayaranLunas: false,
                 tanggalMulaiMenungguPembayaran: Date.now(),
@@ -57,19 +61,42 @@ const checkout = async (req, res) => {
             include: Pemesanan
         });
 
+        // Memasukkan data barang yang dipesan dari Barangs ke dalam array untuk sementara
+        let dataBYD = [];
+        Barangs.forEach((item) => {
+            dataBYD.push({
+                pemesananId: buatPesanan.pemesananId,
+                BarangId: item.Keranjang.barangId,
+                jumlah: item.Keranjang.jumlah,
+                totalHarga: item.harga * item.Keranjang.jumlah
+            });
+        });
+        console.log(dataBYD);
+
+        // memasukkan data array ke tabel BarangYangDipesan
+        const barangYangDipesan = await BarangYangDipesan.bulkCreate(dataBYD);
+
         waktuPembayaran = setTimeout(async() => {
             console.log("waktu habis, pemesanan dibatalkan!");
             await buatPesanan.destroy();
-        }, 20000);
+            await barangYangDipesan.destroy();
+            // await Keranjang.destroy({
+            //     where: {
+            //         akunId: decoded.id
+            //     }
+            // });
+            // set ulang array menjadi nol
+            dataBYD = [];
+        }, 50000);
         
         res.status(200).json({
             status: "success",
             message: 'Pesanan telah dibuat, menunggu pembayaran hingga 24 jam kedepan!',
             data: {
                 userCart,
-                buatPesanan,
+                Pesanan: buatPesanan,
                 totalHarga: totalPriceItem,
-                statusPesanan: 'Bayar'
+                statusPesanan: 'Bayar',
             }
         }).end();
 
@@ -232,6 +259,7 @@ const umpanBalik = async (req, res) => {
 
 module.exports = {
     checkout,
+    pesananBelumBayar,
     uploadBuktiBayar,
     daftarSemuaPesanan,
     umpanBalik

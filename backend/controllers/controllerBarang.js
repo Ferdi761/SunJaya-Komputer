@@ -66,39 +66,47 @@ const tambahBarang = async (req, res) => {
         //     console.log(createBarang);
         // }
         else {
-            const data = {
-                nama: namaBarang,
-                merek,
-                berat,
-                jenisId: jenisId.id,
-                harga,
-                stok,
-                deskripsi
-            };
-            const barang = await Barang.create(data);
-            console.log(barang);
+            // const data = {
+            //     nama: namaBarang,
+            //     merek,
+            //     berat,
+            //     jenisId: jenisId.id,
+            //     harga,
+            //     stok,
+            //     deskripsi
+            // };
+            // const barang = await Barang.create(data);
+            // console.log(barang);
             
-            if (!barang) {
-                throw 'Gagal menambahkan barang!';
-            }
-            else {
-                // foto === null ? req.file : req.file.path;
+            // if (!barang) {
+            //     throw 'Gagal menambahkan barang!';
+            // }
+            // else {
+            //     // foto === null ? req.file : req.file.path;
 
-                const fotoBarang = await FotoBarang.create({
-                    foto: foto,
-                    BarangId: barang.id // masih error, harusnya b nya lowercase
-                });
-                console.log(fotoBarang);  
-                res.status(200).json({
-                    status: "Success",
-                    msg: "Berhasil menambahkan barang!",
-                    data: {
-                        fotoId: fotoBarang.id,
-                        fotoPath: fotoBarang.foto,
-                        barang: barang
-                    }
-                }).end();
-            }
+                
+            // }
+            const barang = await FotoBarang.create({
+                foto: foto,
+                Barang: {
+                    nama: namaBarang,
+                    merek,
+                    berat,
+                    jenisId: jenisId.id,
+                    harga,
+                    stok,
+                    deskripsi
+                } // masih error, harusnya b nya lowercase
+            },
+            {
+                include: Barang
+            });
+            console.log(barang);  
+            res.status(200).json({
+                status: "Success",
+                msg: "Berhasil menambahkan barang!",
+                data: barang
+            }).end();
         }
     }
     catch (err) {

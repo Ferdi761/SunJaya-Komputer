@@ -27,7 +27,7 @@ const {
    uploadBuktiBayar,
    daftarSemuaPesanan,
    umpanBalik
-} = require("../controllers/controllerPemesanan");
+} = require('../controllers/controllerPemesanan');
 
 const {
   daftarKonfirmasiPesanan,

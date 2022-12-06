@@ -44,7 +44,7 @@ module.exports = {
     });
 
     // barangid b nya kecil harusnya
-    await queryInterface.addColumn('FotoBarang', 'BarangId', {
+    await queryInterface.addColumn('FotoBarang', 'barangId', {
       type: Sequelize.INTEGER,
       references: {
         model: 'Barang',
@@ -120,7 +120,7 @@ module.exports = {
     await queryInterface.removeColumn('BarangYangDipesan', 'pemesananId', {});
     await queryInterface.removeColumn('Garansi', 'bydId', {});
     await queryInterface.removeColumn('Barang', 'jenisId', {});
-    await queryInterface.removeColumn('FotoBarang', 'BarangId', {});
+    await queryInterface.removeColumn('FotoBarang', 'barangId', {});
     await queryInterface.removeColumn('BuktiPembayaranGaransi', 'garansiId', {});
     await queryInterface.removeColumn('BuktiPembayaranPemesanan', 'pemesananId', {});
     await queryInterface.removeColumn('Pemesanan', 'akunId', {});

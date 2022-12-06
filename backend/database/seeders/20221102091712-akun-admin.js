@@ -10,8 +10,6 @@ module.exports = {
       passwordHashed: '$2a$10$k7B8S97lBPsZ79aQltywPu5oYfu6yJN6KIrnbrQcrFDocFToqKYQ2',
       izin: 'admin',
       noTelp: '081333337461',
-      createdAt: new Date(),
-      updatedAt: new Date()
     }], {});
   },
 
