@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       this.belongsTo(models.Barang, {
         foreignKeys: {
-          name: 'barangId'
+          name: 'BarangId'
         }
       });
     }

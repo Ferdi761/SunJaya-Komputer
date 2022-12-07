@@ -46,46 +46,9 @@ const tambahBarang = async (req, res) => {
         if (jenisId === null) {
             throw 'Jenis barang tidak ditemukan!';
         }
-        // else {
-        //     const createBarang = await FotoBarang.create({
-        //         foto: foto.toString(),
-        //         barangId: {
-        //             nama: namaBarang,
-        //             merek: merek,
-        //             berat: berat,
-        //             jenisId: jenisId.id,
-        //             harga: harga,
-        //             stok: stok,
-        //             deskripsi: deskripsi
-        //         }
-        //     },
-        //     {
-        //         include: [ Barang ]
-        //     });
-
-        //     console.log(createBarang);
-        // }
+        
         else {
-            // const data = {
-            //     nama: namaBarang,
-            //     merek,
-            //     berat,
-            //     jenisId: jenisId.id,
-            //     harga,
-            //     stok,
-            //     deskripsi
-            // };
-            // const barang = await Barang.create(data);
-            // console.log(barang);
             
-            // if (!barang) {
-            //     throw 'Gagal menambahkan barang!';
-            // }
-            // else {
-            //     // foto === null ? req.file : req.file.path;
-
-                
-            // }
             const barang = await FotoBarang.create({
                 foto: foto,
                 Barang: {
@@ -244,7 +207,7 @@ const hapusBarang = async (req, res) => {
         else {
             const fotoBarang = await FotoBarang.findOne({
                 where: {
-                    barangId: id
+                    BarangId: id
                 }
             });
             

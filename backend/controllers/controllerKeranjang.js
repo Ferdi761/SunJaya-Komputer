@@ -69,7 +69,7 @@ const tambahKeKeranjang = async (req, res) => {
         if (!barang) throw 'Barang tidak ditemukan!';
 
         const addToCart = await Keranjang.create({
-            barangId: barang.id,
+            BarangId: barang.id,
             akunId: user.id,
             jumlah: jumlah
         });
@@ -89,7 +89,7 @@ const tambahKeKeranjang = async (req, res) => {
 const hapusDariKeranjang = async (req, res) => {
     const logged = req.cookies.logged_account;
     const decoded = jwt.verify(logged, 'jwtAkunId');
-    const idBarang = req.body.barangId;
+    const { barangId } = req.body;
 
     try {
         const akun = await Akun.findByPk(decoded.id);
@@ -99,7 +99,7 @@ const hapusDariKeranjang = async (req, res) => {
             where: {
                 [Op.and]: [
                     { akunId: akun.id },
-                    { barangId: idBarang }
+                    { BarangId: idBarang }
                 ]
             }
         });

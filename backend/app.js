@@ -80,6 +80,7 @@ app.use("/api/pemesanan", routerPemesanan);
 const start = async () => {
     try {
         await sequelize.sync({ force: true });
+        await sequelize.sync({alter: true});
 
         await sequelize.authenticate();
         console.log("Connection has been established successfully.");

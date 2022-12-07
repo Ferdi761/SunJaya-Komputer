@@ -3,7 +3,8 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await queryInterface.addColumn('BarangYangDipesan', 'barangId', {
+    // barangid b nya kecil harusnya
+    await queryInterface.addColumn('BarangYangDipesan', 'BarangId', {
       type: Sequelize.INTEGER,
       references: {
         model: 'Barang',
@@ -30,7 +31,7 @@ module.exports = {
         key: 'id'
       },
       onUpdate: 'CASCADE',
-      onDelete: 'SET NULL'
+      onDelete: 'CASCADE'
     });
 
     await queryInterface.addColumn('Barang', 'jenisId', {
@@ -44,14 +45,14 @@ module.exports = {
     });
 
     // barangid b nya kecil harusnya
-    await queryInterface.addColumn('FotoBarang', 'barangId', {
+    await queryInterface.addColumn('FotoBarang', 'BarangId', {
       type: Sequelize.INTEGER,
       references: {
         model: 'Barang',
         key: 'id'
       },
       onUpdate: 'CASCADE',
-      onDelete: 'SET NULL'
+      onDelete: 'CASCADE'
     });
 
     await queryInterface.addColumn('BuktiPembayaranGaransi', 'garansiId', {
@@ -61,7 +62,7 @@ module.exports = {
         key: 'id'
       },
       onUpdate: 'CASCADE',
-      onDelete: 'SET NULL'
+      onDelete: 'CASCADE'
     });
 
     await queryInterface.addColumn('BuktiPembayaranPemesanan', 'pemesananId', {
@@ -71,7 +72,7 @@ module.exports = {
         key: 'id'
       },
       onUpdate: 'CASCADE',
-      onDelete: 'SET NULL'
+      onDelete: 'CASCADE'
     });
 
     await queryInterface.addColumn('Pemesanan', 'akunId', {
@@ -81,7 +82,7 @@ module.exports = {
         key: 'id'
       },
       onUpdate: 'CASCADE',
-      onDelete: 'SET NULL'
+      onDelete: 'CASCADE'
     });
 
     await queryInterface.addColumn('Chat', 'akunId', {
@@ -91,7 +92,7 @@ module.exports = {
         key: 'id'
       },
       onUpdate: 'CASCADE',
-      onDelete: 'SET NULL'
+      onDelete: 'CASCADE' // set null apa cascade ya ???
     });
 
     await queryInterface.addColumn('Keranjang', 'akunId', {
@@ -104,7 +105,7 @@ module.exports = {
       onDelete: 'CASCADE'
     });
 
-    await queryInterface.addColumn('Keranjang', 'barangId', {
+    await queryInterface.addColumn('Keranjang', 'BarangId', {
       type: Sequelize.INTEGER,
       references: {
         model: 'Barang',
@@ -116,16 +117,16 @@ module.exports = {
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.removeColumn('BarangYangDipesan', 'barangId', {});
+    await queryInterface.removeColumn('BarangYangDipesan', 'BarangId', {});
     await queryInterface.removeColumn('BarangYangDipesan', 'pemesananId', {});
     await queryInterface.removeColumn('Garansi', 'bydId', {});
     await queryInterface.removeColumn('Barang', 'jenisId', {});
-    await queryInterface.removeColumn('FotoBarang', 'barangId', {});
+    await queryInterface.removeColumn('FotoBarang', 'BarangId', {});
     await queryInterface.removeColumn('BuktiPembayaranGaransi', 'garansiId', {});
     await queryInterface.removeColumn('BuktiPembayaranPemesanan', 'pemesananId', {});
     await queryInterface.removeColumn('Pemesanan', 'akunId', {});
     await queryInterface.removeColumn('Chat', 'akunId', {});
     await queryInterface.removeColumn('Keranjang', 'akunId', {});
-    await queryInterface.removeColumn('Keranjang', 'barangId', {});
+    await queryInterface.removeColumn('Keranjang', 'BarangId', {});
   }
 };

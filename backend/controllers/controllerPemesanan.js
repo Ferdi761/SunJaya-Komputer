@@ -66,7 +66,7 @@ const checkout = async (req, res) => {
         Barangs.forEach((item) => {
             dataBYD.push({
                 pemesananId: buatPesanan.pemesananId,
-                BarangId: item.Keranjang.barangId,
+                BarangId: item.Keranjang.BarangId,
                 jumlah: item.Keranjang.jumlah,
                 totalHarga: item.harga * item.Keranjang.jumlah
             });
@@ -74,12 +74,21 @@ const checkout = async (req, res) => {
         console.log(dataBYD);
 
         // memasukkan data array ke tabel BarangYangDipesan
-        const barangYangDipesan = await BarangYangDipesan.bulkCreate(dataBYD);
+        await BarangYangDipesan.bulkCreate(dataBYD);
 
         waktuPembayaran = setTimeout(async() => {
             console.log("waktu habis, pemesanan dibatalkan!");
-            await buatPesanan.destroy();
-            await barangYangDipesan.destroy();
+            await BuktiPembayaranPemesanan.destroy({
+                where: {
+                    Pemesanan: {
+                        id: buatPesanan.pemesananId,
+                        akunId: userCart.id,
+                    }
+                }
+            });
+            // await BarangYangDipesan.destroy({
+
+            // });
             // await Keranjang.destroy({
             //     where: {
             //         akunId: decoded.id
@@ -87,13 +96,13 @@ const checkout = async (req, res) => {
             // });
             // set ulang array menjadi nol
             dataBYD = [];
-        }, 50000);
+        }, 20000);
         
         res.status(200).json({
             status: "success",
             message: 'Pesanan telah dibuat, menunggu pembayaran hingga 24 jam kedepan!',
             data: {
-                userCart,
+                Keranjang: userCart,
                 Pesanan: buatPesanan,
                 totalHarga: totalPriceItem,
                 statusPesanan: 'Bayar',
@@ -151,7 +160,7 @@ const uploadBuktiBayar = async (req, res) => {
         .json({
             status: 'success',
             message: 'Berhasil mengupload bukti pembayaran!',
-            statusPesanan: 'Menunggu konfirmasi',
+            statusPesanan: ['Semua', 'Menunggu konfirmasi'],
             data: buktiBayar
         })
         .end();
@@ -257,10 +266,15 @@ const umpanBalik = async (req, res) => {
     }
 };
 
+// const byd = async (req, res) => {
+
+// };
+
 module.exports = {
     checkout,
     pesananBelumBayar,
     uploadBuktiBayar,
     daftarSemuaPesanan,
-    umpanBalik
+    umpanBalik,
+    // byd // testing barang yang dipesan
 };

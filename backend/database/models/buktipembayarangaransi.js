@@ -22,8 +22,8 @@ module.exports = (sequelize, DataTypes) => {
     buktiPembayaran: DataTypes.STRING
   }, {
     sequelize,
-    modelName: 'BuktiPembayaranGaransi',
     tableName: 'BuktiPembayaranGaransi',
+    modelName: 'BuktiPembayaranGaransi'
   });
   return BuktiPembayaranGaransi;
 };

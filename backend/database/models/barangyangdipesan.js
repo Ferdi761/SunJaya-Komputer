@@ -23,8 +23,8 @@ module.exports = (sequelize, DataTypes) => {
     totalHarga: DataTypes.INTEGER
   }, {
     sequelize,
-    modelName: 'BarangYangDipesan',
     tableName: 'BarangYangDipesan',
+    modelName: 'BarangYangDipesan',
     timestamps: false
   });
   return BarangYangDipesan;

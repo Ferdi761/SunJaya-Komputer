@@ -20,20 +20,20 @@ module.exports = (sequelize, DataTypes) => {
       Barang.belongsToMany(models.Akun, {
         through: models.Keranjang,
         foreignKey: {
-          name: 'barangId'
+          name: 'BarangId'
         }
       });
 
       Barang.belongsToMany(models.Pemesanan, {
         through: models.BarangYangDipesan,
         foreignKeys: {
-          name: 'barangId'
+          name: 'BarangId'
         }
       });
 
       Barang.hasOne(models.FotoBarang, {
         foreignKeys: {
-          name: 'barangId'
+          name: 'BarangId'
         }
       });
     }
@@ -64,8 +64,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     sequelize,
-    modelName: 'Barang',
     tableName: 'Barang',
+    modelName: 'Barang',
     timestamps: false
   });
   return Barang;
