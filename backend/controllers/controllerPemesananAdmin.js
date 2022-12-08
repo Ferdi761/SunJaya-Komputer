@@ -11,6 +11,8 @@ const {
     Pemesanan
 } = require('../database/models');
 
+const { t } = require('./controllerPemesanan');
+
 const daftarKonfirmasiPesanan = async (req, res) => {
     try {
         const waitForConfirm = await BuktiPembayaranPemesanan.findAll({
@@ -105,6 +107,12 @@ const batalkanPesanan = async (req, res) => {
             else console.log('Berhasil menghapus foto dari penyimpanan lokal!');
         });
         
+        await t.rollback();
+        await BuktiPembayaranPemesanan.destroy({
+            where: {
+                pemesananId: pesanan.pemesananId
+            }
+        });
         await pesanan.destroy();
 
         res

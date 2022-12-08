@@ -26,7 +26,8 @@ const {
    checkout,
    uploadBuktiBayar,
    daftarSemuaPesanan,
-   umpanBalik
+   umpanBalik,
+   byd
 } = require('../controllers/controllerPemesanan');
 
 const {
@@ -40,6 +41,8 @@ routerPemesanan.route("/").get(loginCheck, daftarSemuaPesanan);
 routerPemesanan.route("/checkout").post(loginCheck, checkout);
 routerPemesanan.route("/checkout/upload/:id").put(loginCheck,upload.single('buktiPembayaran'), uploadBuktiBayar);
 routerPemesanan.route("/ulasan/:id").put(loginCheck, umpanBalik);
+// check only
+routerPemesanan.route("/byd/:pmsID").get(byd);
 
 
 // admin

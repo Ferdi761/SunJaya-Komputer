@@ -99,7 +99,7 @@ const hapusDariKeranjang = async (req, res) => {
             where: {
                 [Op.and]: [
                     { akunId: akun.id },
-                    { BarangId: idBarang }
+                    { BarangId: barangId }
                 ]
             }
         });

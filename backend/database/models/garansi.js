@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      // foto dari pembeli untuk biaya ongkir ke alamat pembeli
       Garansi.hasOne(models.BuktiPembayaranGaransi, {
         foreignKey: {
           name: 'garansiId'
@@ -25,18 +25,18 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Garansi.init({
-    jumlah: DataTypes.INTEGER,
-    keluhan: DataTypes.TEXT,
-    alamatTujuan: DataTypes.TEXT,
-    fotoPendukung: DataTypes.STRING,
-    diterima: DataTypes.BOOLEAN,
-    diproses: DataTypes.BOOLEAN,
-    disetujui: DataTypes.BOOLEAN,
-    jasaPengiriman: DataTypes.STRING,
-    biayaPengiriman: DataTypes.DECIMAL,
-    pembayaranLunas: DataTypes.BOOLEAN,
-    tanggalKirim: DataTypes.DATE,
-    tanggalSampai: DataTypes.DATE
+    jumlah: DataTypes.INTEGER, // jumlah brg yg rusak (diisi pembeli) req.body
+    keluhan: DataTypes.TEXT, // diisi pembeli (req.body)
+    alamatTujuan: DataTypes.TEXT, // diisi pembeli (req.body) menuju ke alamat penjual
+    fotoPendukung: DataTypes.STRING, // diisi pembeli (req.body)
+    diterima: DataTypes.BOOLEAN, // diisi penjual (onClick)
+    diproses: DataTypes.BOOLEAN, // diisi penjual (onClick)
+    disetujui: DataTypes.BOOLEAN, // diisi penjual (onClick)
+    jasaPengiriman: DataTypes.STRING, // diisi penjual (req.body)
+    biayaPengiriman: DataTypes.DECIMAL, // diisi penjual (req.body)
+    pembayaranLunas: DataTypes.BOOLEAN, // diisi penjual (req.body)
+    tanggalKirim: DataTypes.DATE, // diisi penjual (onClick)
+    tanggalSampai: DataTypes.DATE // diisi pembeli (onClick)
   }, {
     sequelize,
     modelName: 'Garansi',

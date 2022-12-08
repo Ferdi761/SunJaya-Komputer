@@ -52,7 +52,10 @@ module.exports = (sequelize, DataTypes) => {
     },
     stok: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
+      get() {
+        return this.getDataValue('stok');
+      }
     },
     merek: {
       type: DataTypes.STRING,

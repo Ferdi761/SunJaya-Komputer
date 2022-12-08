@@ -6,14 +6,16 @@ const {
     BarangYangDipesan,
     BuktiPembayaranPemesanan,
     Keranjang,
-    Pemesanan
+    Pemesanan,
+    sequelize
 } = require('../database/models');
 
+// setTimeout
 var waktuPembayaran;
+var t;
 
 const checkout = async (req, res) => {
     const logged = req.cookies.logged_account;
-    // decode cookie's token from jwt to get the id of Akun
     const decoded = jwt.verify(logged, 'jwtAkunId');
 
     const {
@@ -21,6 +23,8 @@ const checkout = async (req, res) => {
         jasaPengiriman,
         biayaPengiriman,
         } = req.body;
+
+    // transaction and export
 
     try {
         const userCart = await Akun.findOne({
@@ -30,7 +34,7 @@ const checkout = async (req, res) => {
         if (!userCart) throw 'Pengguna tidak ditemukan!';
         
         const { Barangs } = userCart;
-        // const barangYangDipesan = await BarangYangDipesan.create({
+        // const barang = await Barang.findAll({
 
         // });
 
@@ -71,21 +75,61 @@ const checkout = async (req, res) => {
                 totalHarga: item.harga * item.Keranjang.jumlah
             });
         });
-        console.log(dataBYD);
+        // console.log(dataBYD);
+        
+        // add transaction
+        // t = await sequelize.transaction();
+        dataBYD.forEach(async (item) => {
+            await BarangYangDipesan.create(item);
+            let barang = await Barang.findOne({
+                where: {
+                    id: item.BarangId
+                }
+            });
 
-        // memasukkan data array ke tabel BarangYangDipesan
-        await BarangYangDipesan.bulkCreate(dataBYD);
+            const stokBarang = await barang.getDataValue('stok');
+
+            let updateStok = stokBarang - item.jumlah;
+            if (updateStok < 0) throw 'Stok tidak mencukupi!';
+
+            await barang.update({
+                stok: updateStok
+            });
+        });
+        // await t.commit();
+
+        await Keranjang.destroy({
+            where: {
+                akunId: decoded.id
+            }
+        });
 
         waktuPembayaran = setTimeout(async() => {
             console.log("waktu habis, pemesanan dibatalkan!");
-            await BuktiPembayaranPemesanan.destroy({
-                where: {
-                    Pemesanan: {
-                        id: buatPesanan.pemesananId,
-                        akunId: userCart.id,
+            
+            dataBYD.forEach(async (item) => {
+                let barang = await Barang.findOne({
+                    where: {
+                        id: item.BarangId
                     }
-                }
+                });
+
+                const stokBarang = await barang.getDataValue('stok');
+                let updateStok = stokBarang + item.jumlah;
+
+                await barang.update({
+                    stok: updateStok
+                });
+
+                await BarangYangDipesan.destroy({
+                    where: {
+                        pemesananId: item.pemesananId,
+                        BarangId: item.BarangId
+                    }
+                });
             });
+
+            await buatPesanan.destroy();
             // await BarangYangDipesan.destroy({
 
             // });
@@ -96,7 +140,7 @@ const checkout = async (req, res) => {
             // });
             // set ulang array menjadi nol
             dataBYD = [];
-        }, 20000);
+        }, 50000);
         
         res.status(200).json({
             status: "success",
@@ -111,8 +155,12 @@ const checkout = async (req, res) => {
 
     }
     catch(err) {
+        // t.rollback();
         console.log(err);
-        res.status(500).json({ msg: err }).end();
+        res.status(500).json({
+            status: 'fail',
+            message: [err]
+        }).end();
     }
 };
 
@@ -154,6 +202,13 @@ const uploadBuktiBayar = async (req, res) => {
         await buktiBayar.update({
             buktiPembayaran: imagePath
         });
+        await Keranjang.destroy({
+            where: {
+                akunId: decoded.id
+            }
+        });
+
+        clearTimeout(waktuPembayaran);
 
         res
         .status(200)
@@ -175,12 +230,10 @@ const uploadBuktiBayar = async (req, res) => {
         })
         .end();
     }
-    clearTimeout(waktuPembayaran);
 };
 
 const daftarSemuaPesanan = async (req, res) => {
     const logged = req.cookies.logged_account;
-    // decode cookie's token from jwt to get the id of Akun
     const decoded = jwt.verify(logged, 'jwtAkunId');
 
     try {
@@ -266,9 +319,31 @@ const umpanBalik = async (req, res) => {
     }
 };
 
-// const byd = async (req, res) => {
+// untuk testing
+const byd = async (req, res) => {
+    const logged = req.cookies.logged_account;
+    const decoded = jwt.verify(logged, 'jwtAkunId');
+    const { pmsID } = req.params;
 
-// };
+    try {
+        const BYD = await BarangYangDipesan.findAll({
+            where: {
+                pemesananId: pmsID
+            }
+        });
+
+        res
+        .status(200)
+        .json({
+            status: 'success',
+            data: BYD
+        })
+        .end();
+    }
+    catch (err) {
+        console.log(err);
+    }
+};
 
 module.exports = {
     checkout,
@@ -276,5 +351,6 @@ module.exports = {
     uploadBuktiBayar,
     daftarSemuaPesanan,
     umpanBalik,
-    // byd // testing barang yang dipesan
+    byd, // testing barang yang dipesan
+    t
 };
