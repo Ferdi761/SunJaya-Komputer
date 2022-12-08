@@ -1,4 +1,6 @@
 const jwt = require("jsonwebtoken");
+const { Op } = require("sequelize");
+const fs = require("fs");
 
 const {
     Akun,
@@ -6,13 +8,13 @@ const {
     BarangYangDipesan,
     BuktiPembayaranPemesanan,
     Keranjang,
-    Pemesanan,
-    sequelize
+    Pemesanan
 } = require('../database/models');
 
+// array untuk data barang yang dipesan
+let dataBYD = [];
 // setTimeout
-var waktuPembayaran;
-var t;
+let waktuPembayaran;
 
 const checkout = async (req, res) => {
     const logged = req.cookies.logged_account;
@@ -66,7 +68,6 @@ const checkout = async (req, res) => {
         });
 
         // Memasukkan data barang yang dipesan dari Barangs ke dalam array untuk sementara
-        let dataBYD = [];
         Barangs.forEach((item) => {
             dataBYD.push({
                 pemesananId: buatPesanan.pemesananId,
@@ -155,7 +156,6 @@ const checkout = async (req, res) => {
 
     }
     catch(err) {
-        // t.rollback();
         console.log(err);
         res.status(500).json({
             status: 'fail',
@@ -341,9 +341,200 @@ const byd = async (req, res) => {
         .end();
     }
     catch (err) {
-        console.log(err);
+        console.log(err);res
+        .status(500)
+        .json({
+            status: 'fail',
+            message: [err]
+        })
+        .end();
     }
 };
+
+
+
+// ADMIN ONLY
+const daftarKonfirmasiPesanan = async (req, res) => {
+    try {
+        const waitForConfirm = await BuktiPembayaranPemesanan.findAll({
+            where: {
+                buktiPembayaran: {
+                    [Op.not]: null
+                }   
+            },
+            include: {
+                model: Pemesanan,
+                where: {
+                    pembayaranLunas: false
+                }
+            },
+        });
+
+        res
+        .status(200)
+        .json({
+            status: 'success',
+            data: waitForConfirm
+        }).end();
+    }
+    catch (err) {
+        console.log(err);
+        res
+        .status(500)
+        .json({
+            status: 'fail',
+            message: [err]
+        })
+        .end();
+    }
+};
+
+const konfirmasiPesanan = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const pesanan = await BuktiPembayaranPemesanan.findOne({
+            where: {
+                pemesananId: id
+            },
+            include: Pemesanan
+        });
+
+        await pesanan['Pemesanan'].update({
+                pembayaranLunas: true
+        });
+        await pesanan.save();
+
+        res
+        .status(200)
+        .json({
+            status: 'success',
+            message: 'Pembayaran berhasil dikonfirmasi!',
+            data: {
+                pesanan: pesanan,
+                statusPesanan: 'Diproses'
+            }
+        })
+        .end();
+    }
+    catch (err) {
+        console.log(err);
+        res
+        .status(500)
+        .json({
+            status: 'fail',
+            message: [err]
+        })
+        .end();
+    }
+};
+
+const batalkanPesanan = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const pesanan = await BuktiPembayaranPemesanan.findOne({
+            where: {
+                pemesananId: id
+            }
+        },
+        {
+            include: Pemesanan
+        });
+
+        // delete photo from local storage
+        fs.unlink(`${pesanan.buktiPembayaran}`, (err) => {
+            if (err) throw 'Gagal menghapus foto dari penyimpanan lokal!';
+            else console.log('Berhasil menghapus foto dari penyimpanan lokal!');
+        });
+        
+        // -----------------------------
+        // hapus dari db
+        dataBYD.forEach(async (item) => {
+            let barang = await Barang.findOne({
+                where: {
+                    id: item.BarangId
+                }
+            });
+
+            const stokBarang = await barang.getDataValue('stok');
+            let updateStok = stokBarang + item.jumlah;
+
+            await barang.update({
+                stok: updateStok
+            });
+
+            await BarangYangDipesan.destroy({
+                where: {
+                    pemesananId: item.pemesananId,
+                    BarangId: item.BarangId
+                }
+            });
+        });
+
+        await pesanan.destroy();
+        dataBYD = [];
+        // --------------------------------
+
+        res
+        .status(200)
+        .json({
+            status: 'success',
+            message: 'Pesanan berhasil dibatalkan!'
+        })
+        .end();
+    }
+    catch (err) {
+        console.log(err);
+        res
+        .status(500)
+        .json({
+            status: 'fail',
+            message: [err]
+        })
+        .end();
+    }
+};
+
+const  ubahStatusKirim = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const pesanan = await BuktiPembayaranPemesanan.findOne({
+            where: {
+                pemesananId: id
+            }
+        },
+        {
+            include: Pemesanan
+        });
+        
+        await pesanan.update({
+            Pemesanan: {
+                tanggalKirim: Date.now()
+            }
+        });
+
+        res
+        .status(200)
+        .json({
+            status: 'success',
+            message: 'Pesanan berhasil dibatalkan!'
+        })
+        .end();
+    }
+    catch (err) {
+        console.log(err);
+        res
+        .status(500)
+        .json({
+            status: 'fail',
+            message: [err]
+        })
+        .end();
+    }
+};
+
 
 module.exports = {
     checkout,
@@ -352,5 +543,10 @@ module.exports = {
     daftarSemuaPesanan,
     umpanBalik,
     byd, // testing barang yang dipesan
-    t
+
+    // ADMIN ONLY
+    daftarKonfirmasiPesanan,
+    konfirmasiPesanan,
+    batalkanPesanan,
+    ubahStatusKirim
 };

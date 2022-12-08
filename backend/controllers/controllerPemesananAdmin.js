@@ -11,8 +11,6 @@ const {
     Pemesanan
 } = require('../database/models');
 
-const { t } = require('./controllerPemesanan');
-
 const daftarKonfirmasiPesanan = async (req, res) => {
     try {
         const waitForConfirm = await BuktiPembayaranPemesanan.findAll({
