@@ -24,7 +24,7 @@ const checkout = async (req, res) => {
         alamatTujuan,
         jasaPengiriman,
         biayaPengiriman,
-        } = req.body;
+    } = req.body;
 
     // transaction and export
 
@@ -34,19 +34,19 @@ const checkout = async (req, res) => {
             include: Barang
         });
         if (!userCart) throw 'Pengguna tidak ditemukan!';
-        
+
         const { Barangs } = userCart;
         // const barang = await Barang.findAll({
 
         // });
 
         let totalPriceItem = 0;
-        for(let item in Barangs) {
+        for (let item in Barangs) {
             totalPriceItem += Barangs[item].harga * Barangs[item].Keranjang.jumlah;
         }
-        console.log('total price item: ' + typeof(totalPriceItem));
+        console.log('total price item: ' + typeof (totalPriceItem));
         let totalAll = totalPriceItem + parseFloat(biayaPengiriman);
-        console.log('total all: ' + typeof(totalAll));
+        console.log('total all: ' + typeof (totalAll));
         //const today = new Date();
         const oneDay = 86400000;
 
@@ -77,7 +77,7 @@ const checkout = async (req, res) => {
             });
         });
         // console.log(dataBYD);
-        
+
         // add transaction
         // t = await sequelize.transaction();
         dataBYD.forEach(async (item) => {
@@ -105,9 +105,9 @@ const checkout = async (req, res) => {
             }
         });
 
-        waktuPembayaran = setTimeout(async() => {
+        waktuPembayaran = setTimeout(async () => {
             console.log("waktu habis, pemesanan dibatalkan!");
-            
+
             dataBYD.forEach(async (item) => {
                 let barang = await Barang.findOne({
                     where: {
@@ -142,7 +142,7 @@ const checkout = async (req, res) => {
             // set ulang array menjadi nol
             dataBYD = [];
         }, 50000);
-        
+
         res.status(200).json({
             status: "success",
             message: 'Pesanan telah dibuat, menunggu pembayaran hingga 24 jam kedepan!',
@@ -155,7 +155,7 @@ const checkout = async (req, res) => {
         }).end();
 
     }
-    catch(err) {
+    catch (err) {
         console.log(err);
         res.status(500).json({
             status: 'fail',
@@ -164,17 +164,17 @@ const checkout = async (req, res) => {
     }
 };
 
- const pesananBelumBayar = async (req, res) => {
+const pesananBelumBayar = async (req, res) => {
     const logged = req.cookies.logged_account;
     const decoded = jwt.verify(logged, 'jwtAkunId');
 
     try {
-        
+
     }
     catch (err) {
 
     }
- };
+};
 
 const uploadBuktiBayar = async (req, res) => {
     const logged = req.cookies.logged_account;
@@ -195,9 +195,9 @@ const uploadBuktiBayar = async (req, res) => {
                 pemesananId: id
             }
         },
-        {
-            include: Pemesanan
-        });
+            {
+                include: Pemesanan
+            });
 
         await buktiBayar.update({
             buktiPembayaran: imagePath
@@ -211,24 +211,24 @@ const uploadBuktiBayar = async (req, res) => {
         clearTimeout(waktuPembayaran);
 
         res
-        .status(200)
-        .json({
-            status: 'success',
-            message: 'Berhasil mengupload bukti pembayaran!',
-            statusPesanan: ['Semua', 'Menunggu konfirmasi'],
-            data: buktiBayar
-        })
-        .end();
+            .status(200)
+            .json({
+                status: 'success',
+                message: 'Berhasil mengupload bukti pembayaran!',
+                statusPesanan: ['Semua', 'Menunggu konfirmasi'],
+                data: buktiBayar
+            })
+            .end();
     }
-    catch(err) {
+    catch (err) {
         console.log(err);
         res
-        .status(500)
-        .json({
-            status: 'fail',
-            message: [err]
-        })
-        .end();
+            .status(500)
+            .json({
+                status: 'fail',
+                message: [err]
+            })
+            .end();
     }
 };
 
@@ -240,35 +240,35 @@ const daftarSemuaPesanan = async (req, res) => {
         const listPesanan = await BuktiPembayaranPemesanan.findAll({
             include: Pemesanan
         },
-        {
-            where: {
-                Pemesanan: {
-                    akunId: decoded.id
+            {
+                where: {
+                    Pemesanan: {
+                        akunId: decoded.id
+                    }
                 }
-            }
-        });
+            });
 
         console.log(listPesanan);
         res
-        .status(200)
-        .json({
-            status: 'success',
-            data: {
-                pesanan: listPesanan,
-                statusPesanan: 'Semua'
-            }
-        })
-        .end();
+            .status(200)
+            .json({
+                status: 'success',
+                data: {
+                    pesanan: listPesanan,
+                    statusPesanan: 'Semua'
+                }
+            })
+            .end();
     }
     catch (err) {
         console.log(err);
         res
-        .status(500)
-        .json({
-            status: 'fail',
-            message: [err]
-        })
-        .end();
+            .status(500)
+            .json({
+                status: 'fail',
+                message: [err]
+            })
+            .end();
     }
 };
 
@@ -285,9 +285,9 @@ const umpanBalik = async (req, res) => {
                 pemesananId: id
             }
         },
-        {
-            include: Pemesanan
-        });
+            {
+                include: Pemesanan
+            });
 
         await pesanan.update({
             Pemesanan: {
@@ -297,25 +297,25 @@ const umpanBalik = async (req, res) => {
         });
 
         res
-        .status(200)
-        .json({
-            status: 'success',
-            message: 'Berhasil menambahkan ulasan!',
-            data: {
-                pesanan: pesanan,
-                statusPesanan: 'Selesai'
-            }
-        })
+            .status(200)
+            .json({
+                status: 'success',
+                message: 'Berhasil menambahkan ulasan!',
+                data: {
+                    pesanan: pesanan,
+                    statusPesanan: 'Selesai'
+                }
+            })
     }
     catch (err) {
         console.log(err);
         res
-        .status(500)
-        .json({
-            status: 'fail',
-            message: [err]
-        })
-        .end();
+            .status(500)
+            .json({
+                status: 'fail',
+                message: [err]
+            })
+            .end();
     }
 };
 
@@ -333,21 +333,21 @@ const byd = async (req, res) => {
         });
 
         res
-        .status(200)
-        .json({
-            status: 'success',
-            data: BYD
-        })
-        .end();
+            .status(200)
+            .json({
+                status: 'success',
+                data: BYD
+            })
+            .end();
     }
     catch (err) {
-        console.log(err);res
-        .status(500)
-        .json({
-            status: 'fail',
-            message: [err]
-        })
-        .end();
+        console.log(err); res
+            .status(500)
+            .json({
+                status: 'fail',
+                message: [err]
+            })
+            .end();
     }
 };
 
@@ -360,7 +360,7 @@ const daftarKonfirmasiPesanan = async (req, res) => {
             where: {
                 buktiPembayaran: {
                     [Op.not]: null
-                }   
+                }
             },
             include: {
                 model: Pemesanan,
@@ -371,21 +371,21 @@ const daftarKonfirmasiPesanan = async (req, res) => {
         });
 
         res
-        .status(200)
-        .json({
-            status: 'success',
-            data: waitForConfirm
-        }).end();
+            .status(200)
+            .json({
+                status: 'success',
+                data: waitForConfirm
+            }).end();
     }
     catch (err) {
         console.log(err);
         res
-        .status(500)
-        .json({
-            status: 'fail',
-            message: [err]
-        })
-        .end();
+            .status(500)
+            .json({
+                status: 'fail',
+                message: [err]
+            })
+            .end();
     }
 };
 
@@ -401,31 +401,31 @@ const konfirmasiPesanan = async (req, res) => {
         });
 
         await pesanan['Pemesanan'].update({
-                pembayaranLunas: true
+            pembayaranLunas: true
         });
         await pesanan.save();
 
         res
-        .status(200)
-        .json({
-            status: 'success',
-            message: 'Pembayaran berhasil dikonfirmasi!',
-            data: {
-                pesanan: pesanan,
-                statusPesanan: 'Diproses'
-            }
-        })
-        .end();
+            .status(200)
+            .json({
+                status: 'success',
+                message: 'Pembayaran berhasil dikonfirmasi!',
+                data: {
+                    pesanan: pesanan,
+                    statusPesanan: 'Diproses'
+                }
+            })
+            .end();
     }
     catch (err) {
         console.log(err);
         res
-        .status(500)
-        .json({
-            status: 'fail',
-            message: [err]
-        })
-        .end();
+            .status(500)
+            .json({
+                status: 'fail',
+                message: [err]
+            })
+            .end();
     }
 };
 
@@ -438,16 +438,16 @@ const batalkanPesanan = async (req, res) => {
                 pemesananId: id
             }
         },
-        {
-            include: Pemesanan
-        });
+            {
+                include: Pemesanan
+            });
 
         // delete photo from local storage
         fs.unlink(`${pesanan.buktiPembayaran}`, (err) => {
             if (err) throw 'Gagal menghapus foto dari penyimpanan lokal!';
             else console.log('Berhasil menghapus foto dari penyimpanan lokal!');
         });
-        
+
         // -----------------------------
         // hapus dari db
         dataBYD.forEach(async (item) => {
@@ -477,26 +477,26 @@ const batalkanPesanan = async (req, res) => {
         // --------------------------------
 
         res
-        .status(200)
-        .json({
-            status: 'success',
-            message: 'Pesanan berhasil dibatalkan!'
-        })
-        .end();
+            .status(200)
+            .json({
+                status: 'success',
+                message: 'Pesanan berhasil dibatalkan!'
+            })
+            .end();
     }
     catch (err) {
         console.log(err);
         res
-        .status(500)
-        .json({
-            status: 'fail',
-            message: [err]
-        })
-        .end();
+            .status(500)
+            .json({
+                status: 'fail',
+                message: [err]
+            })
+            .end();
     }
 };
 
-const  ubahStatusKirim = async (req, res) => {
+const ubahStatusKirim = async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -505,10 +505,10 @@ const  ubahStatusKirim = async (req, res) => {
                 pemesananId: id
             }
         },
-        {
-            include: Pemesanan
-        });
-        
+            {
+                include: Pemesanan
+            });
+
         await pesanan.update({
             Pemesanan: {
                 tanggalKirim: Date.now()
@@ -516,23 +516,27 @@ const  ubahStatusKirim = async (req, res) => {
         });
 
         res
-        .status(200)
-        .json({
-            status: 'success',
-            message: 'Pesanan berhasil dibatalkan!'
-        })
-        .end();
+            .status(200)
+            .json({
+                status: 'success',
+                message: 'Pesanan sedang dikirim!'
+            })
+            .end();
     }
     catch (err) {
         console.log(err);
         res
-        .status(500)
-        .json({
-            status: 'fail',
-            message: [err]
-        })
-        .end();
+            .status(500)
+            .json({
+                status: 'fail',
+                message: [err]
+            })
+            .end();
     }
+};
+
+const pesananSampai = async (req, res) => {
+
 };
 
 
@@ -548,5 +552,6 @@ module.exports = {
     daftarKonfirmasiPesanan,
     konfirmasiPesanan,
     batalkanPesanan,
-    ubahStatusKirim
+    ubahStatusKirim,
+    pesananSampai
 };
