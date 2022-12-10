@@ -7,6 +7,7 @@ type User = {
   izin: string
   noTelp: string
   token: string
+  id: number
 }
 
 interface State {
