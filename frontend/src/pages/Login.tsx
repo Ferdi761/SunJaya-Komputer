@@ -55,6 +55,7 @@ const Login = () => {
             id='email'
             aria-label='email'
             placeholder='Email'
+            autoComplete='email'
             value={akun.email}
             onChange={(e) =>
               setAkun({ ...akun, email: e.target.value })
@@ -70,6 +71,7 @@ const Login = () => {
             type='password'
             aria-label='password'
             placeholder='password'
+            autoComplete='current-password'
             value={akun.password}
             onChange={(e) =>
               setAkun({ ...akun, password: e.target.value })
