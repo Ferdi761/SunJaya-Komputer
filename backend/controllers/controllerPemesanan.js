@@ -131,14 +131,7 @@ const checkout = async (req, res) => {
             });
 
             await buatPesanan.destroy();
-            // await BarangYangDipesan.destroy({
 
-            // });
-            // await Keranjang.destroy({
-            //     where: {
-            //         akunId: decoded.id
-            //     }
-            // });
             // set ulang array menjadi nol
             dataBYD = [];
         }, 50000);
@@ -161,18 +154,6 @@ const checkout = async (req, res) => {
             status: 'fail',
             message: [err]
         }).end();
-    }
-};
-
-const pesananBelumBayar = async (req, res) => {
-    const logged = req.cookies.logged_account;
-    const decoded = jwt.verify(logged, 'jwtAkunId');
-
-    try {
-
-    }
-    catch (err) {
-
     }
 };
 
@@ -232,46 +213,6 @@ const uploadBuktiBayar = async (req, res) => {
     }
 };
 
-const daftarSemuaPesanan = async (req, res) => {
-    const logged = req.cookies.logged_account;
-    const decoded = jwt.verify(logged, 'jwtAkunId');
-
-    try {
-        const listPesanan = await BuktiPembayaranPemesanan.findAll({
-            include: Pemesanan
-        },
-            {
-                where: {
-                    Pemesanan: {
-                        akunId: decoded.id
-                    }
-                }
-            });
-
-        console.log(listPesanan);
-        res
-            .status(200)
-            .json({
-                status: 'success',
-                data: {
-                    pesanan: listPesanan,
-                    statusPesanan: 'Semua'
-                }
-            })
-            .end();
-    }
-    catch (err) {
-        console.log(err);
-        res
-            .status(500)
-            .json({
-                status: 'fail',
-                message: [err]
-            })
-            .end();
-    }
-};
-
 const umpanBalik = async (req, res) => {
     const { id } = req.params;
     const {
@@ -303,7 +244,7 @@ const umpanBalik = async (req, res) => {
                 message: 'Berhasil menambahkan ulasan!',
                 data: {
                     pesanan: pesanan,
-                    statusPesanan: 'Selesai'
+                    statusPesanan: ['Semua', 'Selesai']
                 }
             })
     }
@@ -354,6 +295,8 @@ const byd = async (req, res) => {
 
 
 // ADMIN ONLY
+
+// Lihat pesanan yang belum dikonfirmasi tetapi sudah dibayar pelanggan
 const daftarKonfirmasiPesanan = async (req, res) => {
     try {
         const waitForConfirm = await BuktiPembayaranPemesanan.findAll({
@@ -389,6 +332,7 @@ const daftarKonfirmasiPesanan = async (req, res) => {
     }
 };
 
+// konfirmasi pesanan pelanggan
 const konfirmasiPesanan = async (req, res) => {
     const { id } = req.params;
 
@@ -429,6 +373,7 @@ const konfirmasiPesanan = async (req, res) => {
     }
 };
 
+// Membatalkan pesanan pelanggan
 const batalkanPesanan = async (req, res) => {
     const { id } = req.params;
 
@@ -496,18 +441,19 @@ const batalkanPesanan = async (req, res) => {
     }
 };
 
+// Mengubah status pesanan menjadi dikirim
 const ubahStatusKirim = async (req, res) => {
     const { id } = req.params;
 
     try {
         const pesanan = await BuktiPembayaranPemesanan.findOne({
-            where: {
-                pemesananId: id
-            }
-        },
-            {
-                include: Pemesanan
-            });
+            include: [{
+                model: Pemesanan,
+                where: {
+                    id: id
+                }
+            }]   
+        });
 
         await pesanan.update({
             Pemesanan: {
@@ -515,11 +461,16 @@ const ubahStatusKirim = async (req, res) => {
             }
         });
 
+        console.log(JSON.stringify(pesanan.Pemesanan.tanggalKirim));
+        // console.log( + 240000);
+
         res
             .status(200)
             .json({
                 status: 'success',
-                message: 'Pesanan sedang dikirim!'
+                message: 'Pesanan sedang dikirim!',
+                statusPesanan: ['Semua, Dikirim'],
+                data: pesanan
             })
             .end();
     }
@@ -535,16 +486,232 @@ const ubahStatusKirim = async (req, res) => {
     }
 };
 
-const pesananSampai = async (req, res) => {
+// Admin konfirmasi pesanan sudah sampai ke alamat pelanggan
+const konfirmasiPesananSampai = async (req, res) => {
+    const { id } = req.params;
 
+    try {
+        const pesanan = await BuktiPembayaranPemesanan.findOne({
+            where: {
+                pemesananId: id
+            }
+        },
+        {
+            include: Pemesanan
+        });
+
+        pesanan.update({
+            Pemesanan: {
+                tanggalSampai: Date.now()
+            }
+        });
+    }
+    catch (err) {
+        console.log(err);
+        res
+            .status(500)
+            .json({
+                status: 'fail',
+                message: [err]
+            })
+            .end();
+    }
+};
+
+
+// lihat pesanan berdasarkan status pesanan (untuk pelanggan)
+
+// Pesanan dengan semua status
+const daftarSemuaPesanan = async (req, res) => {
+    const logged = req.cookies.logged_account;
+    const decoded = jwt.verify(logged, 'jwtAkunId');
+
+    try {
+        const listPesanan = await BuktiPembayaranPemesanan.findAll({
+            include: Pemesanan
+        },
+        {
+            where: {
+                Pemesanan: {
+                    akunId: decoded.id
+                }
+            }
+        });
+
+        //console.log(listPesanan.Pemesanan.);
+        res
+            .status(200)
+            .json({
+                status: 'success',
+                data: {
+                    statusPesanan: ['Semua'],
+                    pesanan: listPesanan
+                }
+            })
+            .end();
+    }
+    catch (err) {
+        console.log(err);
+        res
+            .status(500)
+            .json({
+                status: 'fail',
+                message: [err]
+            })
+            .end();
+    }
+};
+
+// Pesanan belum dibayar
+const pesananBelumBayar = async (req, res) => {
+    const logged = req.cookies.logged_account;
+    const decoded = jwt.verify(logged, 'jwtAkunId');
+
+    try {
+        const listPesanan = await BuktiPembayaranPemesanan.findAll({
+            where: {
+                buktiPembayaran: {
+                    [Op.is]: null
+                },
+                Pemesanan: {
+                    akunId: decoded.id
+                }
+            }
+        },
+        {
+            include: Pemesanan
+        });
+
+        res
+            .status(200)
+            .json({
+                status: 'success',
+                message: 'Menunggu pembayaran pesanan!',
+                data: {
+                    statusPesanan: ['Semua', 'Belum_Bayar'],
+                    pesanan: listPesanan
+                }
+            })
+            .end();
+    }
+    catch (err) {
+        console.log(err);
+        res
+            .status(500)
+            .json({
+                status: 'fail',
+                message: [err]
+            })
+            .end();
+    }
+};
+
+// Pesanan diproses
+const pesananDiproses = async (req, res) => {
+    const logged = req.cookies.logged_account;
+    const decoded = jwt.verify(logged, 'jwtAkunId');
+
+    try {
+        const listPesanan = await BuktiPembayaranPemesanan.findAll({
+            where: {
+                buktiPembayaran: {
+                    [Op.not]: null
+                },
+                Pemesanan: {
+                    akunId: decoded.id,
+                    pembayaranLunas: {
+                        [Op.is]: true
+                    },
+                    tanggalKirim: {
+                        [Op.is]: null
+                    }
+                }
+                
+                
+            }
+        },
+        {
+            include: Pemesanan
+        });
+
+        res
+            .status(200)
+            .json({
+                status: 'success',
+                message: 'Menunggu pembayaran pesanan!',
+                data: {
+                    statusPesanan: ['Semua', 'Belum_Bayar'],
+                    pesanan: listPesanan
+                }
+            })
+            .end();
+    }
+    catch (err) {
+        console.log(err);
+        res
+            .status(500)
+            .json({
+                status: 'fail',
+                message: [err]
+            })
+            .end();
+    }
+};
+
+// Pesanan dikirim
+const pesananDikirim = async (req, res) => {
+    const logged = req.cookies.logged_account;
+    const decoded = jwt.verify(logged, 'jwtAkunId');
+
+    try {
+        const listPesanan = await BuktiPembayaranPemesanan.findAll({
+            where: {
+                buktiPembayaran: {
+                    [Op.not]: null
+                },
+                Pemesanan: {
+                    akunId: decoded.id,
+                    pembayaranLunas: {
+                        [Op.is]: true
+                    },
+                    tanggalKirim: {
+                        [Op.not]: null
+                    }
+                }
+            }
+        },
+        {
+            include: Pemesanan
+        });
+
+        res
+            .status(200)
+            .json({
+                status: 'success',
+                message: 'Pesanan sedang dikirim!',
+                data: {
+                    statusPesanan: ['Semua', 'Dikirim'],
+                    pesanan: listPesanan
+                }
+            })
+            .end();
+    }
+    catch (err) {
+        console.log(err);
+        res
+            .status(500)
+            .json({
+                status: 'fail',
+                message: [err]
+            })
+            .end();
+    }
 };
 
 
 module.exports = {
     checkout,
-    pesananBelumBayar,
     uploadBuktiBayar,
-    daftarSemuaPesanan,
     umpanBalik,
     byd, // testing barang yang dipesan
 
@@ -553,5 +720,11 @@ module.exports = {
     konfirmasiPesanan,
     batalkanPesanan,
     ubahStatusKirim,
-    pesananSampai
+    konfirmasiPesananSampai,
+
+    // tampilan pesanan untuk pelanggan
+    daftarSemuaPesanan,
+    pesananBelumBayar,
+    pesananDiproses,
+    pesananDikirim,
 };

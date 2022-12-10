@@ -67,15 +67,15 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // express router middleware
-app.use("/api/signup", routerSignup);
-app.use("/api/login", routerLogin);
-app.use("/api/barang", routerBarang);
-app.use("/api/logout", routerLogout);
-app.use("/api/akun", routerAkun);
-app.use("/api/jenis", routerJenisBarang);
-app.use("/api/rekening", routerRekening);
-app.use("/api/keranjang", routerKeranjang);
-app.use("/api/pemesanan", routerPemesanan);
+app.use("/api/signup/", routerSignup);
+app.use("/api/login/", routerLogin);
+app.use("/api/barang/", routerBarang);
+app.use("/api/logout/", routerLogout);
+app.use("/api/akun/", routerAkun);
+app.use("/api/jenis/", routerJenisBarang);
+app.use("/api/rekening/", routerRekening);
+app.use("/api/keranjang/", routerKeranjang);
+app.use("/api/pemesanan/", routerPemesanan);
 
 const start = async () => {
     try {

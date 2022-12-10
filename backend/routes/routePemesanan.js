@@ -23,19 +23,18 @@ const upload = multer({ storage: storage });
 const loginCheck = require('../middlewares/loginCheck');
 const isAdmin = require('../middlewares/isAdmin');
 const {
-   checkout,
-   uploadBuktiBayar,
-   daftarSemuaPesanan,
-   umpanBalik,
-   byd
-} = require('../controllers/controllerPemesanan');
+  checkout,
+  uploadBuktiBayar,
+  daftarSemuaPesanan,
+  umpanBalik,
+  byd,
 
-const {
+  // ADMIN ONLY
   daftarKonfirmasiPesanan,
   konfirmasiPesanan,
   batalkanPesanan,
   ubahStatusKirim
-} = require("../controllers/controllerPemesananAdmin");
+} = require('../controllers/controllerPemesanan');
 
 routerPemesanan.route("/").get(loginCheck, daftarSemuaPesanan);
 routerPemesanan.route("/checkout").post(loginCheck, checkout);
@@ -45,7 +44,7 @@ routerPemesanan.route("/ulasan/:id").put(loginCheck, umpanBalik);
 routerPemesanan.route("/byd/:pmsID").get(byd);
 
 
-// admin
+// ADMIN ONLY
 routerPemesanan.route("/admin/konfirmasi").get(loginCheck, isAdmin, daftarKonfirmasiPesanan);
 routerPemesanan.route("/admin/konfirmasi/:id").post(loginCheck, isAdmin, konfirmasiPesanan);
 routerPemesanan.route("/admin/batalkan/:id").delete(loginCheck, isAdmin, batalkanPesanan);
