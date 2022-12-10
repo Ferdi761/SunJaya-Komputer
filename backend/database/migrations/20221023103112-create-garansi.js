@@ -10,15 +10,19 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       jumlah: {
+        allowNull: false,
         type: Sequelize.INTEGER
       },
       keluhan: {
+        allowNull: false,
         type: Sequelize.TEXT
       },
       alamatTujuan: {
+        allowNull: false,
         type: Sequelize.TEXT
       },
       fotoPendukung: {
+        allowNull: false,
         type: Sequelize.STRING
       },
       diterima: {
