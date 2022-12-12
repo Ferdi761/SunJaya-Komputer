@@ -50,7 +50,7 @@ const login = async (req, res) => {
     // }
   } catch (err) {
     console.log(err)
-    res.status(500).json({ messasge: err })
+    res.status(500).json({ status: 'error', message: err.message })
   }
 }
 
