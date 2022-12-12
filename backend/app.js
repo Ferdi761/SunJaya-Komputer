@@ -11,14 +11,16 @@ const Sequelize = require('sequelize')
 const { Server } = require('socket.io')
 const port = process.env.PORT || 8000
 
-// const { ChatSocketController } = require("./controllers/ChatSocketController");
+const {
+  ChatSocketController,
+} = require('./controllers/ChatSocketController')
 
-// const socketIO = new Server(server, {
-//     cors: {
-//         origin: "*"
-//     }
-// });
-// const chatSocketController = new ChatSocketController(socketIO);
+const socketIO = new Server(server, {
+  cors: {
+    origin: '*',
+  },
+})
+const chatSocketController = new ChatSocketController(socketIO)
 
 // middleware
 app.use(cookieParser())
