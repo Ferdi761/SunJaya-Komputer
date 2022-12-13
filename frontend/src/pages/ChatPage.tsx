@@ -5,39 +5,9 @@ import { ChatSocketController } from '../util/ChatSocketController'
 import { useStore } from '../util/useStore'
 
 const ChatPage = () => {
-  const chatSocketController = new ChatSocketController(
-    io('http://localhost:8000').connect()
-  )
 
   const [chat, setChat] = useState('')
   const { user } = useStore()
-
-  chatSocketController.addCallback(
-    'message self read',
-    function (message: string) {
-      let newChat = document.createElement('p')
-      newChat.innerHTML = 'self: ' + message
-      document.getElementById('chats')?.appendChild(newChat)
-    }
-  )
-
-  chatSocketController.addCallback(
-    'message self unread',
-    function (message: string) {
-      let newChat = document.createElement('p')
-      newChat.innerHTML = 'self: ' + message
-      document.getElementById('chats')?.appendChild(newChat)
-    }
-  )
-
-  chatSocketController.addCallback(
-    'message to',
-    function (message: string) {
-      let newChat = document.createElement('p')
-      newChat.innerHTML = 'to: ' + message
-      document.getElementById('chats')?.appendChild(newChat)
-    }
-  )
 
   if (!user) {
     return (
@@ -52,16 +22,61 @@ const ChatPage = () => {
       </div>
     )
   } else {
+    
+    const chatSocketController = new ChatSocketController(
+      io('http://localhost:8000').connect()
+    )
+
+    chatSocketController.addCallback(
+      'message self read',
+      function (message: string) {
+        // munculkan teks yang dikirim sendiri dengan penanda sudah di read
+      }
+    )
+  
+    chatSocketController.addCallback(
+      'message self unread',
+      function (message: string) {
+        // munculkan teks yang dikirim sendiri dengan penanda belum di read
+      }
+    )
+  
+    chatSocketController.addCallback(
+      'message to',
+      function (message: string) {
+        // munculkan teks yang dikirim dari toko (lawan bicara)
+      }
+    )
+  
+    chatSocketController.addCallback(
+      'aktif',
+      function (message: string) {
+        // mengganti tanda apakah ada karyawan toko yang aktif atau tidak
+        let aktif = document.getElementById('aktif') as HTMLParagraphElement
+        aktif.innerHTML = message
+      }
+    )
+  
+    chatSocketController.addCallback(
+      'readall',
+      function (message: string) {
+        // buat semua chat dari toko ditandai sudah di read
+      }
+    )
+
     chatSocketController.init(user.id)
     chatSocketController.auth(user.izin)
-    chatSocketController.read(99999999)
+    chatSocketController.read(1)
+    // read pada pelanggan hanya untuk menandakan pelanggan membuka chat, nilainya dibuat menjadi 1
+    // karena nilai apapun yang lebih dari 0 (>0) menandakan pelanggan membuka chat.
+
     return (
       <div className='bg-primary h-screen text-white flex justify-center'>
         <div className='w-2/3 bg-black my-10 border border-dark'>
           <div className='flex flex-col h-full'>
             <div className='flex flex-col py-5 px-10 border-b border-dark'>
               <p className='font-bold text-2xl'>Sun Jaya Komputer</p>
-              <p>Aktif</p>
+              <p id="aktif">Aktif</p>
             </div>
             <div id='chats' className='flex-grow'></div>
             <form

@@ -4,7 +4,10 @@ import { io } from 'socket.io-client'
 import { ChatSocketController } from '../../../util/ChatSocketController'
 import { useStore } from '../../../util/useStore'
 
+
+
 const ChatPage = () => {
+
   const [chat, setChat] = useState('')
   const { user } = useStore()
 
@@ -28,33 +31,77 @@ const ChatPage = () => {
     chatSocketController.addCallback(
       'message self read',
       function (message: string) {
-        let newChat = document.createElement('p')
-        newChat.innerHTML = 'self: ' + message
-        document.getElementById('chats')?.appendChild(newChat)
+        // munculkan teks yang dikirim sendiri dengan penanda sudah di read
       }
     )
 
     chatSocketController.addCallback(
       'message self unread',
       function (message: string) {
-        let newChat = document.createElement('p')
-        newChat.innerHTML = 'self: ' + message
-        document.getElementById('chats')?.appendChild(newChat)
+        // munculkan teks yang dikirim sendiri dengan penanda belum di read
       }
     )
 
     chatSocketController.addCallback(
       'message to',
       function (message: string) {
-        let newChat = document.createElement('p')
-        newChat.innerHTML = 'to: ' + message
-        document.getElementById('chats')?.appendChild(newChat)
+        // munculkan teks yang dikirim dari pelanggan (lawan bicara)
+      }
+    )
+
+    chatSocketController.addCallback(
+      'aktif',
+      function (message: string) {
+        // mengganti tanda apakah pelanggan aktif atau tidak
+        let aktif = document.getElementById('aktif') as HTMLParagraphElement
+        aktif.innerHTML = message
+      }
+    )
+  
+    chatSocketController.addCallback(
+      'readall',
+      function (message: string) {
+        // buat semua chat dari pelanggan ditandai sudah di read
+      }
+    )
+  
+    chatSocketController.addCallback(
+      'denied',
+      function (message: string) {
+        // buat tulisan kalau chat tidak bisa dibaca karena sudah ada karyawan lain yang buka chat ini
+      }
+    )
+  
+    chatSocketController.addCallback(
+      'readed',
+      function (message: string) {
+        let customerID = parseInt(message);
+        // tandai list chat pelanggan dengan ID: customerID sudah di read (sudah ada karyawan yang membuka chat ini)
+      }
+    )
+
+    chatSocketController.addCallback(
+      'coming unread',
+      function (message: string) {
+        let customerID = parseInt(message);
+        // perbarui list chat pelanggan karena pelanggan dengan ID: customerID mengirim chat baru namun belum dibaca
+      }
+    )
+
+    chatSocketController.addCallback(
+      'coming read',
+      function (message: string) {
+        let customerID = parseInt(message);
+        // perbarui list chat pelanggan karena pelanggan dengan ID: customerID mengirim chat baru dan telah dibaca
       }
     )
 
     chatSocketController.init(user.id)
     chatSocketController.auth(user.izin)
-    chatSocketController.read(99999999)
+    chatSocketController.read(-1)
+    // pada admin dan karyawan, read itu dibutuhkan untuk menandakan chat pelanggan mana yang ingin dibuka
+    // parameternya adalah ID pelanggan yang mau dibuka chatnya
+    // kalau nilainya -1 artinya tidak membuka satupun chat pelanggan 
 
     return (
       <div className='bg-primary h-screen text-white flex justify-center'>
@@ -62,7 +109,7 @@ const ChatPage = () => {
           <div className='flex flex-col h-full'>
             <div className='flex flex-col py-5 px-10 border-b border-dark'>
               <p className='font-bold text-2xl'>Sun Jaya Komputer</p>
-              <p>Aktif</p>
+              <p id="aktif">Aktif</p>
             </div>
             <div id='chats' className='flex-grow'></div>
             <form

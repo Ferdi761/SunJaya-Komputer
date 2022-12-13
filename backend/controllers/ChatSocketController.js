@@ -32,6 +32,12 @@ class ChatSocketController {
                 let socketData = that.socketConnectionData.get(socket);
                 if (message == "admin" || message == "karyawan") {
                     socketData.auth = EMPLOYEE;
+
+                    that.socketConnectionData.forEach(function(data, socket) {
+                        if (data.auth == CUSTOMER) {
+                            socket.emit("aktif", "Aktif");
+                        }
+                    });
                 }
                 else {
                     socketData.auth = CUSTOMER;
@@ -88,6 +94,8 @@ class ChatSocketController {
                             // kalau room tidak ada maka dibuat terlebih dahulu
                             that.room.set(read, {employee: socket, customer: null});
                             socketData.read = read;
+
+                            socket.emit("aktif", "Tidak Aktif");
                         }
                         else if (roomData.employee == null) {
                             // bila room sudah ada dan belum ada karyawan yang membuka chat
@@ -96,7 +104,13 @@ class ChatSocketController {
                             socketData.read = read;
 
                             roomData.customer.emit("readall", "readall");
+
+                            roomData.employee.emit("aktif", "Aktif");
                         }
+                        else {
+                            socket.emit("denied", "denied");
+                        }
+
                         that.employeeWhoOpenChatMenu.add(socket);
                     }
                     else {
@@ -120,10 +134,19 @@ class ChatSocketController {
                             socketData.read = 0;
 
                             roomData.employee.emit("readall", "readall");
-                            // sedang dalam perbaikan
+                            // semua chat sudah dibaca oleh salah satu karyawan
                             that.employeeWhoOpenChatMenu.forEach(function(value) {
                                 value.emit("readed", socketData.id);
-                            })
+                            });
+                            
+                            roomData.employee.emit("aktif", "Aktif");
+                        }
+
+                        if (that.employeeWhoOpenChatMenu.size > 0) {
+                            socket.emit("aktif", "Aktif");
+                        }
+                        else {
+                            socket.emit("aktif", "Tidak Aktif");
                         }
                     }
                     else {
@@ -148,7 +171,7 @@ class ChatSocketController {
                     }
 
                     that.employeeWhoOpenChatMenu.forEach(function(value) {
-                        value.emit("coming " + read, message);
+                        value.emit("coming " + read, socketData.id);
                     });
                     socket.emit("message self " + read, message);
                 }
@@ -169,14 +192,28 @@ class ChatSocketController {
 
             socket.on("disconnect", function(reason) {
                 let socketData = that.socketConnectionData.get(socket);
-                if (socketData.auth == CUSTOMER) {
-                    that.customerOutOfRoom(socketData);
-                }
-                else if (socketData.auth == EMPLOYEE) {
-                    employeeOutFromRoom(socketData);
-                }
+                if (socketData != undefined) {
+                    if (socketData.auth == CUSTOMER) {
+                        that.customerOutOfRoom(socketData);
 
-                that.socketConnectionData.delete(socket);
+                        let roomData = that.room.get(socketData.id);
+                        if (roomData != undefined && roomData.employee != null) {
+                            roomData.employee.emit("aktif", "Tidak Aktif");
+                        }
+                    }
+                    else if (socketData.auth == EMPLOYEE) {
+                        employeeOutFromRoom(socketData);
+
+                        if (that.employeeWhoOpenChatMenu.size == 0) {
+                            that.socketConnectionData.forEach(function(data, customer_socket) {
+                                if (data.auth == CUSTOMER) {
+                                    customer_socket.emit("aktif", "Tidak Aktif");
+                                }
+                            });
+                        }
+                    }
+                    that.socketConnectionData.delete(socket);
+                }
             })
         });
     }
