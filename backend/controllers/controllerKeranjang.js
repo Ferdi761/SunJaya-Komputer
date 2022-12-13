@@ -89,7 +89,8 @@ const tambahKeKeranjang = async (req, res) => {
 const hapusDariKeranjang = async (req, res) => {
     const logged = req.cookies.logged_account;
     const decoded = jwt.verify(logged, 'jwtAkunId');
-    const { barangId } = req.body;
+    const { id } = req.params; 
+    // const { barangId } = req.body;
 
     try {
         const akun = await Akun.findByPk(decoded.id);
@@ -99,20 +100,29 @@ const hapusDariKeranjang = async (req, res) => {
             where: {
                 [Op.and]: [
                     { akunId: akun.id },
-                    { BarangId: barangId }
+                    { BarangId: id }
                 ]
             }
         });
         if (!hapus) throw 'Gagal menghapus barang dari keranjang!';
 
-        res.status(200).json({
+        res
+        .status(200)
+        .json({
             status: "success",
-            msg: "Keranjang barang berhasil dihapus!"
-        }).end();
+            message: "Keranjang barang berhasil dihapus!"
+        })
+        .end();
     }
     catch (err) {
         console.log(err);
-        res.status(500).json({ msg: err }).end();
+        res
+        .status(500)
+        .json({
+            status: 'fail',
+            message: err
+        })
+        .end();
     }
 };
 

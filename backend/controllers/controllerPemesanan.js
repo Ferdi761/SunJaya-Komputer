@@ -461,7 +461,10 @@ const ubahStatusKirim = async (req, res) => {
             }
         });
 
-        console.log(JSON.stringify(pesanan.Pemesanan.tanggalKirim));
+        console.log(pesanan.Pemesanan.tanggalKirim + 7);
+        console.log(pesanan.Pemesanan.tanggalKirim.getHours());
+        console.log(pesanan.Pemesanan.tanggalKirim.getHours() + 2);
+        console.log(Date.now());
         // console.log( + 240000);
 
         res

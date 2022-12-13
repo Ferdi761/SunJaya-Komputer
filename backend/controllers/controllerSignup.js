@@ -19,21 +19,23 @@ const registrasi = async (req, res) => {
             noTelp,
         });
         console.log(akun);
-        
-        const keranjang = await Keranjang.create({
-            jumlah: 0,
-            akunId: akun.id
-        });
 
-        console.log(keranjang);
-
-        res.status(201).json(keranjang).end();
+        res.status(201).json({
+            status: 'success',
+            message: 'Akun berhasil dibuat!',
+            data: akun
+        }).end();
     }
     catch (err) {
         console.log(err);
+        res
+        .status(500)
+        .json({
+            status: 'fail',
+            message: 'Gagal membuat akun!',
+            error: [err]
+        })
     }
-
-// console.log(req.files);
 };
 
 

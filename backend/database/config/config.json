@@ -4,20 +4,23 @@
     "password": "admin321",
     "database": "SunJayaDB",
     "host": "127.0.0.1",
-    "dialect": "postgres"
+    "dialect": "postgres",
+    "timezone": "+07:00"
   },
   "test": {
     "username": "postgres",
     "password": "admin321",
     "database": "SunJayaDB",
     "host": "127.0.0.1",
-    "dialect": "postgres"
+    "dialect": "postgres",
+    "timezone": "+07:00"
   },
   "production": {
     "username": "postgres",
     "password": "admin321",
     "database": "SunJayaDB",
     "host": "127.0.0.1",
-    "dialect": "postgres"
+    "dialect": "postgres",
+    "timezone": "+07:00"
   }
 }

@@ -8,9 +8,8 @@ const {
     allCartList
 } = require("../controllers/controllerKeranjang");
 
-routerKeranjang.route("/")
-.get(loginCheck, daftarKeranjang)
-.delete(loginCheck, hapusDariKeranjang);
+routerKeranjang.route("/").get(loginCheck, daftarKeranjang);
+routerKeranjang.route("/:id").delete(loginCheck, hapusDariKeranjang);
 routerKeranjang.route("/allCart").get(allCartList);
 
 module.exports = routerKeranjang;
