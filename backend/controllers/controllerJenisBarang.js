@@ -2,7 +2,6 @@ const { JenisBarang } = require('../database/models');
 
 const tambahJenis = async (req, res) => {
     const { nama } = req.body;
-    // const data = { nama };
 
     try {
         const addJenis = await JenisBarang.create({ nama });
@@ -57,7 +56,7 @@ const hapusJenis = async (req, res) => {
 };
 
 const editJenis = async (req, res) => {
-    let id = req.params.id;
+    let { id } = req.params;
 
     const { nama } = req.body;
 
@@ -69,20 +68,22 @@ const editJenis = async (req, res) => {
         });
 
         if (jenis) {
-            await jenis.update({ nama }, {
-                where: {
-                    id: id
-                }
-            });
+            await jenis.update({ nama });
 
-            res.status(200).json({
-                msg: "Berhasil mengubah jenis barang!"
-            }).end();
+            res
+            .status(200)
+            .json({
+                status: 'success',
+                message: 'Berhasil mengubah jenis barang!'
+            })
+            .end();
         }
     }
     catch (err) {
+        console.log(err);
         res.status(500).json({
-            msg: "Gagal mengubah jenis barang!"
+            status: 'fail',
+            message: "Gagal mengubah jenis barang!"
         }).end();
     }
 };

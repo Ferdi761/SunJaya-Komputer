@@ -31,23 +31,6 @@ const login = async (req, res) => {
       })
       .end()
 
-    // const akun = await Akun.findOne({
-    //     raw: true,
-    //     where: { email: req.body.email }
-    // });
-    // if (akun === null) {
-    //     throw Error("password salah");
-    // }
-    // else {
-    //     const auth = await bcrypt.compare(req.body.password, akun.passwordHashed);
-
-    //     if (auth === null) {
-    //     throw Error("username salah");
-    //     }
-    //     else {
-    //         return akun;
-    //     }
-    // }
   } catch (err) {
     console.log(err)
     res.status(500).json({ status: 'error', message: err.message })

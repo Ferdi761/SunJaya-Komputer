@@ -56,7 +56,7 @@ const daftarKeranjang = async (req, res) => {
 // add item into shopping cart (for customers)
 const tambahKeKeranjang = async (req, res) => {
     const logged = req.cookies.logged_account;
-    const idBarang = req.query.id;
+    const idBarang = req.params.id;
     const decoded = jwt.verify(logged, 'jwtAkunId');
     
     const jumlah = req.body.jumlah;
@@ -120,13 +120,55 @@ const hapusDariKeranjang = async (req, res) => {
         .status(500)
         .json({
             status: 'fail',
-            message: err
+            message: 'Gagal menghapus barang dari keranjang!'
         })
         .end();
     }
 };
 
-const ubahJumlahBarang = (req, res) => {};
+const ubahJumlahBarang = async (req, res) => {
+    const logged = req.cookies.logged_account;
+    const decoded = jwt.verify(logged, 'jwtAkunId');
+    const { id } = req.params; 
+    const { jumlah } = req.body;
+
+    try {
+        const akun = await Akun.findByPk(decoded.id);
+        if (!akun) throw 'Akun tidak ditemukan!';
+
+        const keranjang = await Keranjang.findOne({
+            where: {
+                [Op.and]: [
+                    { akunId: akun.id },
+                    { BarangId: id }
+                ]
+            }
+        });
+
+        const ubahJumlah = await keranjang.update({
+            jumlah: jumlah
+        });
+        if (!ubahJumlah) throw 'Gagal mengubah jumlah barang dari keranjang!';
+
+        res
+        .status(200)
+        .json({
+            status: "success",
+            message: "Keranjang barang berhasil dihapus!"
+        })
+        .end();
+    }
+    catch (err) {
+        console.log(err);
+        res
+        .status(500)
+        .json({
+            status: 'fail',
+            message: 'Gagal menghapus barang dari keranjang!'
+        })
+        .end();
+    }
+};
 
 module.exports = {
     daftarKeranjang,

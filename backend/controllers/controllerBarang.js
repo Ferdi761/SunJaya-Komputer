@@ -23,7 +23,7 @@ const daftarBarang = async (req, res) => {
     res.status(200).json(semuaBarang).end()
   } catch (err) {
     console.log(err)
-    res.status(500).json({ msg: err }).end()
+    res.status(500).json({ message: err }).end()
   }
 }
 
@@ -64,14 +64,14 @@ const tambahBarang = async (req, res) => {
         .status(200)
         .json({
           status: 'Success',
-          msg: 'Berhasil menambahkan barang!',
+          message: 'Berhasil menambahkan barang!',
           data: barang,
         })
         .end()
     }
   } catch (err) {
     console.log(err)
-    res.status(500).json({ msg: err }).end()
+    res.status(500).json({ message: err }).end()
   }
 }
 
@@ -104,7 +104,7 @@ const detailBarang = async (req, res) => {
     res
       .status(500)
       .json({
-        msg: err,
+        message: err,
       })
       .end()
   }
@@ -134,7 +134,7 @@ const ubahDataBarang = async (req, res) => {
         .status(200)
         .json({
           status: 'success',
-          msg: 'Berhasil memperbarui barang!',
+          message: 'Berhasil memperbarui barang!',
           data: updateData,
         })
         .end()
@@ -177,7 +177,7 @@ const ubahDataBarang = async (req, res) => {
         .status(200)
         .json({
           status: 'success',
-          msg: 'Berhasil memperbarui barang!',
+          message: 'Berhasil memperbarui barang!',
           data: updateBarang,
         })
         .end()
@@ -189,8 +189,8 @@ const ubahDataBarang = async (req, res) => {
     res
       .status(500)
       .json({
-        status: 'failed',
-        msg: [err],
+        status: 'fail',
+        message: [err],
       })
       .end()
   }
@@ -230,7 +230,7 @@ const hapusBarang = async (req, res) => {
         .status(200)
         .json({
           status: 'success',
-          msg: 'Barang berhasil dihapus!',
+          message: 'Barang berhasil dihapus!',
         })
         .end()
     }
@@ -240,7 +240,7 @@ const hapusBarang = async (req, res) => {
       .status(500)
       .json({
         status: 'fail',
-        msg: [err],
+        message: [err],
       })
       .end()
   }
@@ -248,7 +248,7 @@ const hapusBarang = async (req, res) => {
 
 const cariBarang = async (req, res) => {
   // const input = req.body.input;
-  const nama = req.query.nama
+  const { nama } = req.query
 
   try {
     const foundBarang = await Barang.findAll({
@@ -270,7 +270,7 @@ const cariBarang = async (req, res) => {
     res
       .status(500)
       .json({
-        msg: [err],
+        message: [err],
       })
       .end()
   }
