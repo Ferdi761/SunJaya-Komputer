@@ -6,14 +6,14 @@ const login = async (req, res) => {
   // const oneWeek = 7 * 24 * 60 * 60 * 3600;
 
   try {
-    const akun = await Akun.loginCheck(email, password);
+    const akun = await Akun.loginCheck(email, password)
     // console.log("--------------------------------");
     // console.log(`email: ${akun.email} \n password: ${akun.passwordHashed}`);
     // console.log("--------------------------------");
     const id = akun.id
-    const token = jwt.sign({ id }, 'jwtAkunId', {});
+    const token = jwt.sign({ id }, 'jwtAkunId', {})
 
-    res.cookie('logged_account', token, { httpOnly: true });
+    res.cookie('logged_account', token, { httpOnly: true })
 
     res
       .status(201)
@@ -21,6 +21,7 @@ const login = async (req, res) => {
         status: 'success',
         msg: 'Login berhasil',
         data: {
+          id: akun.id,
           nama: akun.nama,
           email: akun.email,
           izin: akun.izin,
@@ -28,7 +29,7 @@ const login = async (req, res) => {
           token,
         },
       })
-      .end();
+      .end()
 
     // const akun = await Akun.findOne({
     //     raw: true,
@@ -48,8 +49,8 @@ const login = async (req, res) => {
     //     }
     // }
   } catch (err) {
-    console.log(err);
-    res.status(500).json({ messasge: err });
+    console.log(err)
+    res.status(500).json({ status: 'error', message: err.message })
   }
 }
 

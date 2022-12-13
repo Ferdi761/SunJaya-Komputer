@@ -1,43 +1,12 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { io } from 'socket.io-client'
-import { ChatSocketController } from '../util/ChatSocketController'
-import { useStore } from '../util/useStore'
+import { ChatSocketController } from '../../../util/ChatSocketController'
+import { useStore } from '../../../util/useStore'
 
 const ChatPage = () => {
-  const chatSocketController = new ChatSocketController(
-    io('http://localhost:8000').connect()
-  )
-
   const [chat, setChat] = useState('')
   const { user } = useStore()
-
-  chatSocketController.addCallback(
-    'message self read',
-    function (message: string) {
-      let newChat = document.createElement('p')
-      newChat.innerHTML = 'self: ' + message
-      document.getElementById('chats')?.appendChild(newChat)
-    }
-  )
-
-  chatSocketController.addCallback(
-    'message self unread',
-    function (message: string) {
-      let newChat = document.createElement('p')
-      newChat.innerHTML = 'self: ' + message
-      document.getElementById('chats')?.appendChild(newChat)
-    }
-  )
-
-  chatSocketController.addCallback(
-    'message to',
-    function (message: string) {
-      let newChat = document.createElement('p')
-      newChat.innerHTML = 'to: ' + message
-      document.getElementById('chats')?.appendChild(newChat)
-    }
-  )
 
   if (!user) {
     return (
@@ -52,9 +21,41 @@ const ChatPage = () => {
       </div>
     )
   } else {
+    const chatSocketController = new ChatSocketController(
+      io('http://localhost:8000').connect()
+    )
+
+    chatSocketController.addCallback(
+      'message self read',
+      function (message: string) {
+        let newChat = document.createElement('p')
+        newChat.innerHTML = 'self: ' + message
+        document.getElementById('chats')?.appendChild(newChat)
+      }
+    )
+
+    chatSocketController.addCallback(
+      'message self unread',
+      function (message: string) {
+        let newChat = document.createElement('p')
+        newChat.innerHTML = 'self: ' + message
+        document.getElementById('chats')?.appendChild(newChat)
+      }
+    )
+
+    chatSocketController.addCallback(
+      'message to',
+      function (message: string) {
+        let newChat = document.createElement('p')
+        newChat.innerHTML = 'to: ' + message
+        document.getElementById('chats')?.appendChild(newChat)
+      }
+    )
+
     chatSocketController.init(user.id)
     chatSocketController.auth(user.izin)
     chatSocketController.read(99999999)
+
     return (
       <div className='bg-primary h-screen text-white flex justify-center'>
         <div className='w-2/3 bg-black my-10 border border-dark'>

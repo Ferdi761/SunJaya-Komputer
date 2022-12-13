@@ -36,8 +36,9 @@ const TabelGaransi = () => {
                 Selesai
               </p>
               <Link
-                to='/garansi'
-                className='text-lg font-normal text-blue-500 hover:text-blue-700'>
+                to='/admin/garansi'
+                className='text-lg font-normal text-blue-500 hover:text-blue-700'
+              >
                 Rincian
               </Link>
             </div>

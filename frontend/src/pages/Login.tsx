@@ -1,14 +1,14 @@
-import React from 'react'
+import { useState, FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useStore } from '../util/useStore'
 
 const Login = () => {
   const { setUser } = useStore()
-  const [akun, setAkun] = React.useState({ email: '', password: '' })
+  const [akun, setAkun] = useState({ email: '', password: '' })
 
   const navigate = useNavigate()
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = (event: FormEvent) => {
     event.preventDefault()
 
     fetch('http://localhost:8000/api/login', {
@@ -23,16 +23,17 @@ const Login = () => {
 
         if (response.ok) {
           setUser(data.data)
+          if (data.data.izin === 'admin') {
+            navigate('/admin')
+          } else {
+            navigate('/')
+          }
         } else {
           alert(data.message)
         }
       })
       .catch((error) => {
-        alert(error.message)
-      })
-      .finally(() => {
-        setAkun({ email: '', password: '' })
-        navigate('/')
+        console.log(error)
       })
   }
 
@@ -55,6 +56,7 @@ const Login = () => {
             id='email'
             aria-label='email'
             placeholder='Email'
+            autoComplete='email'
             value={akun.email}
             onChange={(e) =>
               setAkun({ ...akun, email: e.target.value })
@@ -70,6 +72,7 @@ const Login = () => {
             type='password'
             aria-label='password'
             placeholder='password'
+            autoComplete='current-password'
             value={akun.password}
             onChange={(e) =>
               setAkun({ ...akun, password: e.target.value })
