@@ -1,5 +1,6 @@
 import { Transition, Dialog } from '@headlessui/react'
-import React, { Fragment } from 'react'
+import { FormEvent, Fragment } from 'react'
+import { useStore } from '../../../util/useStore'
 
 interface ModalProps {
   modal: boolean
@@ -14,14 +15,17 @@ interface ModalProps {
   setId: React.Dispatch<React.SetStateAction<number>>
 }
 
-const Modal: React.FC<ModalProps> = (props: ModalProps) => {
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+const ModalJenis: React.FC<ModalProps> = (props: ModalProps) => {
+  const { user } = useStore()
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     if (props.mode === 'tambah') {
       fetch('http://localhost:8000/api/jenis/tambah', {
         method: 'POST',
         headers: {
+          Authorization: `Bearer ${user?.token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -42,6 +46,7 @@ const Modal: React.FC<ModalProps> = (props: ModalProps) => {
       fetch(`http://localhost:8000/api/jenis/${props.id}/edit`, {
         method: 'PUT',
         headers: {
+          Authorization: `Bearer ${user?.token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -99,46 +104,44 @@ const Modal: React.FC<ModalProps> = (props: ModalProps) => {
                 >
                   Tambah Jenis Barang
                 </Dialog.Title>
-                <Dialog.Description className='mt-4'>
-                  <form
-                    className='flex flex-col justify-center items-center'
-                    onSubmit={handleSubmit}
-                  >
-                    <input
-                      className='focus:ring-2 focus:ring-black focus:outline-none appearance-none w-full text-sm leading-6 text-slate-900 placeholder-primary rounded-md py-2 pl-5 ring-1 ring-slate-200 shadow-sm bg-formInput'
-                      type='text'
-                      aria-label='jenis'
-                      placeholder='Jenis Barang'
-                      value={props.tambah}
-                      onChange={(e) =>
-                        props.setTambah(e.currentTarget.value)
-                      }
-                    />
-                    <div className='mt-4 flex justify-center gap-2'>
-                      <button
-                        type='button'
-                        className='inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2'
-                        onClick={() => {
-                          if (props.mode === 'edit') {
-                            props.setMode('tambah')
-                            props.setTambah('')
-                            props.setModal(false)
-                          } else {
-                            props.setModal(false)
-                          }
-                        }}
-                      >
-                        Kembali
-                      </button>
-                      <button
-                        type='submit'
-                        className='inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2'
-                      >
-                        Submit
-                      </button>
-                    </div>
-                  </form>
-                </Dialog.Description>
+                <form
+                  className='flex flex-col justify-center items-center mt-4'
+                  onSubmit={handleSubmit}
+                >
+                  <input
+                    className='focus:ring-2 focus:ring-black focus:outline-none appearance-none w-full text-sm leading-6 text-slate-900 placeholder-primary rounded-md py-2 pl-5 ring-1 ring-slate-200 shadow-sm bg-formInput'
+                    type='text'
+                    aria-label='jenis'
+                    placeholder='Jenis Barang'
+                    value={props.tambah}
+                    onChange={(e) =>
+                      props.setTambah(e.currentTarget.value)
+                    }
+                  />
+                  <div className='mt-4 flex justify-center gap-2'>
+                    <button
+                      type='button'
+                      className='inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2'
+                      onClick={() => {
+                        if (props.mode === 'edit') {
+                          props.setMode('tambah')
+                          props.setTambah('')
+                          props.setModal(false)
+                        } else {
+                          props.setModal(false)
+                        }
+                      }}
+                    >
+                      Kembali
+                    </button>
+                    <button
+                      type='submit'
+                      className='inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2'
+                    >
+                      Submit
+                    </button>
+                  </div>
+                </form>
               </Dialog.Panel>
             </Transition.Child>
           </div>
@@ -148,4 +151,4 @@ const Modal: React.FC<ModalProps> = (props: ModalProps) => {
   )
 }
 
-export default Modal
+export default ModalJenis

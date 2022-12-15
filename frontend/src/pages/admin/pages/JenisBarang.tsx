@@ -1,8 +1,8 @@
-import { HiPencil, HiTrash } from 'react-icons/hi2'
+import { HiPencil, HiTrash } from 'react-icons/hi'
 import { BsPlusCircleFill } from 'react-icons/bs'
 import { useEffect, useState } from 'react'
 
-import Modal from '../components/Modal'
+import ModalJenis from '../components/ModalJenis'
 
 const JenisBarang = () => {
   const [jenis, setJenis] = useState([
@@ -131,7 +131,7 @@ const JenisBarang = () => {
           tambah baru
         </button>
 
-        <Modal
+        <ModalJenis
           modal={modal}
           setModal={setModal}
           tambah={tambah}

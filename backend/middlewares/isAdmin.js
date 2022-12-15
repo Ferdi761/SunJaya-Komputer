@@ -3,8 +3,8 @@ const { Akun } = require('../database/models')
 
 const isAdmin = async (req, res, next) => {
   // console.log(req.cookies.logged_account);
-  // let logged_account = req.headers.authorization
-  let logged = req.cookies.logged_account;
+  let logged = req.headers.authorization
+  // let logged = req.cookies.logged_account;
 
   // console.log(logged_account);
   if (!logged) {
@@ -12,13 +12,9 @@ const isAdmin = async (req, res, next) => {
   }
   try {
     // compare id from cookies and jwt
-    // const decoded = jwt.verify(
-    //   logged_account.split(' ')[1],
-    //   'jwtAkunId'
-    // )
+    const decoded = jwt.verify(logged.split(' ')[1])
     // console.log(decode["id"]);
-    const decoded = jwt.verify(logged, 'jwtAkunId');
-
+    // const decoded = jwt.verify(logged, 'jwtAkunId')
 
     const admin = await Akun.findByPk(decoded['id'])
     // id not found
@@ -27,16 +23,16 @@ const isAdmin = async (req, res, next) => {
     }
     // izin === admin
     else if (admin.izin === 'admin') {
-      console.log('access granted!');
+      console.log('access granted!')
     }
     // izin !== admin
     else {
-      throw 'Bukan admin!';
+      throw 'Bukan admin!'
     }
   } catch (err) {
-    console.log(err);
+    console.log(err)
   }
   next()
 }
 
-module.exports = isAdmin;
+module.exports = isAdmin
