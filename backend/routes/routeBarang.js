@@ -5,7 +5,7 @@ const path = require('path')
 // setup multer storage
 const multer = require('multer')
 
-destFotoBarang = path.join(
+let destFotoBarang = path.join(
   __dirname,
   '../../frontend/src/assets/img/produk'
 )
