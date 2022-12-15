@@ -49,7 +49,7 @@ routerBarang
   .post(loginCheck, tambahKeKeranjang)
 routerBarang
   .route('/edit/:id')
-  .put(upload.single('foto'), ubahDataBarang)
-routerBarang.route('/hapus/:id').delete(hapusBarang)
+  .put(upload.single('foto'), isAdmin, ubahDataBarang)
+routerBarang.route('/hapus/:id').delete(isAdmin, hapusBarang)
 
 module.exports = routerBarang
