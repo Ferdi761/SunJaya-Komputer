@@ -1,19 +1,85 @@
-import React from 'react'
+import { Listbox } from '@headlessui/react'
+import { useState, useEffect } from 'react'
 import { IoIosArrowDown } from 'react-icons/io'
+import { useNavigate } from 'react-router-dom'
 
 const TambahBarang = () => {
-  const [barang, setBarang] = React.useState({
+  const [barang, setBarang] = useState({
     nama: '',
     harga: '',
     deskripsi: '',
     merek: '',
-    berat: 0,
+    berat: '',
     jenis: '',
+    foto: {
+      preview: '',
+      data: '',
+    },
   })
 
+  const [jenis, setJenis] = useState([
+    {
+      id: 0,
+      nama: '',
+    },
+  ])
+
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    fetch('http://localhost:8000/api/jenis')
+      .then(async (res) => {
+        const data = await res.json()
+        setJenis(data)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }, [])
+
+  const handleFileChange = (e: any) => {
+    const foto = {
+      preview: URL.createObjectURL(e.target.files[0]),
+      data: e.target.files[0],
+    }
+    setBarang({ ...barang, foto })
+  }
+
+  const handleSubmit = (e: any) => {
+    e.preventDefault()
+
+    const formData = new FormData()
+    formData.append('namaBarang', barang.nama)
+    formData.append('harga', barang.harga)
+    formData.append('deskripsi', barang.deskripsi)
+    formData.append('merek', barang.merek)
+    formData.append('berat', barang.berat)
+    formData.append('jenis', barang.jenis)
+    formData.append('foto', barang.foto.data)
+    formData.append('stok', '100')
+
+    fetch('http://localhost:8000/api/barang/tambah', {
+      method: 'POST',
+      body: formData,
+    })
+      .then(async (res) => {
+        const data = await res.json()
+        console.log(data)
+        alert(data.message)
+        navigate('/admin/barang')
+      })
+      .catch((err) => {
+        console.log(err)
+        alert(err.message)
+      })
+  }
+
   return (
-    <div className='flex justify-center'>
-      <form className='flex flex-col justify-center w-1/3'>
+    <div className='flex justify-center my-10'>
+      <form
+        className='flex flex-col justify-center w-1/3'
+        onSubmit={handleSubmit}
+      >
         <h1 className='uppercase font-bold text-2xl text-center mb-5'>
           Penambahan Data Barang
         </h1>
@@ -44,7 +110,7 @@ const TambahBarang = () => {
             </span>
             <input
               className='focus:ring-2 focus:ring-black focus:outline-none appearance-none w-full text-sm leading-6 text-slate-900 placeholder-slate-400 rounded-md py-2 pl-10 ring-1 ring-slate-200 shadow-sm'
-              type='text'
+              type='number'
               aria-label='Harga'
               value={barang.harga}
               onChange={(e) =>
@@ -87,7 +153,7 @@ const TambahBarang = () => {
 
         <div className='mb-4'>
           <label className='block text-gray-700 text-md mb-2 font-semibold'>
-            Harga
+            Berat
           </label>
           <div className='relative group'>
             <span className='absolute right-3 top-1/2 -mt-3 text-slate-400 pointer-events-none group-focus-within:text-black'>
@@ -101,7 +167,7 @@ const TambahBarang = () => {
               onChange={(e) =>
                 setBarang({
                   ...barang,
-                  berat: parseInt(e.target.value),
+                  berat: e.target.value,
                 })
               }
             />
@@ -110,7 +176,7 @@ const TambahBarang = () => {
 
         <div className='mb-4'>
           <label className='block text-gray-700 text-md mb-2 font-semibold'>
-            Harga
+            Jenis Barang
           </label>
           <div className='relative group'>
             <span className='absolute right-3 top-1/2 -mt-2 text-slate-400 pointer-events-none group-focus-within:text-black'>
@@ -118,13 +184,17 @@ const TambahBarang = () => {
             </span>
             <select
               className='focus:ring-2 focus:ring-black focus:outline-none appearance-none w-full text-sm leading-6 text-slate-900 placeholder-slate-400 rounded-md py-2 pl-5 ring-1 ring-slate-200 shadow-sm'
-              aria-label='Berat'
+              aria-label='jenis'
               onChange={(e) =>
                 setBarang({ ...barang, jenis: e.target.value })
-              }>
-              <option selected>Jenis Barang</option>
-              <option value=''>Apapun</option>
-              <option value=''>Apa aja</option>
+              }
+            >
+              <option value=''>Pilih Jenis Barang</option>
+              {jenis.map((item) => (
+                <option key={item.id} value={item.nama}>
+                  {item.nama}
+                </option>
+              ))}
             </select>
           </div>
         </div>
@@ -133,20 +203,27 @@ const TambahBarang = () => {
           <label className='block text-gray-700 text-md mb-2 font-semibold'>
             Foto Barang
           </label>
-          <textarea
-            className='focus:ring-2 focus:ring-black focus:outline-none appearance-none w-full text-sm leading-6 text-slate-900 placeholder-slate-400 rounded-md py-2 pl-5 ring-1 ring-slate-200 shadow-sm h-36'
-            aria-label='Deskripsi'
-          />
+          {barang.foto.preview !== '' && barang.foto.data !== '' && (
+            <img
+              src={barang.foto.preview}
+              className='w-1/3'
+              alt='foto'
+            />
+          )}
         </div>
 
-        <button className='w-1/3 bg-black hover:bg-slate-700   text-white rounded-xl px-3 mb-5'>
-          Upload Foto
-        </button>
+        <input
+          type='file'
+          name='file'
+          className='mb-5'
+          onChange={handleFileChange}
+        />
 
-        <div className='flex justify-center'>
+        <div className='flex justify-center mt-5'>
           <button
             className='bg-teal-700 text-white rounded-xl font-bold text-lg px-10 hover:bg-teal-900'
-            type='submit'>
+            type='submit'
+          >
             SIMPAN
           </button>
         </div>
