@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { IoIosArrowDown } from 'react-icons/io'
 import { useNavigate } from 'react-router-dom'
+import { useStore } from '../../../util/useStore'
 
 const TambahBarang = () => {
   const [barang, setBarang] = useState({
@@ -24,6 +25,7 @@ const TambahBarang = () => {
   ])
 
   const navigate = useNavigate()
+  const { user } = useStore()
 
   useEffect(() => {
     fetch('http://localhost:8000/api/jenis')
@@ -59,6 +61,9 @@ const TambahBarang = () => {
 
     fetch('http://localhost:8000/api/barang/tambah', {
       method: 'POST',
+      headers: {
+        Authorization: `Bearer ${user?.token}`,
+      },
       body: formData,
     })
       .then(async (res) => {

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { HiPencil, HiTrash } from 'react-icons/hi'
 import { formatCurrency } from '../../../util/formatCurrency'
+import { useStore } from '../../../util/useStore'
 
 const Barang = () => {
   const [barang, setBarang] = useState([
@@ -31,6 +32,8 @@ const Barang = () => {
   const [q, setQ] = useState('')
   const [searchParam] = useState(['nama'])
 
+  const { user } = useStore()
+
   const search = (rows: any) => {
     return rows.filter((row: any) =>
       searchParam.some(
@@ -55,6 +58,9 @@ const Barang = () => {
   const handleDelete = (id: number) => {
     fetch(`http://localhost:8000/api/barang/hapus/${id}`, {
       method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${user?.token}`,
+      },
     })
       .then(async (res) => {
         const data = await res.json()

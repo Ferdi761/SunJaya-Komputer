@@ -36,12 +36,13 @@ const {
 const {
   tambahKeKeranjang,
 } = require('../controllers/controllerKeranjang')
+const isAdmin = require('../middlewares/isAdmin')
 
 routerBarang.route('/').get(daftarBarang)
 routerBarang.route('/cari').get(cariBarang)
 routerBarang
   .route('/tambah')
-  .post(upload.single('foto'), tambahBarang)
+  .post(upload.single('foto'), isAdmin, tambahBarang)
 routerBarang
   .route('/:id')
   .get(detailBarang)
