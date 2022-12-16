@@ -544,7 +544,7 @@ const konfirmasiPesananSampai = async (req, res) => {
 
 // Pesanan dengan semua status
 const daftarSemuaPesanan = async (req, res) => {
-  const logged = req.cookies.logged_account
+  const logged = req.headers.authorization.split(' ')[1]
   const decoded = jwt.verify(logged, 'jwtAkunId')
 
   try {
