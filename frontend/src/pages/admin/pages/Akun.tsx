@@ -50,7 +50,7 @@ const Akun = () => {
   }, [loading])
 
   const handleDelete = (id: number) => {
-    fetch(`http://localhost:8000/api/akun/karyawan${id}`, {
+    fetch(`http://localhost:8000/api/akun/karyawan/${id}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${user?.token}`,
@@ -106,36 +106,52 @@ const Akun = () => {
 
         <div className='flex flex-col gap-10'>
           {search(akun).map((item: any) => (
-            <div className='bg-light p-5' key={item.id}>
-              <div className='grid grid-cols-2 gap-5 w-full'>
-                <h3 className='font-semibold text-lg'>{item.nama}</h3>
-                <p></p>
-                <p>
-                  ID:{' '}
-                  <span className='font-semibold'>#{item.id}</span>
-                </p>
-                <p>
-                  Alamat:{' '}
-                  <span className='font-semibold'>{item.alamat}</span>
-                </p>
-                <p>
-                  Email:{' '}
-                  <span className='font-semibold'>{item.email}</span>
-                </p>
-                <p>
-                  No. Telp:{' '}
-                  <span className='font-semibold'>{item.noTelp}</span>
-                </p>
-                <div className='flex flex-row gap-10 justify-center items-center mt-5'>
-                  <Link
-                    to='/admin/edit-akun'
-                    className='text-blue-700 flex flex-row gap-2 text-lg'
-                  >
-                    <HiPencil className='w-6 h-6' /> edit
-                  </Link>
-                  <button className='bg-pink-500 hover:bg-pink-600 rounded-lg p-2'>
-                    <HiTrash className='text-white w-6 h-6' />
-                  </button>
+            <div
+              className='bg-light flex justify-center items-center'
+              key={item.id}
+            >
+              <div className='w-3/4 my-5'>
+                <div className='grid grid-cols-2 gap-5 w-fit'>
+                  <h3 className='font-semibold text-lg'>
+                    {item.nama}
+                  </h3>
+                  <p></p>
+                  <p>
+                    ID:{' '}
+                    <span className='font-semibold'>#{item.id}</span>
+                  </p>
+                  <p>
+                    Password:{' '}
+                    <span className='font-semibold'>
+                      {item.passwordHashed}
+                    </span>
+                  </p>
+                  <p>
+                    Email:{' '}
+                    <span className='font-semibold'>
+                      {item.email}
+                    </span>
+                  </p>
+                  <p>
+                    No. Telp:{' '}
+                    <span className='font-semibold'>
+                      {item.noTelp}
+                    </span>
+                  </p>
+                  <div className='flex flex-row gap-10 justify-center items-center mt-5'>
+                    <Link
+                      to={`/admin/edit-akun/${item.id}`}
+                      className='text-blue-700 flex flex-row gap-2 text-lg'
+                    >
+                      <HiPencil className='w-6 h-6' /> edit
+                    </Link>
+                    <button
+                      className='bg-pink-500 hover:bg-pink-600 rounded-lg p-2'
+                      onClick={() => handleDelete(item.id)}
+                    >
+                      <HiTrash className='text-white w-6 h-6' />
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

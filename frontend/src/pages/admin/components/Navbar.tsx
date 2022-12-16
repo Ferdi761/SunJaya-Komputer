@@ -1,6 +1,7 @@
 import { Transition, Menu } from '@headlessui/react'
 import { Fragment } from 'react'
-import { Link, Navigate, useNavigate } from 'react-router-dom'
+import { BsChatTextFill } from 'react-icons/bs'
+import { Link, useNavigate } from 'react-router-dom'
 import { useStore } from '../../../util/useStore'
 
 const Navbar = () => {
@@ -27,6 +28,11 @@ const Navbar = () => {
         <Link to='/admin/garansi'>
           <button className='text-white text-lg font-semibold px-4 py-2 rounded-md hover:bg-gray-700'>
             Garansi
+          </button>
+        </Link>
+        <Link to='/admin/chat'>
+          <button className='text-white text-lg font-semibold p-4 rounded-md hover:bg-gray-700'>
+            <BsChatTextFill />
           </button>
         </Link>
       </div>

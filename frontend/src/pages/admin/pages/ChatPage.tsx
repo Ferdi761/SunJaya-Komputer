@@ -4,10 +4,7 @@ import { io } from 'socket.io-client'
 import { ChatSocketController } from '../../../util/ChatSocketController'
 import { useStore } from '../../../util/useStore'
 
-
-
 const ChatPage = () => {
-
   const [chat, setChat] = useState('')
   const { user } = useStore()
 
@@ -53,29 +50,31 @@ const ChatPage = () => {
       'aktif',
       function (message: string) {
         // mengganti tanda apakah pelanggan aktif atau tidak
-        let aktif = document.getElementById('aktif') as HTMLParagraphElement
+        let aktif = document.getElementById(
+          'aktif'
+        ) as HTMLParagraphElement
         aktif.innerHTML = message
       }
     )
-  
+
     chatSocketController.addCallback(
       'readall',
       function (message: string) {
         // buat semua chat dari pelanggan ditandai sudah di read
       }
     )
-  
+
     chatSocketController.addCallback(
       'denied',
       function (message: string) {
         // buat tulisan kalau chat tidak bisa dibaca karena sudah ada karyawan lain yang buka chat ini
       }
     )
-  
+
     chatSocketController.addCallback(
       'readed',
       function (message: string) {
-        let customerID = parseInt(message);
+        let customerID = parseInt(message)
         // tandai list chat pelanggan dengan ID: customerID sudah di read (sudah ada karyawan yang membuka chat ini)
       }
     )
@@ -83,7 +82,7 @@ const ChatPage = () => {
     chatSocketController.addCallback(
       'coming unread',
       function (message: string) {
-        let customerID = parseInt(message);
+        let customerID = parseInt(message)
         // perbarui list chat pelanggan karena pelanggan dengan ID: customerID mengirim chat baru namun belum dibaca
       }
     )
@@ -91,7 +90,7 @@ const ChatPage = () => {
     chatSocketController.addCallback(
       'coming read',
       function (message: string) {
-        let customerID = parseInt(message);
+        let customerID = parseInt(message)
         // perbarui list chat pelanggan karena pelanggan dengan ID: customerID mengirim chat baru dan telah dibaca
       }
     )
@@ -101,15 +100,33 @@ const ChatPage = () => {
     chatSocketController.read(-1)
     // pada admin dan karyawan, read itu dibutuhkan untuk menandakan chat pelanggan mana yang ingin dibuka
     // parameternya adalah ID pelanggan yang mau dibuka chatnya
-    // kalau nilainya -1 artinya tidak membuka satupun chat pelanggan 
+    // kalau nilainya -1 artinya tidak membuka satupun chat pelanggan
 
     return (
       <div className='bg-primary h-screen text-white flex justify-center'>
-        <div className='w-2/3 bg-black my-10 border border-dark'>
-          <div className='flex flex-col h-full'>
+        <div className='w-2/3 bg-black my-10 border border-dark flex'>
+          <div className='w-1/4 border-r-4 border-white'>
+            <div className='flex flex-col py-5 px-10 border-b border-dark'>
+              <p className='font-bold text-2xl'>Nama Pelanggan</p>
+              <p id='aktif'>Isi Chat Terakhir</p>
+            </div>
+            <div className='flex flex-col py-5 px-10 border-b border-dark'>
+              <p className='font-bold text-2xl'>Nama Pelanggan</p>
+              <p id='aktif'>Isi Chat Terakhir</p>
+            </div>
+            <div className='flex flex-col py-5 px-10 border-b border-dark'>
+              <p className='font-bold text-2xl'>Nama Pelanggan</p>
+              <p id='aktif'>Isi Chat Terakhir</p>
+            </div>
+            <div className='flex flex-col py-5 px-10 border-b border-dark'>
+              <p className='font-bold text-2xl'>Nama Pelanggan</p>
+              <p id='aktif'>Isi Chat Terakhir</p>
+            </div>
+          </div>
+          <div className='w-3/4 flex flex-col h-full'>
             <div className='flex flex-col py-5 px-10 border-b border-dark'>
               <p className='font-bold text-2xl'>Sun Jaya Komputer</p>
-              <p id="aktif">Aktif</p>
+              <p id='aktif'>Aktif</p>
             </div>
             <div id='chats' className='flex-grow'></div>
             <form

@@ -136,10 +136,27 @@ const hapusAkun = async (req, res) => {
   }
 }
 
+const detailKaryawan = async (req, res) => {
+  const { id } = req.params
+  try {
+    const akun = await Akun.findByPk(id)
+    res.status(200).json(akun).end()
+  } catch (err) {
+    console.log(err)
+    res
+      .status(500)
+      .json({
+        message: err,
+      })
+      .end()
+  }
+}
+
 module.exports = {
   listAkun,
   ubahDataAkun,
   ubahDataAdmin,
   listKaryawan,
   hapusAkun,
+  detailKaryawan,
 }

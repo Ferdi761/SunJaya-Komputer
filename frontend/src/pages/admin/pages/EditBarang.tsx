@@ -38,7 +38,6 @@ const EditBarang = () => {
 
   const navigate = useNavigate()
   const location = useLocation()
-  console.log(location.pathname.split('/')[3])
 
   const { user } = useStore()
 

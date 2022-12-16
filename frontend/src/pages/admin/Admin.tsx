@@ -87,7 +87,7 @@ const Admin = () => {
             <Route path='/edit-barang/:id' element={<EditBarang />} />
             <Route path='/akun' element={<Akun />} />
             <Route path='/tambah-akun' element={<TambahAkun />} />
-            <Route path='/edit-akun' element={<EditAkun />} />
+            <Route path='/edit-akun/:id' element={<EditAkun />} />
             <Route path='/rekening' element={<Rekening />} />
             <Route path='/jenis-barang' element={<JenisBarang />} />
             <Route path='/chat' element={<ChatPage />} />
