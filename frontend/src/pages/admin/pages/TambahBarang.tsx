@@ -28,10 +28,15 @@ const TambahBarang = () => {
   const { user } = useStore()
 
   useEffect(() => {
-    fetch('http://localhost:8000/api/jenis')
+    fetch('http://localhost:8000/api/jenis', {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${user?.token}`,
+      },
+    })
       .then(async (res) => {
         const data = await res.json()
-        setJenis(data)
+        setJenis(data.data)
       })
       .catch((err) => {
         console.log(err)
