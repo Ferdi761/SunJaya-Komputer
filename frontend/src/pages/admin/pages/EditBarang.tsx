@@ -38,6 +38,8 @@ const EditBarang = () => {
 
   const navigate = useNavigate()
   const location = useLocation()
+  console.log(location.pathname.split('/')[3])
+
   const { user } = useStore()
 
   useEffect(() => {
@@ -56,10 +58,15 @@ const EditBarang = () => {
   }, [])
 
   useEffect(() => {
-    fetch('http://localhost:8000/api/jenis')
+    fetch('http://localhost:8000/api/jenis', {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${user?.token}`,
+      },
+    })
       .then(async (res) => {
         const data = await res.json()
-        setJenisBarang(data)
+        setJenisBarang(data.data)
       })
       .catch((err) => {
         console.log(err)
@@ -79,20 +86,23 @@ const EditBarang = () => {
 
     const formData = new FormData()
     formData.append('namaBarang', barang.Barang.nama)
-    formData.append('harga', barang.Barang.harga)
-    formData.append('deskripsi', barang.Barang.deskripsi)
     formData.append('merek', barang.Barang.merek)
     formData.append('berat', barang.Barang.berat)
     formData.append('jenis', barang.Barang.JenisBarang.nama)
-    formData.append('foto', foto.data)
+    formData.append('harga', barang.Barang.harga)
+    formData.append('deskripsi', barang.Barang.deskripsi)
     formData.append('stok', '100')
+    formData.append(
+      'foto',
+      foto.data === '' ? barang.foto : foto.data
+    )
 
     fetch(
       `http://localhost:8000/api/barang/edit/${
         location.pathname.split('/')[3]
       }`,
       {
-        method: 'POST',
+        method: 'PUT',
         headers: {
           Authorization: `Bearer ${user?.token}`,
         },

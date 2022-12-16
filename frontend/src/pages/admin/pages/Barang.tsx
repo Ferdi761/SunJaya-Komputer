@@ -30,16 +30,26 @@ const Barang = () => {
   const [loading, setLoading] = useState(true)
 
   const [q, setQ] = useState('')
-  const [searchParam] = useState(['nama'])
+  const [searchParam] = useState([
+    'nama',
+    'merek',
+    'harga',
+    'berat',
+    'stok',
+  ])
 
   const { user } = useStore()
 
   const search = (rows: any) => {
     return rows.filter((row: any) =>
-      searchParam.some(
-        (newItem) =>
-          row[newItem].toString().toLowerCase().indexOf(q) > -1
-      )
+      searchParam.some((newItem: any) => {
+        return (
+          row.Barang[newItem]
+            .toString()
+            .toLowerCase()
+            .indexOf(q.toLowerCase()) > -1
+        )
+      })
     )
   }
 
@@ -107,7 +117,7 @@ const Barang = () => {
       </div>
 
       <div className='grid grid-cols-2 gap-10'>
-        {barang.map((item: any) => {
+        {search(barang).map((item: any) => {
           return (
             <div
               className='bg-light flex flex-row gap-10 p-5'
