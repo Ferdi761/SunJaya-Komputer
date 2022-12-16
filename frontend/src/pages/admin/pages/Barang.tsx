@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 import { HiPencil, HiTrash } from 'react-icons/hi'
 import { formatCurrency } from '../../../util/formatCurrency'
 import { useStore } from '../../../util/useStore'
@@ -137,9 +137,12 @@ const Barang = () => {
               <p className='font-semibold'>Deskripsi</p>
               <p>{item.Barang.deskripsi}</p>
               <div className='flex flex-row gap-10 justify-center mt-5'>
-                <p className='text-blue-700 flex flex-row gap-2 text-lg'>
+                <Link
+                  to={`/admin/edit-barang/${item.BarangId}`}
+                  className='text-blue-700 flex flex-row gap-2 text-lg'
+                >
                   <HiPencil className='w-6 h-6' /> edit
-                </p>
+                </Link>
                 <button
                   className='bg-pink-500 hover:bg-pink-600 rounded-lg p-2'
                   onClick={() => handleDelete(item.BarangId)}

@@ -24,6 +24,7 @@ import PesananSelesai from './pages/detail-pesanan/PesananSelesai'
 import ChatPage from './pages/ChatPage'
 
 import { useStore } from '../../util/useStore'
+import EditBarang from './pages/EditBarang'
 
 const Admin = () => {
   const { user } = useStore()
@@ -83,6 +84,7 @@ const Admin = () => {
             />
             <Route path='/barang' element={<Barang />} />
             <Route path='/tambah-barang' element={<TambahBarang />} />
+            <Route path='/edit-barang/:id' element={<EditBarang />} />
             <Route path='/akun' element={<Akun />} />
             <Route path='/tambah-akun' element={<TambahAkun />} />
             <Route path='/edit-akun' element={<EditAkun />} />
