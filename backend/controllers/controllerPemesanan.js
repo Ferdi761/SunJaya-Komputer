@@ -20,20 +20,17 @@ const checkout = async (req, res) => {
   const logged = req.headers.authorization.split(' ')[1]
   const decoded = jwt.verify(logged, 'jwtAkunId')
 
-    const {
-        alamatTujuan,
-        jasaPengiriman,
-        biayaPengiriman,
-    } = req.body;
+  const { alamatTujuan, jasaPengiriman, biayaPengiriman } = req.body
 
   try {
     const userCart = await Akun.findOne({
       where: { id: decoded.id },
       include: Barang,
     })
-    if (!userCart) throw 'Pengguna tidak ditemukan!'
+    if (!userCart)
+      return res.status(404).json('Akun tidak ditemukan!')
 
-        const { Barangs } = userCart;
+    const { Barangs } = userCart
 
     let totalPriceItem = 0
     for (let item in Barangs) {
@@ -46,21 +43,24 @@ const checkout = async (req, res) => {
     //const today = new Date();
     const oneDay = 86400000
 
-        const buatPesanan = await BuktiPembayaranPemesanan.create({
-            buktiPembayaran: null,
-            Pemesanan: {
-                akunId: userCart.id,
-                alamatTujuan,
-                jasaPengiriman,
-                biayaPengiriman,
-                totalHargaBarang: totalPriceItem,
-                totalBiayaYangHarusDibayar: totalAll,
-                pembayaranLunas: false,
-                tanggalMulaiMenungguPembayaran: Date.now(),
-            }
-        }, {
-            include: Pemesanan
-        });
+    const buatPesanan = await BuktiPembayaranPemesanan.create(
+      {
+        buktiPembayaran: null,
+        Pemesanan: {
+          akunId: userCart.id,
+          alamatTujuan,
+          jasaPengiriman,
+          biayaPengiriman,
+          totalHargaBarang: totalPriceItem,
+          totalBiayaYangHarusDibayar: totalAll,
+          pembayaranLunas: false,
+          tanggalMulaiMenungguPembayaran: Date.now(),
+        },
+      },
+      {
+        include: Pemesanan,
+      }
+    )
 
     // Memasukkan data barang yang dipesan dari Barangs ke dalam array untuk sementara
     Barangs.forEach((item) => {
@@ -86,12 +86,13 @@ const checkout = async (req, res) => {
       const stokBarang = await barang.getDataValue('stok')
 
       let updateStok = stokBarang - item.jumlah
-      if (updateStok < 0) throw 'Stok tidak mencukupi!'
+      if (updateStok < 0)
+        return res.status(400).json('Stok barang tidak cukup!')
 
-            await barang.update({
-                stok: updateStok
-            });
-        });
+      await barang.update({
+        stok: updateStok,
+      })
+    })
 
     await Keranjang.destroy({
       where: {
@@ -168,7 +169,8 @@ const uploadBuktiBayar = async (req, res) => {
       where: { id: decoded.id },
       include: Barang,
     })
-    if (!userCart) throw 'Pengguna tidak ditemukan!'
+    if (!userCart)
+      return res.status(404).json('Akun tidak ditemukan!')
 
     const buktiBayar = await BuktiPembayaranPemesanan.findOne(
       {
@@ -212,40 +214,15 @@ const uploadBuktiBayar = async (req, res) => {
       .end()
   }
 }
-        res
-            .status(200)
-            .json({
-                status: 'success',
-                message: 'Berhasil mengupload bukti pembayaran!',
-                statusPesanan: ['Semua', 'Menunggu konfirmasi'],
-                data: buktiBayar
-            })
-            .end();
-    }
-    catch (err) {
-        console.log(err);
-        res
-            .status(500)
-            .json({
-                status: 'fail',
-                message: [err]
-            })
-            .end();
-    }
-};
 
 const pesananSelesai = async (req, res) => {
-    const logged = req.cookies.logged_account;
-    const decoded = jwt.verify(logged, 'jwtAkunId');
-    const { id } = req.params;
+  const logged = req.cookies.logged_account
+  const decoded = jwt.verify(logged, 'jwtAkunId')
+  const { id } = req.params
 
-    try {
-        
-    }
-    catch (err) {
-
-    }
-};
+  try {
+  } catch (err) {}
+}
 
 const umpanBalik = async (req, res) => {
   const { id } = req.params
@@ -418,7 +395,8 @@ const batalkanPesanan = async (req, res) => {
 
     // delete photo from local storage
     fs.unlink(`${pesanan.buktiPembayaran}`, (err) => {
-      if (err) throw 'Gagal menghapus foto dari penyimpanan lokal!'
+      if (err)
+        return res.status(500).json({ status: 'fail', message: err })
       else
         console.log('Berhasil menghapus foto dari penyimpanan lokal!')
     })
@@ -489,24 +467,24 @@ const ubahStatusKirim = async (req, res) => {
     const aWeek = 604800000
     const today = new Date()
 
-        await pesanan.update({
-            Pemesanan: {
-                tanggalKirim: Date.now()
-            }
-        });
+    await pesanan.update({
+      Pemesanan: {
+        tanggalKirim: Date.now(),
+      },
+    })
 
-        const thisDate = pesanan.Pemesanan.tanggalKirim;
-        const aDay = new Date(thisDate.getTime() + aWeek);
+    const thisDate = pesanan.Pemesanan.tanggalKirim
+    const aDay = new Date(thisDate.getTime() + aWeek)
 
-        console.log(pesanan.Pemesanan.tanggalKirim);
-        console.log(pesanan.Pemesanan.tanggalKirim.getHours());
-        console.log(pesanan.Pemesanan.tanggalKirim.getHours() + 2);
-        console.log(thisDate.toLocaleString());
-        console.log(thisDate.valueOf() === aDay.valueOf());
-        // console.log((thisDate + (thisDate.getHours() + 2)).toLocaleString());
-        console.log(aDay.toLocaleString());
-        // console.log(Date.now());
-        // console.log( + 240000);
+    console.log(pesanan.Pemesanan.tanggalKirim)
+    console.log(pesanan.Pemesanan.tanggalKirim.getHours())
+    console.log(pesanan.Pemesanan.tanggalKirim.getHours() + 2)
+    console.log(thisDate.toLocaleString())
+    console.log(thisDate.valueOf() === aDay.valueOf())
+    // console.log((thisDate + (thisDate.getHours() + 2)).toLocaleString());
+    console.log(aDay.toLocaleString())
+    // console.log(Date.now());
+    // console.log( + 240000);
 
     res
       .status(200)

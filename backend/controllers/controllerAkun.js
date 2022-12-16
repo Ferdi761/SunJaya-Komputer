@@ -67,7 +67,10 @@ const ubahDataAkun = async (req, res) => {
   try {
     const akun = await Akun.findByPk(id)
     if (!akun) {
-      throw 'Gagal mengubah data akun!'
+      return res.status(404).json({
+        status: 'fail',
+        message: 'Akun tidak ditemukan!',
+      })
     }
     console.log(`data lama: ${akun}`)
     const newData = await akun.update(data)
@@ -99,7 +102,10 @@ const ubahDataAdmin = async (req, res) => {
   try {
     const akun = await Akun.findByPk(id)
     if (!akun) {
-      throw 'Gagal mengubah data akun!'
+      return res.status(404).json({
+        status: 'fail',
+        message: 'Akun tidak ditemukan!',
+      })
     }
     console.log(`data lama: ${akun}`)
     const newData = await akun.update(data)
@@ -121,7 +127,10 @@ const hapusAkun = async (req, res) => {
   try {
     const akun = await Akun.findByPk(id)
     if (!akun) {
-      throw 'Gagal menghapus akun!'
+      return res.status(404).json({
+        status: 'fail',
+        message: 'Akun tidak ditemukan!',
+      })
     }
     await akun.destroy()
     res.status(200).json({ message: 'Akun berhasil dihapus!' }).end()
