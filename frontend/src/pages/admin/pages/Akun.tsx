@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { HiPencil, HiTrash } from 'react-icons/hi'
 import { Link } from 'react-router-dom'
-import { useStore } from '../../../util/useStore'
+import { useStore } from '../../../util/userStorage'
 
 const Akun = () => {
   const [akun, setAkun] = useState([

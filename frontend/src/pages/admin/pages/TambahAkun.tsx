@@ -1,6 +1,6 @@
 import { FormEvent, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useStore } from '../../../util/useStore'
+import { useStore } from '../../../util/userStorage'
 
 const TambahAkun = () => {
   const [akun, setAkun] = useState({

@@ -1,37 +1,103 @@
-import { useShoppingCart } from '../util/ShoppingCartContext'
-import storeItems from '../data/items.json'
+import { FormEvent, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+
 import CartDetail from '../components/CartDetail'
-import { useLocation } from 'react-router-dom'
+
 import { formatCurrency } from '../util/formatCurrency'
+import { userStorage } from '../util/userStorage'
+import { cartStorage } from '../util/cartStorage'
 
 const Cart = () => {
-  const location = useLocation()
-  if (location.pathname !== '/keranjang') return null
+  const [cart, setCart] = useState({
+    userCart: {
+      id: 0,
+      nama: '',
+      email: '',
+      passwordHashed: '',
+      izin: '',
+      noTelp: '',
+      Barangs: [
+        {
+          stok: 0,
+          id: 0,
+          nama: '',
+          harga: 0,
+          deskripsi: '',
+          merek: '',
+          berat: 0,
+          jenisId: 0,
+          Keranjang: {
+            jumlah: 0,
+            akunId: 0,
+            BarangId: 0,
+          },
+        },
+      ],
+    },
+    totalHarga: 0,
+  })
 
-  const { cartItems, cartQuantity } = useShoppingCart()
+  const [alamat, setAlamat] = useState('')
+
+  const { user } = userStorage()
+  const { cartStatus } = cartStorage()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    fetch('http://localhost:8000/api/keranjang', {
+      headers: {
+        Authorization: `Bearer ${user?.token}`,
+      },
+    })
+      .then(async (res) => {
+        const data = await res.json()
+        setCart(data.data)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }, [cartStatus])
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+
+    fetch('http://localhost:8000/api/pemesanan/checkout', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${user?.token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        alamatTujuan: alamat,
+        jasaPengiriman: 'JNE',
+        biayaPengiriman: 10000,
+      }),
+    })
+      .then(async (res) => {
+        const data = await res.json()
+        console.log(data)
+        navigate('/pesanan-saya')
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
 
   return (
     <>
-      <div className='flex justify-center'>
+      <div className='flex justify-center mb-10'>
         <div className='flex flex-col gap-5 w-10/12'>
           <p className='mt-10'>
             Menampilkan daftar barang dalam keranjang <br />
-            Total barang: {cartQuantity} jenis barang <br />
-            Total Biaya:{' '}
-            {formatCurrency(
-              cartItems.reduce((total, cartItem) => {
-                const item = storeItems.find(
-                  (i) => i.id === cartItem.id
-                )
-                return total + (item?.price || 0) * cartItem.quantity
-              }, 0)
-            )}
+            Total barang: {cart.userCart.Barangs.length} jenis barang{' '}
+            <br />
+            Total Biaya: {formatCurrency(cart.totalHarga)}
           </p>
 
           <div className='flex flex-row gap-5'>
             <div className='w-7/12'>
-              {cartQuantity > 0 ? (
-                cartItems.map((item) => (
+              {cart.userCart.Barangs.length > 0 || true ? (
+                cart.userCart.Barangs.map((item) => (
                   <CartDetail key={item.id} {...item} />
                 ))
               ) : (
@@ -44,38 +110,43 @@ const Cart = () => {
             </div>
             <div className='w-5/12'>
               <div className='p-10 text-white bg-dark rounded-xl'>
-                {cartQuantity > 0 ? (
+                {cart.userCart.Barangs.length > 0 ? (
                   <>
                     <p className='text-2xl mb-3'>Rincian Keranjang</p>
                     <ul>
                       <li className='flex justify-between items-start bg-transparent text-white p-0'>
                         <p>Total Barang</p>
                         <p className='font-semibold'>
-                          {cartQuantity} Barang
+                          {cart.userCart.Barangs.length} Barang
                         </p>
                       </li>
                       <li className='flex justify-between items-start bg-transparent text-white p-0'>
                         <p>Total Berat</p>
-                        <p className='font-semibold'>1 Kg</p>
-                      </li>
-                      <li className='flex justify-between items-start bg-transparent text-white p-0'>
-                        <p>Total Belanja</p>
                         <p className='font-semibold'>
-                          {formatCurrency(
-                            cartItems.reduce((total, cartItem) => {
-                              const item = storeItems.find(
+                          {cart.userCart.Barangs.reduce(
+                            (total, cartItem) => {
+                              const item = cart.userCart.Barangs.find(
                                 (i) => i.id === cartItem.id
                               )
                               return (
                                 total +
-                                (item?.price || 0) * cartItem.quantity
+                                (item?.berat || 0) *
+                                  cart.userCart.Barangs.length
                               )
-                            }, 0)
-                          )}
+                            },
+                            0
+                          )}{' '}
+                          gram
+                        </p>
+                      </li>
+                      <li className='flex justify-between items-start bg-transparent text-white p-0'>
+                        <p>Total Belanja</p>
+                        <p className='font-semibold'>
+                          {formatCurrency(cart.totalHarga)}
                         </p>
                       </li>
                     </ul>
-                    <form className='my-4'>
+                    <form className='my-4' onSubmit={handleSubmit}>
                       <label className='block text-md mb-2 font-semibold'>
                         Alamat
                       </label>
@@ -83,15 +154,16 @@ const Cart = () => {
                         className='focus:ring-2 focus:ring-black focus:outline-none appearance-none w-full text-sm leading-6 text-slate-900 placeholder-slate-400 rounded-md py-2 pl-5 ring-1 ring-slate-200 shadow-sm h-36'
                         aria-label='Alamat'
                         placeholder='*Tulis secara lengkap, kecamatan, kota, dan provinsi'
-                        // value={akun.nama}
-                        // onChange={(e) =>
-                        //   setAkun({ ...akun, nama: e.target.value })
-                        // }
+                        value={alamat}
+                        onChange={(e) => setAlamat(e.target.value)}
                       />
+                      <button
+                        className='bg-blue-700 hover:bg-blue-900 w-full rounded-xl font-bold text-2xl py-1 mt-10'
+                        type='submit'
+                      >
+                        Pesan
+                      </button>
                     </form>
-                    <button className='bg-blue-700 hover:bg-blue-900 w-full rounded-xl font-bold text-2xl py-1 mt-10'>
-                      Pesan
-                    </button>
                   </>
                 ) : (
                   <>

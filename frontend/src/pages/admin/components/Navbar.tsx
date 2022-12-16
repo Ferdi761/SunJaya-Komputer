@@ -2,10 +2,10 @@ import { Transition, Menu } from '@headlessui/react'
 import { Fragment } from 'react'
 import { BsChatTextFill } from 'react-icons/bs'
 import { Link, useNavigate } from 'react-router-dom'
-import { useStore } from '../../../util/useStore'
+import { userStorage } from '../../../util/userStorage'
 
 const Navbar = () => {
-  const { setUser } = useStore()
+  const { setUser } = userStorage()
 
   const navigate = useNavigate()
 

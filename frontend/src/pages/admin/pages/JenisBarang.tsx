@@ -33,7 +33,7 @@ const JenisBarang = () => {
     fetch('http://localhost:8000/api/jenis')
       .then(async (res) => {
         const data = await res.json()
-        setJenis(data)
+        setJenis(data.data)
       })
       .catch((err) => {
         console.log(err)

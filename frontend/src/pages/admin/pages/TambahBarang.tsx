@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { IoIosArrowDown } from 'react-icons/io'
 import { useNavigate } from 'react-router-dom'
-import { useStore } from '../../../util/useStore'
+import { useStore } from '../../../util/userStorage'
 
 const TambahBarang = () => {
   const [barang, setBarang] = useState({

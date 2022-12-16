@@ -1,13 +1,44 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { useShoppingCart } from '../util/ShoppingCartContext'
 import { FaShoppingCart } from 'react-icons/fa'
 import { AiOutlineSearch } from 'react-icons/ai'
 import { RiShoppingBagFill } from 'react-icons/ri'
 import { BsChatTextFill } from 'react-icons/bs'
-import { useStore } from '../util/useStore'
+import { userStorage } from '../util/userStorage'
+import { cartStorage } from '../util/cartStorage'
 
 const Navbar = () => {
+  const [cart, setCart] = useState({
+    userCart: {
+      id: 0,
+      nama: '',
+      email: '',
+      passwordHashed: '',
+      izin: '',
+      noTelp: '',
+      Barangs: [
+        {
+          stok: 0,
+          id: 0,
+          nama: '',
+          harga: 0,
+          deskripsi: '',
+          merek: '',
+          berat: 0,
+          jenisId: 0,
+          Keranjang: {
+            jumlah: 0,
+            akunId: 0,
+            BarangId: 0,
+          },
+        },
+      ],
+    },
+    totalHarga: 0,
+  })
+
+  const [q, setQ] = useState('')
+
   const location = useLocation()
 
   if (
@@ -17,18 +48,35 @@ const Navbar = () => {
   )
     return null
 
-  const { user, clearUser, getUser } = useStore()
+  const { user, clearUser, getUser } = userStorage()
+  const { cartStatus, changeCart } = cartStorage()
+
   const navigate = useNavigate()
 
   useEffect(() => {
     getUser()
-  }, [])
-
-  const { cartQuantity } = useShoppingCart()
+    fetch('http://localhost:8000/api/keranjang', {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${user?.token}`,
+      },
+    })
+      .then(async (res) => {
+        const data = await res.json()
+        setCart(data.data)
+        changeCart(!cartStatus)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }, [cartStatus])
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    navigate('/search')
+
+    if (q !== '') {
+      navigate(`/search?q=${q}`)
+    }
   }
 
   return (
@@ -42,8 +90,8 @@ const Navbar = () => {
           type='text'
           aria-label='Pencarian...'
           placeholder='Pencarian...'
-          // value={q}
-          // onChange={(e) => setQ(e.target.value)}
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
         />
         <button
           type='submit'
@@ -55,9 +103,9 @@ const Navbar = () => {
       <Link to='/keranjang'>
         <button className='text-white text-lg font-semibold p-4 rounded-md hover:bg-gray-700 relative'>
           <FaShoppingCart />
-          {cartQuantity > 0 && (
+          {cart.userCart.Barangs.length > 0 && (
             <div className='rounded-full bg-red-600 flex justify-center items-center text-white w-7 h-7 absolute bottom-0 right-0 translate-x-1/4 translate-y-1/4'>
-              {cartQuantity}
+              {cart.userCart.Barangs.length}
             </div>
           )}
         </button>

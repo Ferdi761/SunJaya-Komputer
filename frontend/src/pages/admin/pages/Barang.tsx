@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { HiPencil, HiTrash } from 'react-icons/hi'
 import { formatCurrency } from '../../../util/formatCurrency'
-import { useStore } from '../../../util/useStore'
+import { useStore } from '../../../util/userStorage'
 
 const Barang = () => {
   const [barang, setBarang] = useState([

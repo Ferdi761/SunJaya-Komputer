@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { io } from 'socket.io-client'
 import { ChatSocketController } from '../../../util/ChatSocketController'
-import { useStore } from '../../../util/useStore'
+import { useStore } from '../../../util/userStorage'
 import Chat from './Chat'
 
 const ChatPage = () => {

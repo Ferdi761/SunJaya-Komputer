@@ -1,6 +1,6 @@
 import { Transition, Dialog } from '@headlessui/react'
 import { FormEvent, Fragment } from 'react'
-import { useStore } from '../../../util/useStore'
+import { useStore } from '../../../util/userStorage'
 
 interface ModalProps {
   modal: boolean

@@ -1,6 +1,6 @@
 import { FormEvent, useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { useStore } from '../../../util/useStore'
+import { useStore } from '../../../util/userStorage'
 
 const EditAkun = () => {
   const [akun, setAkun] = useState({

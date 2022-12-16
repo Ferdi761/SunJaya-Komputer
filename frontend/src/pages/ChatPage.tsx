@@ -2,12 +2,11 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { io } from 'socket.io-client'
 import { ChatSocketController } from '../util/ChatSocketController'
-import { useStore } from '../util/useStore'
+import { userStorage } from '../util/userStorage'
 
 const ChatPage = () => {
-
   const [chat, setChat] = useState('')
-  const { user } = useStore()
+  const { user } = userStorage()
 
   if (!user) {
     return (
@@ -22,7 +21,6 @@ const ChatPage = () => {
       </div>
     )
   } else {
-    
     const chatSocketController = new ChatSocketController(
       io('http://localhost:8000').connect()
     )
@@ -33,30 +31,32 @@ const ChatPage = () => {
         // munculkan teks yang dikirim sendiri dengan penanda sudah di read
       }
     )
-  
+
     chatSocketController.addCallback(
       'message self unread',
       function (message: string) {
         // munculkan teks yang dikirim sendiri dengan penanda belum di read
       }
     )
-  
+
     chatSocketController.addCallback(
       'message to',
       function (message: string) {
         // munculkan teks yang dikirim dari toko (lawan bicara)
       }
     )
-  
+
     chatSocketController.addCallback(
       'aktif',
       function (message: string) {
         // mengganti tanda apakah ada karyawan toko yang aktif atau tidak
-        let aktif = document.getElementById('aktif') as HTMLParagraphElement
+        let aktif = document.getElementById(
+          'aktif'
+        ) as HTMLParagraphElement
         aktif.innerHTML = message
       }
     )
-  
+
     chatSocketController.addCallback(
       'readall',
       function (message: string) {
@@ -76,7 +76,7 @@ const ChatPage = () => {
           <div className='flex flex-col h-full'>
             <div className='flex flex-col py-5 px-10 border-b border-dark'>
               <p className='font-bold text-2xl'>Sun Jaya Komputer</p>
-              <p id="aktif">Aktif</p>
+              <p id='aktif'>Aktif</p>
             </div>
             <div id='chats' className='flex-grow'></div>
             <form

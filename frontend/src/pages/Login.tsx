@@ -1,9 +1,9 @@
 import { useState, FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useStore } from '../util/useStore'
+import { userStorage } from '../util/userStorage'
 
 const Login = () => {
-  const { setUser } = useStore()
+  const { setUser } = userStorage()
   const [akun, setAkun] = useState({ email: '', password: '' })
 
   const navigate = useNavigate()

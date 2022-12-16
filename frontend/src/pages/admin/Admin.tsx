@@ -23,7 +23,7 @@ import PesananDikirim from './pages/detail-pesanan/PesananDikirim'
 import PesananSelesai from './pages/detail-pesanan/PesananSelesai'
 import ChatPage from './pages/ChatPage'
 
-import { useStore } from '../../util/useStore'
+import { useStore } from '../../util/userStorage'
 import EditBarang from './pages/EditBarang'
 
 const Admin = () => {

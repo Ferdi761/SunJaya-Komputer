@@ -1,5 +1,3 @@
-import { useRef } from 'react'
-
 import Card from '../components/home/Card'
 import Category from '../components/home/Category'
 import ProductsForYou from '../components/home/ProductsForYou'
@@ -9,12 +7,6 @@ import caseImage from '../assets/img/case.png'
 import monitor from '../assets/img/monitor.png'
 
 const Home = () => {
-  const ref = useRef<HTMLDivElement>(null)
-
-  const handleClick = () => {
-    ref.current?.scrollIntoView({ behavior: 'smooth' })
-  }
-
   return (
     <>
       <section className='flex flex-row gap-10 h-screen bg-primary'>
@@ -93,7 +85,7 @@ const Home = () => {
       </section>
       <Card />
       <Category />
-      <div ref={ref}>
+      <div>
         <ProductsForYou />
       </div>
     </>
