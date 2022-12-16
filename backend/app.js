@@ -46,6 +46,8 @@ require('dotenv').config()
 // app.use(cors(corsOptions));
 app.use(cors())
 
+app.use(express.static('public'))
+
 // postgres db Connection
 const { database, username, password, host, dialect } =
   require('./database/config/config.json').development

@@ -1,23 +1,35 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { IoIosArrowDown } from 'react-icons/io'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useStore } from '../../../util/useStore'
 
-const TambahBarang = () => {
+const EditBarang = () => {
   const [barang, setBarang] = useState({
-    nama: '',
-    harga: '',
-    deskripsi: '',
-    merek: '',
-    berat: '',
-    jenis: '',
-    foto: {
-      preview: '',
-      data: '',
+    id: '',
+    foto: '',
+    BarangId: '',
+    Barang: {
+      stok: '',
+      id: '',
+      nama: '',
+      harga: '',
+      deskripsi: '',
+      merek: '',
+      berat: '',
+      jenisId: '',
+      JenisBarang: {
+        id: '',
+        nama: '',
+      },
     },
   })
 
-  const [jenis, setJenis] = useState([
+  const [foto, setFoto] = useState({
+    preview: '',
+    data: '',
+  })
+
+  const [JenisBarang, setJenisBarang] = useState([
     {
       id: 0,
       nama: '',
@@ -25,7 +37,24 @@ const TambahBarang = () => {
   ])
 
   const navigate = useNavigate()
+  const location = useLocation()
+
   const { user } = useStore()
+
+  useEffect(() => {
+    fetch(
+      `http://localhost:8000/api/barang/${
+        location.pathname.split('/')[3]
+      }`
+    )
+      .then(async (res) => {
+        const data = await res.json()
+        setBarang(data.data)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }, [])
 
   useEffect(() => {
     fetch('http://localhost:8000/api/jenis', {
@@ -36,7 +65,7 @@ const TambahBarang = () => {
     })
       .then(async (res) => {
         const data = await res.json()
-        setJenis(data.data)
+        setJenisBarang(data.data)
       })
       .catch((err) => {
         console.log(err)
@@ -48,29 +77,37 @@ const TambahBarang = () => {
       preview: URL.createObjectURL(e.target.files[0]),
       data: e.target.files[0],
     }
-    setBarang({ ...barang, foto })
+    setFoto(foto)
   }
 
   const handleSubmit = (e: any) => {
     e.preventDefault()
 
     const formData = new FormData()
-    formData.append('namaBarang', barang.nama)
-    formData.append('harga', barang.harga)
-    formData.append('deskripsi', barang.deskripsi)
-    formData.append('merek', barang.merek)
-    formData.append('berat', barang.berat)
-    formData.append('jenis', barang.jenis)
-    formData.append('foto', barang.foto.data)
+    formData.append('namaBarang', barang.Barang.nama)
+    formData.append('merek', barang.Barang.merek)
+    formData.append('berat', barang.Barang.berat)
+    formData.append('jenis', barang.Barang.JenisBarang.nama)
+    formData.append('harga', barang.Barang.harga)
+    formData.append('deskripsi', barang.Barang.deskripsi)
     formData.append('stok', '100')
+    formData.append(
+      'foto',
+      foto.data === '' ? barang.foto : foto.data
+    )
 
-    fetch('http://localhost:8000/api/barang/tambah', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${user?.token}`,
-      },
-      body: formData,
-    })
+    fetch(
+      `http://localhost:8000/api/barang/edit/${
+        location.pathname.split('/')[3]
+      }`,
+      {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${user?.token}`,
+        },
+        body: formData,
+      }
+    )
       .then(async (res) => {
         const data = await res.json()
         console.log(data)
@@ -102,9 +139,12 @@ const TambahBarang = () => {
             type='text'
             aria-label='Nama'
             placeholder='Nama'
-            value={barang.nama}
+            value={barang.Barang.nama}
             onChange={(e) =>
-              setBarang({ ...barang, nama: e.target.value })
+              setBarang({
+                ...barang,
+                Barang: { ...barang.Barang, nama: e.target.value },
+              })
             }
           />
         </div>
@@ -121,9 +161,12 @@ const TambahBarang = () => {
               className='focus:ring-2 focus:ring-black focus:outline-none appearance-none w-full text-sm leading-6 text-slate-900 placeholder-slate-400 rounded-md py-2 pl-10 ring-1 ring-slate-200 shadow-sm'
               type='number'
               aria-label='Harga'
-              value={barang.harga}
+              value={barang.Barang.harga}
               onChange={(e) =>
-                setBarang({ ...barang, harga: e.target.value })
+                setBarang({
+                  ...barang,
+                  Barang: { ...barang.Barang, harga: e.target.value },
+                })
               }
             />
           </div>
@@ -137,9 +180,15 @@ const TambahBarang = () => {
             className='focus:ring-2 focus:ring-black focus:outline-none appearance-none w-full text-sm leading-6 text-slate-900 placeholder-slate-400 rounded-md py-2 pl-5 ring-1 ring-slate-200 shadow-sm h-36'
             aria-label='Deskripsi'
             placeholder='Deskripsi'
-            value={barang.deskripsi}
+            value={barang.Barang.deskripsi}
             onChange={(e) =>
-              setBarang({ ...barang, deskripsi: e.target.value })
+              setBarang({
+                ...barang,
+                Barang: {
+                  ...barang.Barang,
+                  deskripsi: e.target.value,
+                },
+              })
             }
           />
         </div>
@@ -153,9 +202,12 @@ const TambahBarang = () => {
             type='text'
             aria-label='Merek'
             placeholder='Merek'
-            value={barang.merek}
+            value={barang.Barang.merek}
             onChange={(e) =>
-              setBarang({ ...barang, merek: e.target.value })
+              setBarang({
+                ...barang,
+                Barang: { ...barang.Barang, merek: e.target.value },
+              })
             }
           />
         </div>
@@ -172,11 +224,11 @@ const TambahBarang = () => {
               className='focus:ring-2 focus:ring-black focus:outline-none appearance-none w-full text-sm leading-6 text-slate-900 placeholder-slate-400 rounded-md py-2 pl-5 ring-1 ring-slate-200 shadow-sm'
               type='number'
               aria-label='Berat'
-              value={barang.berat}
+              value={barang.Barang.berat}
               onChange={(e) =>
                 setBarang({
                   ...barang,
-                  berat: e.target.value,
+                  Barang: { ...barang.Barang, berat: e.target.value },
                 })
               }
             />
@@ -194,12 +246,21 @@ const TambahBarang = () => {
             <select
               className='focus:ring-2 focus:ring-black focus:outline-none appearance-none w-full text-sm leading-6 text-slate-900 placeholder-slate-400 rounded-md py-2 pl-5 ring-1 ring-slate-200 shadow-sm'
               aria-label='jenis'
+              value={barang.Barang.JenisBarang.nama}
               onChange={(e) =>
-                setBarang({ ...barang, jenis: e.target.value })
+                setBarang({
+                  ...barang,
+                  Barang: {
+                    ...barang.Barang,
+                    JenisBarang: {
+                      ...barang.Barang.JenisBarang,
+                      nama: e.target.value,
+                    },
+                  },
+                })
               }
             >
-              <option value=''>Pilih Jenis Barang</option>
-              {jenis.map((item) => (
+              {JenisBarang.map((item) => (
                 <option key={item.id} value={item.nama}>
                   {item.nama}
                 </option>
@@ -212,13 +273,10 @@ const TambahBarang = () => {
           <label className='block text-gray-700 text-md mb-2 font-semibold'>
             Foto Barang
           </label>
-          {barang.foto.preview !== '' && barang.foto.data !== '' && (
-            <img
-              src={barang.foto.preview}
-              className='w-1/3'
-              alt='foto'
-            />
-          )}
+          {(foto.preview !== '' && foto.data !== '') ||
+            (barang.foto !== '' && (
+              <img src={foto.preview} className='w-1/3' alt='foto' />
+            ))}
         </div>
 
         <input
@@ -241,4 +299,4 @@ const TambahBarang = () => {
   )
 }
 
-export default TambahBarang
+export default EditBarang
