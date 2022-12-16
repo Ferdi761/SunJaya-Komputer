@@ -22,14 +22,13 @@ module.exports = (sequelize, DataTypes) => {
     urutan: DataTypes.INTEGER,
     teks: DataTypes.TEXT,
     dariPelanggan: DataTypes.BOOLEAN,
-    dibaca: DataTypes.BOOLEAN
+    dibaca: DataTypes.BOOLEAN,
+    dibuatPada: DataTypes.DATE,
   }, {
     sequelize,
     modelName: 'Chat',
     tableName: 'Chat',
-    timestamps: true,
-    updatedAt: false,
-    createdAt: 'dibuatPada'
+    timestamps: false,
   });
   return Chat;
 };
