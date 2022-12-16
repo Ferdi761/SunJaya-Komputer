@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { HiPencil, HiTrash } from 'react-icons/hi'
 import { Link } from 'react-router-dom'
-import { useStore } from '../../../util/userStorage'
+import { userStorage } from '../../../util/userStorage'
 
 const Akun = () => {
   const [akun, setAkun] = useState([
@@ -21,7 +21,7 @@ const Akun = () => {
   const [q, setQ] = useState('')
   const [searchParam] = useState(['nama', 'email', 'noTelp'])
 
-  const { user } = useStore()
+  const { user } = userStorage()
 
   const search = (rows: any) => {
     return rows.filter((row: any) =>

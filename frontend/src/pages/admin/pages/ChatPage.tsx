@@ -2,12 +2,12 @@ import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { io } from 'socket.io-client'
 import { ChatSocketController } from '../../../util/ChatSocketController'
-import { useStore } from '../../../util/userStorage'
+import { userStorage } from '../../../util/userStorage'
 import Chat from './Chat'
 
 const ChatPage = () => {
   const [chat, setChat] = useState('')
-  const { user } = useStore()
+  const { user } = userStorage()
   const location = useLocation()
 
   if (!user) {

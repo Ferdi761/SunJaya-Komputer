@@ -113,7 +113,7 @@ const tambahKeKeranjang = async (req, res) => {
     const addToCart = await Keranjang.create({
       BarangId: idBarang,
       akunId: decoded.id,
-      jumlah: jumlah,
+      jumlah: 1,
     })
 
     res

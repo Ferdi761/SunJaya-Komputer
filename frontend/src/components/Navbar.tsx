@@ -53,23 +53,23 @@ const Navbar = () => {
 
   const navigate = useNavigate()
 
-  useEffect(() => {
-    getUser()
-    fetch('http://localhost:8000/api/keranjang', {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${user?.token}`,
-      },
-    })
-      .then(async (res) => {
-        const data = await res.json()
-        setCart(data.data)
-        changeCart(!cartStatus)
-      })
-      .catch((err) => {
-        console.log(err)
-      })
-  }, [cartStatus])
+  // useEffect(() => {
+  //   getUser()
+  //   fetch('http://localhost:8000/api/keranjang', {
+  //     method: 'GET',
+  //     headers: {
+  //       Authorization: `Bearer ${user?.token}`,
+  //     },
+  //   })
+  //     .then(async (res) => {
+  //       const data = await res.json()
+  //       setCart(data.data)
+  //       changeCart(!cartStatus)
+  //     })
+  //     .catch((err) => {
+  //       console.log(err)
+  //     })
+  // }, [cartStatus])
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()

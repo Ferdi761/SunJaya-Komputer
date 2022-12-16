@@ -1,6 +1,6 @@
 import { FormEvent, useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { useStore } from '../../../util/userStorage'
+import { userStorage } from '../../../util/userStorage'
 
 const EditAkun = () => {
   const [akun, setAkun] = useState({
@@ -14,7 +14,7 @@ const EditAkun = () => {
   })
 
   const navigate = useNavigate()
-  const { user } = useStore()
+  const { user } = userStorage()
   const location = useLocation()
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {

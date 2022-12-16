@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { IoIosArrowDown } from 'react-icons/io'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { useStore } from '../../../util/userStorage'
+import { userStorage } from '../../../util/userStorage'
 
 const EditBarang = () => {
   const [barang, setBarang] = useState({
@@ -39,7 +39,7 @@ const EditBarang = () => {
   const navigate = useNavigate()
   const location = useLocation()
 
-  const { user } = useStore()
+  const { user } = userStorage()
 
   useEffect(() => {
     fetch(

@@ -23,11 +23,11 @@ import PesananDikirim from './pages/detail-pesanan/PesananDikirim'
 import PesananSelesai from './pages/detail-pesanan/PesananSelesai'
 import ChatPage from './pages/ChatPage'
 
-import { useStore } from '../../util/userStorage'
+import { userStorage } from '../../util/userStorage'
 import EditBarang from './pages/EditBarang'
 
 const Admin = () => {
-  const { user } = useStore()
+  const { user } = userStorage()
 
   if (!user) {
     return <h1>Anda tidak memiliki akses ke halaman ini</h1>

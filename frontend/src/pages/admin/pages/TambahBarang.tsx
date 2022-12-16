@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { IoIosArrowDown } from 'react-icons/io'
 import { useNavigate } from 'react-router-dom'
-import { useStore } from '../../../util/userStorage'
+import { userStorage } from '../../../util/userStorage'
 
 const TambahBarang = () => {
   const [barang, setBarang] = useState({
@@ -25,7 +25,7 @@ const TambahBarang = () => {
   ])
 
   const navigate = useNavigate()
-  const { user } = useStore()
+  const { user } = userStorage()
 
   useEffect(() => {
     fetch('http://localhost:8000/api/jenis', {
