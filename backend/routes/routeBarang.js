@@ -5,15 +5,12 @@ const path = require('path')
 // setup multer storage
 const multer = require('multer')
 
-let destFotoBarang = path.join(
-  __dirname,
-  '../../frontend/src/assets/img/produk'
-)
+let destFotoBarang = path.join(__dirname, './public/produk')
 // console.log(destFotoBarang);
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, destFotoBarang)
+    cb(null, './public/produk')
   },
   filename: (req, file, cb) => {
     const namaFile = `${Date.now()}-${file.originalname}`

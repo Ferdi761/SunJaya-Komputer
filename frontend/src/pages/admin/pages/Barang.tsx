@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, Navigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { HiPencil, HiTrash } from 'react-icons/hi'
 import { formatCurrency } from '../../../util/formatCurrency'
 import { useStore } from '../../../util/useStore'
@@ -48,7 +48,6 @@ const Barang = () => {
       .then(async (res) => {
         const data = await res.json()
         setBarang(data)
-        console.log(data)
       })
       .catch((err) => {
         console.log(err)
@@ -108,51 +107,53 @@ const Barang = () => {
       </div>
 
       <div className='grid grid-cols-2 gap-10'>
-        {barang.map((item: any) => (
-          <div
-            className='bg-light flex flex-row gap-10 p-5'
-            key={item.id}
-          >
-            <img
-              src={item.foto}
-              alt={item.Barang.nama}
-              className='w-24 h-24'
-            />
-            <div className='flex flex-col'>
-              <h3 className='font-semibold text-lg'>
-                {item.Barang.nama}
-              </h3>
-              <div className='flex flex-row justify-between w-3/4'>
-                <p>Jenis Barang: {item.Barang.JenisBarang.nama} </p>
-                <p>Merk: {item.Barang.merek} </p>
-              </div>
-              <div className='flex flex-row justify-between w-3/4'>
-                <p>Harga: {formatCurrency(item.Barang.harga)} </p>
-                <p>Berat: {item.Barang.berat} gram</p>
-              </div>
-              <div className='flex flex-row justify-between w-3/4'>
-                <p>Stok: {item.Barang.stok} buah</p>
-                <p>ID: #{item.Barang.id}</p>
-              </div>
-              <p className='font-semibold'>Deskripsi</p>
-              <p>{item.Barang.deskripsi}</p>
-              <div className='flex flex-row gap-10 justify-center mt-5'>
-                <Link
-                  to={`/admin/edit-barang/${item.BarangId}`}
-                  className='text-blue-700 flex flex-row gap-2 text-lg'
-                >
-                  <HiPencil className='w-6 h-6' /> edit
-                </Link>
-                <button
-                  className='bg-pink-500 hover:bg-pink-600 rounded-lg p-2'
-                  onClick={() => handleDelete(item.BarangId)}
-                >
-                  <HiTrash className='text-white w-6 h-6' />
-                </button>
+        {barang.map((item: any) => {
+          return (
+            <div
+              className='bg-light flex flex-row gap-10 p-5'
+              key={item.id}
+            >
+              <img
+                src={`http://localhost:8000/produk/${
+                  item.foto.split('\\')[2] || item.foto
+                }`}
+                alt={item.Barang.nama}
+                className='w-24 h-24'
+              />
+              <div className='flex flex-col'>
+                <h3 className='font-semibold text-xl mb-4'>
+                  {item.Barang.nama}
+                </h3>
+                <div className='grid grid-cols-2 gap-5'>
+                  <p>Jenis Barang: {item.Barang.JenisBarang.nama} </p>
+                  <p>Merk: {item.Barang.merek} </p>
+                  <p>Harga: {formatCurrency(item.Barang.harga)} </p>
+                  <p>Berat: {item.Barang.berat} gram</p>
+                  <p>Stok: {item.Barang.stok} buah</p>
+                  <p>ID: #{item.Barang.id}</p>
+                  <div>
+                    <p className='font-semibold'>Deskripsi</p>
+                    <p>{item.Barang.deskripsi}</p>
+                  </div>
+                </div>
+                <div className='flex flex-row gap-10 justify-center items-center mt-5'>
+                  <Link
+                    to={`/admin/edit-barang/${item.BarangId}`}
+                    className='text-blue-700 flex flex-row gap-2 text-lg'
+                  >
+                    <HiPencil className='w-6 h-6' /> edit
+                  </Link>
+                  <button
+                    className='bg-pink-500 hover:bg-pink-600 rounded-lg p-2'
+                    onClick={() => handleDelete(item.BarangId)}
+                  >
+                    <HiTrash className='text-white w-6 h-6' />
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
     </div>
   )

@@ -71,6 +71,7 @@ app.use('/api/jenis', routerJenisBarang)
 app.use('/api/rekening', routerRekening)
 app.use('/api/keranjang', routerKeranjang)
 app.use('/api/pemesanan', routerPemesanan)
+app.use(express.static('public'))
 
 const start = async () => {
   try {
