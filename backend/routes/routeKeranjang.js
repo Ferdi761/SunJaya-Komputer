@@ -15,6 +15,6 @@ routerKeranjang
   .route('/:id')
     .delete(loginCheck, hapusDariKeranjang)
     .put(loginCheck, ubahJumlahBarang)
-// routerKeranjang.route('/allCart').get(allCartList)
+routerKeranjang.route('/allCart').get(allCartList)
 
 module.exports = routerKeranjang

@@ -14,6 +14,9 @@ module.exports = {
       },
       totalHarga: {
         type: Sequelize.INTEGER
+      },
+      garansiExpired: {
+        type: Sequelize.BOOLEAN
       }
     });
   },

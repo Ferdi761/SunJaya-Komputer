@@ -26,8 +26,6 @@ const checkout = async (req, res) => {
         biayaPengiriman,
     } = req.body;
 
-    // transaction and export
-
     try {
         const userCart = await Akun.findOne({
             where: { id: decoded.id },
@@ -36,9 +34,6 @@ const checkout = async (req, res) => {
         if (!userCart) throw 'Pengguna tidak ditemukan!';
 
         const { Barangs } = userCart;
-        // const barang = await Barang.findAll({
-
-        // });
 
         let totalPriceItem = 0;
         for (let item in Barangs) {
@@ -57,7 +52,6 @@ const checkout = async (req, res) => {
                 alamatTujuan,
                 jasaPengiriman,
                 biayaPengiriman,
-                // Barang: [],
                 totalHargaBarang: totalPriceItem,
                 totalBiayaYangHarusDibayar: totalAll,
                 pembayaranLunas: false,
@@ -78,8 +72,6 @@ const checkout = async (req, res) => {
         });
         // console.log(dataBYD);
 
-        // add transaction
-        // t = await sequelize.transaction();
         dataBYD.forEach(async (item) => {
             await BarangYangDipesan.create(item);
             let barang = await Barang.findOne({
@@ -97,7 +89,6 @@ const checkout = async (req, res) => {
                 stok: updateStok
             });
         });
-        // await t.commit();
 
         await Keranjang.destroy({
             where: {
@@ -134,7 +125,7 @@ const checkout = async (req, res) => {
 
             // set ulang array menjadi nol
             dataBYD = [];
-        }, 50000);
+        }, 30000);
 
         res.status(200).json({
             status: "success",
@@ -210,6 +201,19 @@ const uploadBuktiBayar = async (req, res) => {
                 message: [err]
             })
             .end();
+    }
+};
+
+const pesananSelesai = async (req, res) => {
+    const logged = req.cookies.logged_account;
+    const decoded = jwt.verify(logged, 'jwtAkunId');
+    const { id } = req.params;
+
+    try {
+        
+    }
+    catch (err) {
+
     }
 };
 
@@ -460,15 +464,21 @@ const ubahStatusKirim = async (req, res) => {
 
         await pesanan.update({
             Pemesanan: {
-                tanggalKirim: today.getTime()
+                tanggalKirim: Date.now()
             }
         });
+
+        const thisDate = pesanan.Pemesanan.tanggalKirim;
+        const aDay = new Date(thisDate.getTime() + aWeek);
 
         console.log(pesanan.Pemesanan.tanggalKirim);
         console.log(pesanan.Pemesanan.tanggalKirim.getHours());
         console.log(pesanan.Pemesanan.tanggalKirim.getHours() + 2);
-        console.log(pesanan.Pemesanan.tanggalKirim.getTime());
-        console.log(Date.now());
+        console.log(thisDate.toLocaleString());
+        console.log(thisDate.valueOf() === aDay.valueOf());
+        // console.log((thisDate + (thisDate.getHours() + 2)).toLocaleString());
+        console.log(aDay.toLocaleString());
+        // console.log(Date.now());
         // console.log( + 240000);
 
         res

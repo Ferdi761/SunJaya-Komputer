@@ -64,7 +64,6 @@ const tolakGaransi = async (req, res) => {
 };
 
 module.exports = {
-
     ajukanGaransi,
     konfirmasiGaransi,
     tolakGaransi,

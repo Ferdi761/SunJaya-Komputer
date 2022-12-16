@@ -1,4 +1,4 @@
-const { Keranjang, Akun, Barang } = require('../database/models');
+const { Keranjang, Akun, Barang, FotoBarang } = require('../database/models');
 const jwt = require("jsonwebtoken");
 const { Op } = require("sequelize");
 
@@ -19,22 +19,33 @@ const allCartList = async (req, res) => {
 // daftar barang pelanggan di keranjang
 const daftarKeranjang = async (req, res) => {
     const logged = req.cookies.logged_account;
-    // decode cookie's token from jwt to get the id of Akun
     const decoded = jwt.verify(logged, 'jwtAkunId');
 
     try {
-        const userCart = await Akun.findOne({
-            where: { id: decoded.id },
-            include: Barang
+        // const akun = await Akun.findOne({
+        //     where: { id: decoded.id }
+        // });
+        // if (!akun) throw 'Pengguna tidak ditemukan!';
+
+        const daftarBarang = await FotoBarang.findAll({
+            include: {
+                model: Barang,
+                where: {
+                    id: { [Op.not]: null }
+                },
+                include: {
+                    model: Akun,
+                    where: {
+                        id: decoded.id
+                    }
+                }
+            }
         });
-        if (!userCart) throw 'Pengguna tidak ditemukan!';
 
-        const { Barangs } = userCart;
-
-        let totalPrice = 0;
-        for(let item in Barangs) {
-            totalPrice += Barangs[item].harga * Barangs[item].Keranjang.jumlah;
-        }
+        // let totalPrice = 0;
+        // for(let item in Barangs) {
+        //     totalPrice += Barangs[item].harga * Barangs[item].Keranjang.jumlah;
+        // }
         
         // const keranjang = await Keranjang.findAll({ where: { akunId: user.id } });
         // if (!keranjang) throw 'Keranjang tidak ditemukan!';
@@ -42,8 +53,8 @@ const daftarKeranjang = async (req, res) => {
         res.status(200).json({
             status: "success",
             data: { 
-                userCart,
-                totalHarga: totalPrice
+                daftarBarang,
+                // totalHarga: totalPrice
             }
         }).end();
     }
@@ -59,7 +70,7 @@ const tambahKeKeranjang = async (req, res) => {
     const idBarang = req.params.id;
     const decoded = jwt.verify(logged, 'jwtAkunId');
     
-    //const jumlah = req.body.jumlah;
+    const { jumlah } = req.body;
 
     try {
         const user = await Akun.findByPk(decoded.id);
@@ -68,16 +79,42 @@ const tambahKeKeranjang = async (req, res) => {
         const barang = await Barang.findByPk(idBarang);
         if (!barang) throw 'Barang tidak ditemukan!';
 
-        const addToCart = await Keranjang.create({
-            BarangId: barang.id,
-            akunId: user.id,
-            jumlah: 1
+        const findCart = await Keranjang.findOne({
+            where: {
+                [Op.and]: [
+                    { BarangId: barang.id },
+                    { akunId: user.id }
+                ]
+            },
         });
-        console.log(addToCart);
+
+        if (findCart) {
+            const currJumlah = findCart.getDataValue('jumlah');
+            
+            console.log(currJumlah);
+            findCart.update({
+                jumlah: currJumlah + parseInt(jumlah)
+            });
+
+            res.status(200).json({
+                status: "Success",
+                data: findCart
+            }).end();
+            return;
+        }
+
+        const addToCart = await Keranjang.create({
+            BarangId: idBarang,
+            akunId: decoded.id,
+            jumlah: jumlah
+        });
+
         res.status(200).json({
             status: "Success",
             data: addToCart
         }).end();
+
+        
     }
     catch (err) {
         console.log(err);
