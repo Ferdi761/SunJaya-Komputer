@@ -1,12 +1,14 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { io } from 'socket.io-client'
 import { ChatSocketController } from '../../../util/ChatSocketController'
 import { useStore } from '../../../util/useStore'
+import Chat from './Chat'
 
 const ChatPage = () => {
   const [chat, setChat] = useState('')
   const { user } = useStore()
+  const location = useLocation()
 
   if (!user) {
     return (
@@ -105,73 +107,53 @@ const ChatPage = () => {
     return (
       <div className='bg-primary h-screen text-white flex justify-center'>
         <div className='w-2/3 bg-black my-10 border border-dark flex'>
-          <div className='w-1/4 border-r-4 border-white'>
-            <div className='flex flex-col py-5 px-10 border-b border-dark'>
-              <p className='font-bold text-2xl'>Nama Pelanggan</p>
-              <p id='aktif'>Isi Chat Terakhir</p>
-            </div>
-            <div className='flex flex-col py-5 px-10 border-b border-dark'>
-              <p className='font-bold text-2xl'>Nama Pelanggan</p>
-              <p id='aktif'>Isi Chat Terakhir</p>
-            </div>
-            <div className='flex flex-col py-5 px-10 border-b border-dark'>
-              <p className='font-bold text-2xl'>Nama Pelanggan</p>
-              <p id='aktif'>Isi Chat Terakhir</p>
-            </div>
-            <div className='flex flex-col py-5 px-10 border-b border-dark'>
-              <p className='font-bold text-2xl'>Nama Pelanggan</p>
-              <p id='aktif'>Isi Chat Terakhir</p>
-            </div>
-          </div>
-          <div className='w-3/4 flex flex-col h-full'>
-            <div className='flex flex-col py-5 px-10 border-b border-dark'>
-              <p className='font-bold text-2xl'>Sun Jaya Komputer</p>
-              <p id='aktif'>Aktif</p>
-            </div>
-            <div id='chats' className='flex-grow'></div>
-            <form
-              className='flex'
-              onSubmit={function (e) {
-                e.preventDefault()
-
-                chatSocketController.sendMessage(chat)
-
-                setChat('')
-
-                console.log(chat)
-              }}
-            >
+          <div className='w-1/4 border-r-4 border-white flex flex-col py-5'>
+            <h1 className='text-center text-2xl font-semibold'>
+              Obrolan
+            </h1>
+            <form className='group relative w-full px-5 my-5'>
               <input
-                className='focus:ring-2 focus:ring-black focus:outline-none appearance-none w-11/12 text-sm leading-6 text-slate-900 placeholder-primary rounded-md py-2 pl-5 ring-1 ring-slate-200 shadow-sm bg-formInput'
+                className='focus:ring-2 focus:ring-white focus:outline-none appearance-none w-full text-sm leading-6 text-white placeholder-slate-200 rounded-md py-2 pl-10 ring-1 ring-black shadow-sm bg-dark'
                 type='text'
-                id='chat-input'
-                value={chat}
-                onChange={(e) => setChat(e.target.value)}
-                // onKeyDown={function (e) {
-                //   if (e.key == 'Enter') {
-                //     let chatText = (
-                //       document.getElementById(
-                //         'chat-input'
-                //       ) as HTMLInputElement
-                //     ).value
-                //     ;(
-                //       document.getElementById(
-                //         'chat-input'
-                //       ) as HTMLInputElement
-                //     ).value = ''
-                //     chatSocketController.sendMessage(chatText)
-                //     console.log(chatSocketController)
-                //   }
-                // }}
+                aria-label='Cari Obrolan'
+                placeholder='Cari Obrolan'
+                // value={q}
+                // onChange={(e) => setQ(e.target.value)}
               />
-              <button
-                className='bg-blue-700 w-1/12 rounded-lg'
-                type='submit'
+              <svg
+                width='20'
+                height='20'
+                fill='currentColor'
+                className='absolute left-6 top-1/2 -mt-2.5 text-slate-200 pointer-events-none group-focus-within:text-white'
+                aria-hidden='true'
               >
-                Send
-              </button>
+                <path
+                  fillRule='evenodd'
+                  clipRule='evenodd'
+                  d='M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z'
+                />
+              </svg>
             </form>
+            <Link
+              to={`/admin/chat/12`}
+              className={`flex flex-col py-5 px-5 ${
+                location.pathname === '/admin/chat/12'
+                  ? 'bg-dark'
+                  : 'hover:bg-dark'
+              }`}
+            >
+              <p className='font-medium text-lg'>Nama Pelanggan</p>
+              <p id='aktif' className='text-sm text-gray-400'>
+                Isi Chat Terakhir
+              </p>
+            </Link>
           </div>
+          <Chat
+            chatSocketController={chatSocketController}
+            chat={chat}
+            setChat={setChat}
+            location={location}
+          />
         </div>
       </div>
     )

@@ -30,7 +30,7 @@ const Navbar = () => {
             Garansi
           </button>
         </Link>
-        <Link to='/admin/chat'>
+        <Link to='/admin/chat/0'>
           <button className='text-white text-lg font-semibold p-4 rounded-md hover:bg-gray-700'>
             <BsChatTextFill />
           </button>

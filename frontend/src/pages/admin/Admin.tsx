@@ -90,7 +90,7 @@ const Admin = () => {
             <Route path='/edit-akun/:id' element={<EditAkun />} />
             <Route path='/rekening' element={<Rekening />} />
             <Route path='/jenis-barang' element={<JenisBarang />} />
-            <Route path='/chat' element={<ChatPage />} />
+            <Route path='/chat/:id' element={<ChatPage />} />
           </Routes>
         </>
       )
