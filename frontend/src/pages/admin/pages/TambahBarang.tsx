@@ -1,5 +1,4 @@
-import { Listbox, Transition } from '@headlessui/react'
-import { useState, useEffect, Fragment } from 'react'
+import { useState, useEffect } from 'react'
 import { IoIosArrowDown } from 'react-icons/io'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../../../util/useStore'
@@ -24,8 +23,6 @@ const TambahBarang = () => {
       nama: '',
     },
   ])
-
-  const [jenisSelected, setJenisSelected] = useState(jenis[0])
 
   const navigate = useNavigate()
   const { user } = useStore()
@@ -190,52 +187,6 @@ const TambahBarang = () => {
           <label className='block text-gray-700 text-md mb-2 font-semibold'>
             Jenis Barang
           </label>
-          {/* <Listbox value={jenisSelected} onChange={setJenisSelected}>
-            <div className='relative mt-1'>
-              <Listbox.Button className='relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm border'>
-                <span className='block truncate'>
-                  {jenisSelected.nama}
-                </span>
-                <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
-                  <IoIosArrowDown />
-                </span>
-              </Listbox.Button>
-              <Transition
-                as={Fragment}
-                leave='transition ease-in duration-100'
-                leaveFrom='opacity-100'
-                leaveTo='opacity-0'
-              >
-                <Listbox.Options className='absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm'>
-                  {jenis.map((item) => (
-                    <Listbox.Option
-                      key={item.id}
-                      className={({ active }) =>
-                        `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                          active
-                            ? 'bg-amber-100 text-amber-900'
-                            : 'text-gray-900'
-                        }`
-                      }
-                      value={item.nama}
-                    >
-                      {({ selected }) => (
-                        <>
-                          <span
-                            className={`block truncate ${
-                              selected ? 'font-medium' : 'font-normal'
-                            }`}
-                          >
-                            {item.nama}
-                          </span>
-                        </>
-                      )}
-                    </Listbox.Option>
-                  ))}
-                </Listbox.Options>
-              </Transition>
-            </div>
-          </Listbox> */}
           <div className='relative group'>
             <span className='absolute right-3 top-1/2 -mt-2 text-slate-400 pointer-events-none group-focus-within:text-black'>
               <IoIosArrowDown />

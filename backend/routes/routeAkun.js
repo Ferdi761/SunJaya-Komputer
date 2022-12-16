@@ -1,16 +1,22 @@
-const express = require("express");
-const routerAkun = express.Router();
+const express = require('express')
+const routerAkun = express.Router()
 
 const {
-    listAkun,
-    ubahDataAkun,
-    ubahDataAdmin
-} = require('../controllers/controllerAkun');
-const isAdmin = require('../middlewares/isAdmin');
-const loginCheck = require('../middlewares/loginCheck');
+  listAkun,
+  ubahDataAkun,
+  ubahDataAdmin,
+  listKaryawan,
+  hapusAkun,
+} = require('../controllers/controllerAkun')
+const isAdmin = require('../middlewares/isAdmin')
+const loginCheck = require('../middlewares/loginCheck')
 
-routerAkun.route("/admin/all").get(loginCheck, isAdmin, listAkun);
-routerAkun.route("/:id/edit").put(loginCheck, ubahDataAkun);
-routerAkun.route("/admin/:id/edit").put(loginCheck, isAdmin, ubahDataAdmin);
+routerAkun.route('/').get(loginCheck, isAdmin, listAkun)
+routerAkun.route('/karyawan').get(loginCheck, isAdmin, listKaryawan)
+routerAkun.route('/:id').put(loginCheck, ubahDataAkun)
+routerAkun
+  .route('/karyawan/:id')
+  .put(loginCheck, isAdmin, ubahDataAdmin)
+  .delete(loginCheck, isAdmin, hapusAkun)
 
-module.exports = routerAkun;
+module.exports = routerAkun

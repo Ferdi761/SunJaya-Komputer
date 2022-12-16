@@ -1,21 +1,86 @@
-import React from 'react'
-import { HiPencil, HiTrash } from 'react-icons/hi2'
+import { useEffect, useState } from 'react'
+import { HiPencil, HiTrash } from 'react-icons/hi'
 import { Link } from 'react-router-dom'
+import { useStore } from '../../../util/useStore'
 
 const Akun = () => {
+  const [akun, setAkun] = useState([
+    {
+      id: 0,
+      nama: '',
+      email: '',
+      passwordHashed: '',
+      izin: '',
+      noTelp: '',
+      alamat: '',
+    },
+  ])
+
+  const [loading, setLoading] = useState(true)
+
+  const [q, setQ] = useState('')
+  const [searchParam] = useState(['nama', 'email', 'noTelp'])
+
+  const { user } = useStore()
+
+  const search = (rows: any) => {
+    return rows.filter((row: any) =>
+      searchParam.some((newItem: any) => {
+        return (
+          row[newItem]
+            .toString()
+            .toLowerCase()
+            .indexOf(q.toLowerCase()) > -1
+        )
+      })
+    )
+  }
+
+  useEffect(() => {
+    fetch('http://localhost:8000/api/akun/karyawan', {
+      headers: {
+        Authorization: `Bearer ${user?.token}`,
+      },
+    })
+      .then(async (res) => {
+        const data = await res.json()
+        setAkun(data.data)
+      })
+      .catch((err) => console.log(err))
+  }, [loading])
+
+  const handleDelete = (id: number) => {
+    fetch(`http://localhost:8000/api/akun/karyawan${id}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${user?.token}`,
+      },
+    })
+      .then(async (res) => {
+        const data = await res.json()
+        console.log(data)
+        setLoading((prev) => !prev)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+
   return (
     <div className='flex justify-center mt-16'>
       <div className='w-2/3'>
-        <h1 className='font-bold text-2xl'>Daftar Akun</h1>
+        <h1 className='font-bold text-2xl uppercase'>
+          daftar karyawan
+        </h1>
         <div className='flex flex-row justify-between'>
           <form className='group relative w-1/4 my-5'>
             <input
               className='focus:ring-2 focus:ring-black focus:outline-none appearance-none w-full text-sm leading-6 text-slate-900 placeholder-slate-400 rounded-md py-2 pl-3 ring-1 ring-slate-200 shadow-sm'
               type='text'
               aria-label='Cari Akun'
-              placeholder='Cari Akun'
-              // value={q}
-              // onChange={(e) => setQ(e.target.value)}
+              placeholder='Cari Karyawan'
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
             />
             <svg
               width='20'
@@ -40,103 +105,41 @@ const Akun = () => {
         </div>
 
         <div className='flex flex-col gap-10'>
-          <div className='bg-light flex flex-row gap-10 p-5'>
-            <img
-              src='img/casing.png'
-              alt='casing'
-              className='w-24 h-24'
-            />
-            <div className='flex flex-col w-full'>
-              <h3 className='font-semibold text-lg'>Sun Jaya Com</h3>
-              <div className='flex flex-row justify-between '>
+          {search(akun).map((item: any) => (
+            <div className='bg-light p-5' key={item.id}>
+              <div className='grid grid-cols-2 gap-5 w-full'>
+                <h3 className='font-semibold text-lg'>{item.nama}</h3>
+                <p></p>
                 <p>
-                  ID: <span className='font-semibold'>#1</span>
+                  ID:{' '}
+                  <span className='font-semibold'>#{item.id}</span>
                 </p>
                 <p>
                   Alamat:{' '}
-                  <span className='font-semibold'>
-                    Jl. Doank Jadian Kaga
-                  </span>
+                  <span className='font-semibold'>{item.alamat}</span>
                 </p>
-              </div>
-              <div className='flex flex-row justify-between '>
                 <p>
                   Email:{' '}
-                  <span className='font-semibold'>
-                    admin@sunjaya.com
-                  </span>
+                  <span className='font-semibold'>{item.email}</span>
                 </p>
                 <p>
                   No. Telp:{' '}
-                  <span className='font-semibold'>08123456789</span>
+                  <span className='font-semibold'>{item.noTelp}</span>
                 </p>
-              </div>
-              <div className='flex flex-row justify-between '>
-                <p>Stok: 13 buah</p>
-                <p>ID: #1</p>
-              </div>
-              <div className='flex flex-row gap-10 justify-center items-center mt-5'>
-                <Link
-                  to='/admin/edit-akun'
-                  className='text-blue-700 flex flex-row gap-2 text-lg'
-                >
-                  <HiPencil className='w-6 h-6' /> edit
-                </Link>
-                <button className='bg-pink-500 hover:bg-pink-600 rounded-lg p-2'>
-                  <HiTrash className='text-white w-6 h-6' />
-                </button>
+                <div className='flex flex-row gap-10 justify-center items-center mt-5'>
+                  <Link
+                    to='/admin/edit-akun'
+                    className='text-blue-700 flex flex-row gap-2 text-lg'
+                  >
+                    <HiPencil className='w-6 h-6' /> edit
+                  </Link>
+                  <button className='bg-pink-500 hover:bg-pink-600 rounded-lg p-2'>
+                    <HiTrash className='text-white w-6 h-6' />
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-
-          <div className='bg-light flex flex-row gap-10 p-5'>
-            <img
-              src='img/casing.png'
-              alt='casing'
-              className='w-24 h-24'
-            />
-            <div className='flex flex-col w-full'>
-              <h3 className='font-semibold text-lg'>Sun Jaya Com</h3>
-              <div className='flex flex-row justify-between '>
-                <p>
-                  ID: <span className='font-semibold'>#1</span>
-                </p>
-                <p>
-                  Alamat:{' '}
-                  <span className='font-semibold'>
-                    Jl. Doank Jadian Kaga
-                  </span>
-                </p>
-              </div>
-              <div className='flex flex-row justify-between '>
-                <p>
-                  Email:{' '}
-                  <span className='font-semibold'>
-                    admin@sunjaya.com
-                  </span>
-                </p>
-                <p>
-                  No. Telp:{' '}
-                  <span className='font-semibold'>08123456789</span>
-                </p>
-              </div>
-              <div className='flex flex-row justify-between'>
-                <p>Stok: 13 buah</p>
-                <p>ID: #1</p>
-              </div>
-              <div className='flex flex-row gap-10 justify-center items-center mt-5'>
-                <Link
-                  to='/admin/edit-akun'
-                  className='text-blue-700 flex flex-row gap-2 text-lg'
-                >
-                  <HiPencil className='w-6 h-6' /> edit
-                </Link>
-                <button className='bg-pink-500 hover:bg-pink-600 rounded-lg p-2'>
-                  <HiTrash className='text-white w-6 h-6' />
-                </button>
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
     </div>
