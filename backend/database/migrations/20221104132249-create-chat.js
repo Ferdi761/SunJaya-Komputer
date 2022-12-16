@@ -21,6 +21,7 @@ module.exports = {
       dibaca: {
         type: Sequelize.BOOLEAN
       },
+      // new column
       dibuatPada: {
         allowNull: false,
         type: Sequelize.DATE

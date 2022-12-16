@@ -59,7 +59,7 @@ const tambahKeKeranjang = async (req, res) => {
     const idBarang = req.params.id;
     const decoded = jwt.verify(logged, 'jwtAkunId');
     
-    const jumlah = req.body.jumlah;
+    //const jumlah = req.body.jumlah;
 
     try {
         const user = await Akun.findByPk(decoded.id);
@@ -71,7 +71,7 @@ const tambahKeKeranjang = async (req, res) => {
         const addToCart = await Keranjang.create({
             BarangId: barang.id,
             akunId: user.id,
-            jumlah: jumlah
+            jumlah: 1
         });
         console.log(addToCart);
         res.status(200).json({
@@ -154,7 +154,7 @@ const ubahJumlahBarang = async (req, res) => {
         .status(200)
         .json({
             status: "success",
-            message: "Keranjang barang berhasil dihapus!"
+            message: "Berhasil mengubah jumlah barang!"
         })
         .end();
     }

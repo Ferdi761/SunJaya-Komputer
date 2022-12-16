@@ -247,7 +247,6 @@ const hapusBarang = async (req, res) => {
 }
 
 const cariBarang = async (req, res) => {
-  // const input = req.body.input;
   const { nama } = req.query
 
   try {

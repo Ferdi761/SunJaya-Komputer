@@ -11,23 +11,41 @@ const tambahJenis = async (req, res) => {
     }
     catch (err) {
         console.log(err);
-        res.status(500).json({ msg: err }).end();
+        res
+        .status(500)
+        .json({
+            status: 'fail',
+            message: 'Gagal menambahkan jenis barang!'
+        })
+        .end();
     }
 };
 
 const daftarJenis = async (req, res) => {
     try {
         const jenis = await JenisBarang.findAll();
-        res.status(200).json(jenis).end();
+        res
+        .status(200)
+        .json({
+            status: 'success',
+            data: jenis
+        })
+        .end();
     }
     catch (err) {
         console.log(err);
-        res.status(500).json({ msg: err }).end();
+        res
+        .status(500)
+        .json({
+            status: 'fail',
+            message: 'Gagal menampilkan jenis barang!'
+        })
+        .end();
     }
 };
 
 const hapusJenis = async (req, res) => {
-    const id = req.params.id;
+    const { id } = req.params;
 
     try {
         const jenis = await JenisBarang.findOne({
@@ -37,20 +55,25 @@ const hapusJenis = async (req, res) => {
         });
 
         if (jenis) {
-            await jenis.destroy({
-                where: {
-                    id: id
-                }
-            });
+            await jenis.destroy();
 
-            res.status(200).json({
-                msg: "Jenis barang berhasil dihapus!"
-            }).end();
+            res
+            .status(200)
+            .json({
+                status: 'success',
+                message: "Jenis barang berhasil dihapus!"
+            })
+            .end();
         }
     }
     catch (err) {
-        res.status(500).json({
-            msg: "Gagal menghapus jenis barang!"
+        console.log(err);
+        
+        res
+        .status(500)
+        .json({
+            status: 'fail',
+            message: 'Gagal menghapus jenis barang!'
         }).end();
     }
 };
@@ -78,6 +101,7 @@ const editJenis = async (req, res) => {
             })
             .end();
         }
+        else throw 'Gagal mengubah jenis barang!'
     }
     catch (err) {
         console.log(err);

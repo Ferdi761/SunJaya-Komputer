@@ -1,6 +1,9 @@
 const express = require("express");
 const routerJenisBarang = express.Router();
 
+const loginCheck = require('../middlewares/loginCheck');
+const isAdmin = require('../middlewares/isAdmin');
+
 const {
     tambahJenis,
     daftarJenis,
@@ -8,9 +11,9 @@ const {
     editJenis
 } = require('../controllers/controllerJenisBarang');
 
-routerJenisBarang.route("/").get(daftarJenis);
-routerJenisBarang.route("/tambah").post(tambahJenis);
-routerJenisBarang.route("/:id/hapus").delete(hapusJenis);
-routerJenisBarang.route("/:id/edit").put(editJenis);
+routerJenisBarang.route("/").get(loginCheck, daftarJenis);
+routerJenisBarang.route("/tambah").post(loginCheck, isAdmin, tambahJenis);
+routerJenisBarang.route("/hapus/:id").delete(loginCheck, isAdmin, hapusJenis);
+routerJenisBarang.route("/edit/:id").put(loginCheck, isAdmin, editJenis);
 
 module.exports = routerJenisBarang;

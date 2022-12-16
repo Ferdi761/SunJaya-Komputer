@@ -455,15 +455,19 @@ const ubahStatusKirim = async (req, res) => {
             }]   
         });
 
+        const aWeek = 604800000;
+        const today = new Date();
+
         await pesanan.update({
             Pemesanan: {
-                tanggalKirim: Date.now()
+                tanggalKirim: today.getTime()
             }
         });
 
-        console.log(pesanan.Pemesanan.tanggalKirim + 7);
+        console.log(pesanan.Pemesanan.tanggalKirim);
         console.log(pesanan.Pemesanan.tanggalKirim.getHours());
         console.log(pesanan.Pemesanan.tanggalKirim.getHours() + 2);
+        console.log(pesanan.Pemesanan.tanggalKirim.getTime());
         console.log(Date.now());
         // console.log( + 240000);
 

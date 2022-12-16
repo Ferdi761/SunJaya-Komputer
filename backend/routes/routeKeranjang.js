@@ -13,7 +13,6 @@ const {
 routerKeranjang.route('/').get(loginCheck, daftarKeranjang)
 routerKeranjang
   .route('/:id')
-    .post(loginCheck, tambahKeKeranjang)
     .delete(loginCheck, hapusDariKeranjang)
     .put(loginCheck, ubahJumlahBarang)
 // routerKeranjang.route('/allCart').get(allCartList)
