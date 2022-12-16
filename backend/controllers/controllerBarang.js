@@ -40,7 +40,9 @@ const tambahBarang = async (req, res) => {
     })
 
     if (jenisId === null) {
-      throw 'Jenis barang tidak ditemukan!'
+      return res
+        .status(404)
+        .json({ message: 'Jenis barang tidak ditemukan' })
     } else {
       const barang = await FotoBarang.create(
         {
@@ -154,7 +156,9 @@ const ubahDataBarang = async (req, res) => {
       })
 
       if (jenisId === null) {
-        throw 'jenis tidak ditemukan!'
+        return res
+          .status(404)
+          .json({ message: 'Jenis barang tidak ditemukan' })
       }
       const newData = {
         nama: namaBarang,
@@ -171,7 +175,10 @@ const ubahDataBarang = async (req, res) => {
           id: id,
         },
       })
-      if (!updateBarang) throw 'Gagal mengubah data barang!'
+      if (!updateBarang)
+        return res
+          .status(404)
+          .json({ message: 'Barang tidak ditemukan' })
 
       res
         .status(200)
@@ -183,7 +190,10 @@ const ubahDataBarang = async (req, res) => {
         .end()
 
       return
-    } else throw 'Gagal memperbarui barang!'
+    } else
+      return res
+        .status(404)
+        .json({ message: 'Barang tidak ditemukan' })
   } catch (err) {
     console.log(err)
     res
@@ -207,7 +217,10 @@ const hapusBarang = async (req, res) => {
     })
 
     if (!barang) {
-      throw 'Gagal menghapus barang!'
+      return res.status(404).json({
+        status: 'fail',
+        message: 'Barang tidak ditemukan!',
+      })
     } else {
       const fotoBarang = await FotoBarang.findOne({
         where: {
@@ -217,7 +230,7 @@ const hapusBarang = async (req, res) => {
 
       // delete photo from local storage
       fs.unlink(`${fotoBarang.foto}`, (err) => {
-        if (err) throw 'Gagal menghapus foto dari penyimpanan lokal!'
+        if (err) return res.status(500).json({ message: err })
         else
           console.log(
             'Berhasil menghapus foto dari penyimpanan lokal!'
