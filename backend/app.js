@@ -34,6 +34,7 @@ const routerJenisBarang = require('./routes/routeJenisBarang')
 const routerRekening = require('./routes/routeRekening')
 const routerKeranjang = require('./routes/routeKeranjang')
 const routerPemesanan = require('./routes/routePemesanan')
+const routerGaransi = require('./routes/routeGaransi')
 // test all akun
 const routerAkun = require('./routes/routeAkun')
 
@@ -44,6 +45,8 @@ require('dotenv').config()
 // let corsOptions = { origin: "http://localhost:8000" };
 // app.use(cors(corsOptions));
 app.use(cors())
+
+app.use(express.static('public'))
 
 // postgres db Connection
 const { database, username, password, host, dialect } =
@@ -71,7 +74,7 @@ app.use('/api/jenis', routerJenisBarang)
 app.use('/api/rekening', routerRekening)
 app.use('/api/keranjang', routerKeranjang)
 app.use('/api/pemesanan', routerPemesanan)
-app.use(express.static('public'))
+app.use('/api/garansi', routerGaransi)
 
 const start = async () => {
   try {

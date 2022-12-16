@@ -20,7 +20,11 @@ module.exports = (sequelize, DataTypes) => {
   }
   BarangYangDipesan.init({
     jumlah: DataTypes.INTEGER,
-    totalHarga: DataTypes.INTEGER
+    totalHarga: DataTypes.INTEGER,
+    garansiExpired: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    }
   }, {
     sequelize,
     tableName: 'BarangYangDipesan',

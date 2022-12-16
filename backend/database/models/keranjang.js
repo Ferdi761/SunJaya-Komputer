@@ -14,7 +14,13 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Keranjang.init({
-    jumlah: DataTypes.INTEGER
+    jumlah: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+      get() {
+        return this.getDataValue('jumlah');
+      }
+    }
   }, {
     sequelize,
     modelName: 'Keranjang',

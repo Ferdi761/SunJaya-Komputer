@@ -1,4 +1,9 @@
-const { Keranjang, Akun, Barang } = require('../database/models')
+const {
+  Keranjang,
+  Akun,
+  Barang,
+  FotoBarang,
+} = require('../database/models')
 const jwt = require('jsonwebtoken')
 const { Op } = require('sequelize')
 
@@ -21,19 +26,30 @@ const daftarKeranjang = async (req, res) => {
   const decoded = jwt.verify(logged, 'jwtAkunId')
 
   try {
-    const userCart = await Akun.findOne({
-      where: { id: decoded.id },
-      include: Barang,
+    // const akun = await Akun.findOne({
+    //     where: { id: decoded.id }
+    // });
+    // if (!akun) throw 'Pengguna tidak ditemukan!';
+
+    const daftarBarang = await FotoBarang.findAll({
+      include: {
+        model: Barang,
+        where: {
+          id: { [Op.not]: null },
+        },
+        include: {
+          model: Akun,
+          where: {
+            id: decoded.id,
+          },
+        },
+      },
     })
-    if (!userCart) throw 'Pengguna tidak ditemukan!'
 
-    const { Barangs } = userCart
-
-    let totalPrice = 0
-    for (let item in Barangs) {
-      totalPrice +=
-        Barangs[item].harga * Barangs[item].Keranjang.jumlah
-    }
+    // let totalPrice = 0;
+    // for(let item in Barangs) {
+    //     totalPrice += Barangs[item].harga * Barangs[item].Keranjang.jumlah;
+    // }
 
     // const keranjang = await Keranjang.findAll({ where: { akunId: user.id } });
     // if (!keranjang) throw 'Keranjang tidak ditemukan!';
@@ -43,8 +59,8 @@ const daftarKeranjang = async (req, res) => {
       .json({
         status: 'success',
         data: {
-          userCart,
-          totalHarga: totalPrice,
+          daftarBarang,
+          // totalHarga: totalPrice
         },
       })
       .end()
@@ -68,15 +84,38 @@ const tambahKeKeranjang = async (req, res) => {
       res.status(404).json({ msg: 'Akun tidak ditemukan!' }).end()
 
     const barang = await Barang.findByPk(idBarang)
-    if (!barang)
-      res.status(404).json({ msg: 'Barang tidak ditemukan!' }).end()
+    if (!barang) throw 'Barang tidak ditemukan!'
+
+    const findCart = await Keranjang.findOne({
+      where: {
+        [Op.and]: [{ BarangId: barang.id }, { akunId: user.id }],
+      },
+    })
+
+    if (findCart) {
+      const currJumlah = findCart.getDataValue('jumlah')
+
+      console.log(currJumlah)
+      findCart.update({
+        jumlah: currJumlah + parseInt(jumlah),
+      })
+
+      res
+        .status(200)
+        .json({
+          status: 'Success',
+          data: findCart,
+        })
+        .end()
+      return
+    }
 
     const addToCart = await Keranjang.create({
-      BarangId: barang.id,
-      akunId: user.id,
-      jumlah: 1,
+      BarangId: idBarang,
+      akunId: decoded.id,
+      jumlah: jumlah,
     })
-    console.log(addToCart)
+
     res
       .status(200)
       .json({
