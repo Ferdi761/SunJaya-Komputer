@@ -43,7 +43,6 @@ routerBarang
 routerBarang
   .route('/:id')
   .get(detailBarang)
-  .post(loginCheck, tambahKeKeranjang)
 routerBarang
   .route('/edit/:id')
   .put(upload.single('foto'), isAdmin, ubahDataBarang)

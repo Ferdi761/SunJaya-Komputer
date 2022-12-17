@@ -5,6 +5,7 @@ const fs = require('fs')
 const {
   Akun,
   Barang,
+  FotoBarang,
   BarangYangDipesan,
   BuktiPembayaranPemesanan,
   Keranjang,
@@ -587,12 +588,17 @@ const daftarSemuaPesanan = async (req, res) => {
   const decoded = jwt.verify(logged, 'jwtAkunId')
 
   try {
-    const listPesanan = await BuktiPembayaranPemesanan.findAll(
+    const listPesanan = await Pemesanan.findAll(
       {
-        include: Pemesanan,
+        include: [
+          {
+            model: Barang,
+            include: FotoBarang
+          }
+        ],
       },
       {
-        where: { Pemesanan: { akunId: decoded.id } }
+        where: { akunId: decoded.id }
       }
     )
 

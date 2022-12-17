@@ -32,28 +32,47 @@ const daftarKeranjang = async (req, res) => {
         });
         if (!akun) throw 'Pengguna tidak ditemukan!';
 
-        const daftarBarang = await FotoBarang.findAll({
+        // const daftarBarang = await FotoBarang.findAll({
+        //     include: {
+        //         model: Barang,
+        //         include: {
+        //             model: Keranjang,
+        //             where: {
+        //                 akunId: decoded.id,
+        //                 BarangId: {
+        //                     [Op.not]: null
+        //                 }
+        //             }
+        //         }
+        //     },
+        // })
+
+        const daftarBarang = await Keranjang.findAll({
             include: {
                 model: Barang,
                 include: {
-                    model: Keranjang,
-                    where: {
-                        akunId: decoded.id
-                    }
+                    model: FotoBarang
                 }
             },
+            where: {
+                akunId: decoded.id,
+                BarangId: {
+                    [Op.not]: null
+                }
+            }
+
         })
 
-        let totalPrice = 0;
-        for(let item in daftarBarang) {
-            totalPrice += daftarBarang[item].Barang.harga * daftarBarang[item].Barang.Keranjangs[0].jumlah;
-        }
+        // let totalPrice = 0;
+        // for(let item in daftarBarang) {
+        //     totalPrice += daftarBarang[item].Barang.harga * daftarBarang[item].Barang.Keranjangs[0].jumlah;
+        // }
         
         res.status(200).json({
             status: "success",
             data: { 
                 daftarBarang,
-                totalHarga: totalPrice
+                //totalHarga: totalPrice
             }
         }).end();
     }
@@ -70,7 +89,7 @@ const tambahKeKeranjang = async (req, res) => {
   const idBarang = req.params.id
   const decoded = jwt.verify(logged, 'jwtAkunId')
 
-  //const jumlah = req.body.jumlah;
+  let jumlah = 1;
 
   try {
     const user = await Akun.findByPk(decoded.id)
@@ -98,7 +117,7 @@ const tambahKeKeranjang = async (req, res) => {
 
       console.log(currJumlah)
       findCart.update({
-        jumlah: currJumlah + parseInt(jumlah),
+        jumlah: currJumlah + jumlah,
       })
 
       res
@@ -177,7 +196,12 @@ const ubahJumlahBarang = async (req, res) => {
 
   try {
     const akun = await Akun.findByPk(decoded.id)
-    if (!akun) throw 'Akun tidak ditemukan!'
+    if (!akun) {
+        return  res.status(404).json({
+            status: 'fail',
+            message: 'Akun tidak ditemukan!'
+        }).end()
+    }
 
     const keranjang = await Keranjang.findOne({
       where: {
