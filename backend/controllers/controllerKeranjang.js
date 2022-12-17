@@ -37,31 +37,29 @@ const daftarKeranjang = async (req, res) => {
         where: {
           id: { [Op.not]: null },
         },
-        include: {
-          model: Akun,
-          where: {
-            id: decoded.id,
-          },
-        },
       },
     })
 
-    // let totalPrice = 0;
-    // for(let item in Barangs) {
-    //     totalPrice += Barangs[item].harga * Barangs[item].Keranjang.jumlah;
+    // let totalPrice = 0
+    // for (let item in daftarBarang) {
+    //   totalPrice +=
+    //     daftarBarang[item].harga * daftarBarang[item].Keranjang.jumlah
     // }
 
-    // const keranjang = await Keranjang.findAll({ where: { akunId: user.id } });
-    // if (!keranjang) throw 'Keranjang tidak ditemukan!';
+    // const keranjang = await Keranjang.findAll({
+    //   where: { akunId: user.id },
+    // })
+    // if (!keranjang) throw 'Keranjang tidak ditemukan!'
 
     res
       .status(200)
       .json({
         status: 'success',
-        data: {
-          daftarBarang,
-          // totalHarga: totalPrice
-        },
+        data: daftarBarang,
+
+        // {
+        //   // totalHarga: totalPrice,
+        // },
       })
       .end()
   } catch (err) {
