@@ -17,7 +17,7 @@ interface State {
   clearUser: () => void
 }
 
-export const useStore = create(
+export const userStorage = create(
   persist<State>(
     (set, get) => ({
       user: null,

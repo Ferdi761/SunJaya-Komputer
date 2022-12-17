@@ -1,22 +1,67 @@
+import { useEffect, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { formatCurrency } from '../util/formatCurrency'
-import { useShoppingCart } from '../util/ShoppingCartContext'
+import { userStorage } from '../util/userStorage'
 
-type StoreItemProps = {
-  id: number
-  name: string
-  price: number
-  imgUrl: string
-}
+const DetailProduk = () => {
+  const [barang, setBarang] = useState({
+    id: 0,
+    foto: '',
+    BarangId: '',
+    Barang: {
+      stok: '',
+      id: '',
+      nama: '',
+      harga: 0,
+      deskripsi: '',
+      merek: '',
+      berat: '',
+      jenisId: '',
+      JenisBarang: {
+        id: '',
+        nama: '',
+      },
+    },
+  })
 
-const DetailProduk = ({
-  id,
-  name,
-  price,
-  imgUrl,
-}: StoreItemProps) => {
-  const { getItemQuantity, increaseCartQuantity } = useShoppingCart()
+  const location = useLocation()
+  const { user } = userStorage()
 
-  const quantity = getItemQuantity(id)
+  useEffect(() => {
+    fetch(
+      `http://localhost:8000/api/barang/${
+        location.pathname.split('/')[2]
+      }`
+    )
+      .then(async (res) => {
+        const data = await res.json()
+        setBarang(data.data)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }, [])
+
+  const tambahCart = async (id: number) => {
+    const data = {
+      barangId: barang.id,
+      jumlah: 1,
+    }
+
+    const response = await fetch(
+      `http://localhost:8000/api/keranjang/${id}`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${user?.token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      }
+    )
+    const result = await response.json()
+    console.log(result)
+  }
 
   return (
     <>
@@ -25,18 +70,22 @@ const DetailProduk = ({
           <div className='w-8/12'>
             <div
               className='flex flex-col'
-              style={{ width: '50rem', height: '25rem' }}>
+              style={{ width: '50rem', height: '25rem' }}
+            >
               <div className='flex justify-center bg-black rounded-t-xl'>
-                <img src={imgUrl} alt='cpu' className='w-60 h-60' />
+                <img
+                  src={`http://localhost:8000/produk/${
+                    barang.foto.split('\\')[2]
+                  }`}
+                  alt='cpu'
+                  className='w-60 h-60'
+                />
               </div>
               <div className='border border-black rounded-b-xl px-10'>
                 <h5 className='font-bold border-b border-gray-500 py-2'>
                   Deskripsi
                 </h5>
-                <p className='py-3'>
-                  Core i3-71-- 3.9 GHz - Socket 1151 <br />
-                  Garansi 1 minggu
-                </p>
+                <p className='py-3'>{barang.Barang.deskripsi}</p>
               </div>
             </div>
           </div>
@@ -44,18 +93,20 @@ const DetailProduk = ({
             <div className='flex flex-col border border-black rounded-xl p-10'>
               <div className='flex flex-col gap-2'>
                 <h5 className='text-2xl font-bold'>
-                  {formatCurrency(price)}
+                  {formatCurrency(barang.Barang.harga)}
                 </h5>
-                <p className='text-lg'>{name} </p>
-                <p>Stok sisa: 4 buah</p>
-                <p>Berat: 200 gram</p>
+                <p className='text-lg'>{barang.Barang.nama} </p>
+                <p>Stok sisa: {barang.Barang.stok} buah</p>
+                <p>Berat: {barang.Barang.berat} gram</p>
                 <div className='text-center mt-5'>
                   <button
                     className='bg-blue-700 text-white hover:bg-blue-900 rounded-full px-10 py-2'
-                    onClick={() => increaseCartQuantity(id)}>
-                    {quantity > 0
+                    onClick={() => tambahCart(barang.id)}
+                  >
+                    {/* {quantity > 0
                       ? 'Tambah ke keranjang'
-                      : 'Masukkan keranjang'}
+                      : 'Masukkan keranjang'} */}
+                    Masukkan keranjang
                   </button>
                 </div>
               </div>

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { HiPencil, HiTrash } from 'react-icons/hi'
 import { formatCurrency } from '../../../util/formatCurrency'
-import { useStore } from '../../../util/useStore'
+import { userStorage } from '../../../util/userStorage'
 
 const Barang = () => {
   const [barang, setBarang] = useState([
@@ -38,7 +38,7 @@ const Barang = () => {
     'stok',
   ])
 
-  const { user } = useStore()
+  const { user } = userStorage()
 
   const search = (rows: any) => {
     return rows.filter((row: any) =>

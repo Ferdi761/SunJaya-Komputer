@@ -1,6 +1,6 @@
 import { Transition, Dialog } from '@headlessui/react'
 import { FormEvent, Fragment } from 'react'
-import { useStore } from '../../../util/useStore'
+import { userStorage } from '../../../util/userStorage'
 
 interface ModalProps {
   modal: boolean
@@ -26,7 +26,7 @@ interface ModalProps {
 }
 
 const ModalRekening: React.FC<ModalProps> = (props: ModalProps) => {
-  const { user } = useStore()
+  const { user } = userStorage()
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()

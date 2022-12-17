@@ -1,6 +1,6 @@
 import { FormEvent, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useStore } from '../../../util/useStore'
+import { userStorage } from '../../../util/userStorage'
 
 const TambahAkun = () => {
   const [akun, setAkun] = useState({
@@ -14,7 +14,7 @@ const TambahAkun = () => {
   })
 
   const navigate = useNavigate()
-  const { user } = useStore()
+  const { user } = userStorage()
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
