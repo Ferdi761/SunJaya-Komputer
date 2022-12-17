@@ -9,15 +9,12 @@ import { cartStorage } from '../util/cartStorage'
 
 const Cart = () => {
   const [cart, setCart] = useState({
-    userCart: {
-      id: 0,
-      nama: '',
-      email: '',
-      passwordHashed: '',
-      izin: '',
-      noTelp: '',
-      Barangs: [
-        {
+    daftarBarang: [
+      {
+        jumlah: 0,
+        akunId: 0,
+        BarangId: 0,
+        Barang: {
           stok: 0,
           id: 0,
           nama: '',
@@ -26,21 +23,21 @@ const Cart = () => {
           merek: '',
           berat: 0,
           jenisId: 0,
-          Keranjang: {
-            jumlah: 0,
-            akunId: 0,
+          FotoBarang: {
+            id: 0,
+            foto: '',
             BarangId: 0,
           },
         },
-      ],
-    },
+      },
+    ],
     totalHarga: 0,
   })
 
   const [alamat, setAlamat] = useState('')
 
   const { user } = userStorage()
-  const { cartStatus } = cartStorage()
+  const { cartStatus, changeCart } = cartStorage()
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -75,8 +72,10 @@ const Cart = () => {
     })
       .then(async (res) => {
         const data = await res.json()
-        console.log(data)
-        navigate('/pesanan-saya')
+        if (data.status === 'success') {
+          changeCart(!cartStatus)
+          navigate('/pemesanan')
+        }
       })
       .catch((err) => {
         console.log(err)
@@ -89,16 +88,16 @@ const Cart = () => {
         <div className='flex flex-col gap-5 w-10/12'>
           <p className='mt-10'>
             Menampilkan daftar barang dalam keranjang <br />
-            Total barang: {cart.userCart.Barangs.length} jenis barang{' '}
+            Total barang: {cart.daftarBarang.length} jenis barang{' '}
             <br />
             Total Biaya: {formatCurrency(cart.totalHarga)}
           </p>
 
           <div className='flex flex-row gap-5'>
             <div className='w-7/12'>
-              {cart.userCart.Barangs.length > 0 || true ? (
-                cart.userCart.Barangs.map((item) => (
-                  <CartDetail key={item.id} {...item} />
+              {cart.daftarBarang.length > 0 || true ? (
+                cart.daftarBarang.map((item) => (
+                  <CartDetail key={item.BarangId} {...item} />
                 ))
               ) : (
                 <div className='flex justify-center items-start bg-transparent text-black p-0'>
@@ -110,28 +109,29 @@ const Cart = () => {
             </div>
             <div className='w-5/12'>
               <div className='p-10 text-white bg-dark rounded-xl'>
-                {cart.userCart.Barangs.length > 0 ? (
+                {cart.daftarBarang.length > 0 ? (
                   <>
                     <p className='text-2xl mb-3'>Rincian Keranjang</p>
                     <ul>
                       <li className='flex justify-between items-start bg-transparent text-white p-0'>
                         <p>Total Barang</p>
                         <p className='font-semibold'>
-                          {cart.userCart.Barangs.length} Barang
+                          {cart.daftarBarang.length} Barang
                         </p>
                       </li>
                       <li className='flex justify-between items-start bg-transparent text-white p-0'>
                         <p>Total Berat</p>
                         <p className='font-semibold'>
-                          {cart.userCart.Barangs.reduce(
+                          {cart.daftarBarang.reduce(
                             (total, cartItem) => {
-                              const item = cart.userCart.Barangs.find(
-                                (i) => i.id === cartItem.id
+                              const item = cart.daftarBarang.find(
+                                (i) =>
+                                  i.Barang.id === cartItem.Barang.id
                               )
                               return (
                                 total +
-                                (item?.berat || 0) *
-                                  cart.userCart.Barangs.length
+                                (item?.Barang.berat || 0) *
+                                  cart.daftarBarang.length
                               )
                             },
                             0

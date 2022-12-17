@@ -18,8 +18,8 @@ let dataBYD = []
 let waktuPembayaran
 
 const checkout = async (req, res) => {
-  // const logged = req.headers.authorization.split(' ')[1]
-  const logged = req.cookies.logged_account
+  const logged = req.headers.authorization.split(' ')[1]
+  // const logged = req.cookies.logged_account
   const decoded = jwt.verify(logged, 'jwtAkunId')
 
   const { alamatTujuan } = req.body
@@ -44,14 +44,12 @@ const checkout = async (req, res) => {
     //const today = new Date();
     const oneDay = 86400000
 
-    const buatPesanan = await Pemesanan.create(
-      {
-        akunId: userCart.id,
-        alamatTujuan,
-        totalHargaBarang: totalPriceItem,
-        status: 1
-      }
-    )
+    const buatPesanan = await Pemesanan.create({
+      akunId: userCart.id,
+      alamatTujuan,
+      totalHargaBarang: totalPriceItem,
+      status: 1,
+    })
 
     // Memasukkan data barang yang dipesan dari Barangs ke dalam array untuk sementara
     Barangs.forEach((item) => {
@@ -62,9 +60,6 @@ const checkout = async (req, res) => {
         totalHarga: item.harga * item.Keranjang.jumlah,
       })
     })
-    console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
-    console.log(dataBYD);
-    console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
 
     // add transaction
     // t = await sequelize.transaction();
@@ -97,8 +92,9 @@ const checkout = async (req, res) => {
       .status(200)
       .json({
         status: 'success',
-        message: 'Pesanan telah dibuat, menunggu konfirmasi dari admin!',
-        idPemesanan: buatPesanan.id
+        message:
+          'Pesanan telah dibuat, menunggu konfirmasi dari admin!',
+        idPemesanan: buatPesanan.id,
       })
       .end()
   } catch (err) {
@@ -183,9 +179,9 @@ const pesananSelesai = async (req, res) => {
         [Op.and]: [
           { id: idPesanan },
           { akunId: decoded.id },
-          { tanggalSampai: { [Op.not]: null } }
-        ]
-      }
+          { tanggalSampai: { [Op.not]: null } },
+        ],
+      },
     })
 
     if (!pesanan) throw 'Pesanan tidak ditemukan!'
@@ -195,14 +191,13 @@ const pesananSelesai = async (req, res) => {
     // })
 
     res
-    .status(200)
-    .json({
-      status: 'success',
-      data: pesanan
-    })
-    .end()
-  } 
-  catch (err) {
+      .status(200)
+      .json({
+        status: 'success',
+        data: pesanan,
+      })
+      .end()
+  } catch (err) {
     console.log(err)
     res
       .status(500)
@@ -338,27 +333,27 @@ const konfirmasiPesanan = async (req, res) => {
 
     await pesanan.update({
       status: 2,
-      tanggalMulaiMenungguPembayaran: Date.now()
+      tanggalMulaiMenungguPembayaran: Date.now(),
     })
 
     // let checkTimeout = setInterval(async () => {
     //   if (Date.now() > aDay) {
     //     console.log('waktu habis, pemesanan dibatalkan!')
-  
+
     //     dataBYD.forEach(async (item) => {
     //       let barang = await Barang.findOne({
     //         where: {
     //           id: item.BarangId,
     //         },
     //       })
-  
+
     //       const stokBarang = await barang.getDataValue('stok')
     //       let updateStok = stokBarang + item.jumlah
-  
+
     //       await barang.update({
     //         stok: updateStok,
     //       })
-  
+
     //       await BarangYangDipesan.destroy({
     //         where: {
     //           pemesananId: item.pemesananId,
@@ -366,18 +361,18 @@ const konfirmasiPesanan = async (req, res) => {
     //         },
     //       })
     //     })
-  
+
     //     await pesanan.destroy()
-  
+
     //     // set ulang array menjadi nol
     //     dataBYD = []
-  
+
     //     console.log('Waktu habis, pemesanan dibatalkan!')
     //     res.json({
     //       status: 'success',
     //       message: 'Waktu habis, pemesanan dibatalkan!'
     //     }).end()
-        
+
     //     clearInterval(checkTimeout)
     //   }
     // }, 1000)
@@ -418,7 +413,8 @@ const konfirmasiPesanan = async (req, res) => {
     res
       .json({
         status: 'success',
-        message: 'Pemesanan telah dikonfirmasi, menunggu pembayaran 24 jam kedepan!',
+        message:
+          'Pemesanan telah dikonfirmasi, menunggu pembayaran 24 jam kedepan!',
       })
       .end()
   } catch (err) {
@@ -512,15 +508,15 @@ const ubahStatusKirim = async (req, res) => {
     const pesanan = await Pemesanan.findOne({
       where: {
         id: id,
-        pembayaranLunas: true
-      }
+        pembayaranLunas: true,
+      },
     })
 
     const aWeek = 604800000
     const today = new Date()
 
     await pesanan.update({
-      tanggalKirim: Date.now()
+      tanggalKirim: Date.now(),
     })
     await pesanan.save()
 
@@ -563,31 +559,28 @@ const konfirmasiPesananSampai = async (req, res) => {
   const { id } = req.params
 
   try {
-    const pesanan = await Pemesanan.findOne(
-      {
-        where: {
-          id: id,
-          tanggalKirim: {
-            [Op.not]: null
-          }
+    const pesanan = await Pemesanan.findOne({
+      where: {
+        id: id,
+        tanggalKirim: {
+          [Op.not]: null,
         },
-      }
-    )
+      },
+    })
 
     pesanan.update({
-      tanggalSampai: Date.now()
+      tanggalSampai: Date.now(),
     })
 
     res
-    .status(200)
-    .json({
-      status: 'success',
-      message: 'Pesanan Telah sampai ke pelanggan!',
-      data: pesanan
-    })
-    .end()
-  } 
-  catch (err) {
+      .status(200)
+      .json({
+        status: 'success',
+        message: 'Pesanan Telah sampai ke pelanggan!',
+        data: pesanan,
+      })
+      .end()
+  } catch (err) {
     console.log(err)
     res
       .status(500)
@@ -603,8 +596,8 @@ const konfirmasiPesananSampai = async (req, res) => {
 
 // Pesanan dengan semua status
 const daftarSemuaPesanan = async (req, res) => {
-  // const logged = req.headers.authorization.split(' ')[1]
-  const logged = req.cookies.logged_account
+  const logged = req.headers.authorization.split(' ')[1]
+  // const logged = req.cookies.logged_account
   const decoded = jwt.verify(logged, 'jwtAkunId')
 
   try {
@@ -613,12 +606,12 @@ const daftarSemuaPesanan = async (req, res) => {
         include: [
           {
             model: Barang,
-            include: FotoBarang
-          }
+            include: FotoBarang,
+          },
         ],
       },
       {
-        where: { akunId: decoded.id }
+        where: { akunId: decoded.id },
       }
     )
 

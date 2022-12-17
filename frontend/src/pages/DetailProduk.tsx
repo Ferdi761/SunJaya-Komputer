@@ -42,25 +42,27 @@ const DetailProduk = () => {
       })
   }, [])
 
-  const tambahCart = async (id: number) => {
+  const tambahCart = (id: number) => {
     const data = {
       barangId: barang.id,
       jumlah: 1,
     }
 
-    const response = await fetch(
-      `http://localhost:8000/api/keranjang/${id}`,
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${user?.token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      }
-    )
-    const result = await response.json()
-    console.log(result)
+    fetch(`http://localhost:8000/api/keranjang/${id}`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${user?.token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+      .then(async (res) => {
+        const data = await res.json()
+        console.log(data)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
   }
 
   return (

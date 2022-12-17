@@ -9,15 +9,12 @@ import { cartStorage } from '../util/cartStorage'
 
 const Navbar = () => {
   const [cart, setCart] = useState({
-    userCart: {
-      id: 0,
-      nama: '',
-      email: '',
-      passwordHashed: '',
-      izin: '',
-      noTelp: '',
-      Barangs: [
-        {
+    daftarBarang: [
+      {
+        jumlah: 0,
+        akunId: 0,
+        BarangId: 0,
+        Barang: {
           stok: 0,
           id: 0,
           nama: '',
@@ -26,14 +23,14 @@ const Navbar = () => {
           merek: '',
           berat: 0,
           jenisId: 0,
-          Keranjang: {
-            jumlah: 0,
-            akunId: 0,
+          FotoBarang: {
+            id: 0,
+            foto: '',
             BarangId: 0,
           },
         },
-      ],
-    },
+      },
+    ],
     totalHarga: 0,
   })
 
@@ -49,27 +46,26 @@ const Navbar = () => {
     return null
 
   const { user, clearUser, getUser } = userStorage()
-  const { cartStatus, changeCart } = cartStorage()
+  const { cartStatus } = cartStorage()
 
   const navigate = useNavigate()
 
-  // useEffect(() => {
-  //   getUser()
-  //   fetch('http://localhost:8000/api/keranjang', {
-  //     method: 'GET',
-  //     headers: {
-  //       Authorization: `Bearer ${user?.token}`,
-  //     },
-  //   })
-  //     .then(async (res) => {
-  //       const data = await res.json()
-  //       setCart(data.data)
-  //       changeCart(!cartStatus)
-  //     })
-  //     .catch((err) => {
-  //       console.log(err)
-  //     })
-  // }, [cartStatus])
+  useEffect(() => {
+    getUser()
+    fetch('http://localhost:8000/api/keranjang', {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${user?.token}`,
+      },
+    })
+      .then(async (res) => {
+        const data = await res.json()
+        setCart(data.data)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }, [cartStatus])
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -103,9 +99,9 @@ const Navbar = () => {
       <Link to='/keranjang'>
         <button className='text-white text-lg font-semibold p-4 rounded-md hover:bg-gray-700 relative'>
           <FaShoppingCart />
-          {cart.userCart.Barangs.length > 0 && (
+          {cart.daftarBarang.length > 0 && (
             <div className='rounded-full bg-red-600 flex justify-center items-center text-white w-7 h-7 absolute bottom-0 right-0 translate-x-1/4 translate-y-1/4'>
-              {cart.userCart.Barangs.length}
+              {cart.daftarBarang.length}
             </div>
           )}
         </button>

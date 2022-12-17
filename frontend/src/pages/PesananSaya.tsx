@@ -1,19 +1,23 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react'
 import { RiShoppingBagFill } from 'react-icons/ri'
 import { Link } from 'react-router-dom'
-import dataPesanan from '../data/dataProduk'
+
 import RincianPesanan from '../components/RincianPesanan'
+import { formatCurrency } from '../util/formatCurrency'
+
+import type { Pesanan } from '../util/type'
+import { userStorage } from '../util/userStorage'
 
 const PesananSaya = () => {
   const statusPesanan = [
     {
       id: 1,
-      status: 'Menunggu konfirmasi',
+      status: 'Menunggu Konfirmasi',
     },
     {
       id: 2,
-      status: 'Bayar',
+      status: 'Menunggu Pembayaran',
     },
     {
       id: 3,
@@ -29,7 +33,25 @@ const PesananSaya = () => {
     },
   ]
 
+  const [pesanan, setPesanan] = useState<Pesanan[]>([])
   const [value, setValue] = useState(1)
+
+  const { user } = userStorage()
+
+  useEffect(() => {
+    fetch('http://localhost:8000/api/pemesanan', {
+      headers: {
+        Authorization: `Bearer ${user?.token}`,
+      },
+    })
+      .then(async (res) => {
+        const data = await res.json()
+        setPesanan(data.data.pesanan)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }, [])
 
   const valueChange = (event: React.MouseEvent) => {
     setValue(parseInt((event.target as HTMLInputElement).value))
@@ -49,7 +71,8 @@ const PesananSaya = () => {
                 statusPesanan[0].id === value && 'font-bold'
               }`}
               value={1}
-              onClick={valueChange}>
+              onClick={valueChange}
+            >
               Menunggu konfirmasi
             </li>
             <li
@@ -57,7 +80,8 @@ const PesananSaya = () => {
                 statusPesanan[1].id === value && 'font-bold'
               }`}
               value={2}
-              onClick={valueChange}>
+              onClick={valueChange}
+            >
               Bayar
             </li>
             <li
@@ -65,7 +89,8 @@ const PesananSaya = () => {
                 statusPesanan[2].id === value && 'font-bold'
               }`}
               value={3}
-              onClick={valueChange}>
+              onClick={valueChange}
+            >
               Diproses
             </li>
             <li
@@ -73,7 +98,8 @@ const PesananSaya = () => {
                 statusPesanan[3].id === value && 'font-bold'
               }`}
               value={4}
-              onClick={valueChange}>
+              onClick={valueChange}
+            >
               Dikirim
             </li>
             <li
@@ -81,28 +107,34 @@ const PesananSaya = () => {
                 statusPesanan[4].id === value && 'font-bold'
               }`}
               value={5}
-              onClick={valueChange}>
+              onClick={valueChange}
+            >
               Selesai
             </li>
           </ul>
           <div className='flex flex-row gap-10'>
             <div className='flex flex-col gap-5 w-7/12'>
-              <div
-                className='mb-4 py-5 px-10 flex flex-col rounded-xl bg-light gap-2'
-                style={{
-                  boxShadow: 'rgba(0, 0, 0, 0.24) 5px 5px 6px',
-                }}>
+              {pesanan.map((item) => (
+                <div
+                  key={item.id}
+                  className='mb-4 py-5 px-10 flex flex-col rounded-xl bg-light gap-2'
+                  style={{
+                    boxShadow: 'rgba(0, 0, 0, 0.24) 5px 5px 6px',
+                  }}
+                >
                   <div className='px-2 m-0 w-11/12'>
-                    <p>ID: #12</p>
+                    <p>ID: #{item.id}</p>
                   </div>
-                {dataPesanan.map((data) => {
-                  return (
+                  {item.Barangs.map((data) => (
                     <div
                       className='mx-3 flex flex-row gap-3 border-t justify-center items-center'
-                      key={data._id}>
+                      key={data.id}
+                    >
                       <div className='w-3/12 py-2 mb-3'>
                         <img
-                          src={data.gambar}
+                          src={`http://localhost:8000/produk/${
+                            data.FotoBarang.foto.split('\\')[2]
+                          }`}
                           alt='cpu'
                           width='128px'
                           height='128px'
@@ -113,46 +145,50 @@ const PesananSaya = () => {
                         <p>
                           Jumlah:{' '}
                           <span className='font-bold'>
-                            {data.jumlah} buah
+                            {item.Barangs.length} buah
                           </span>
                         </p>
                         <div className='font-bold text-right'>
                           <p className='text-blue-600 font-bold'>
-                            Total: {data.harga}
+                            Total: {formatCurrency(data.harga)}
                           </p>
                           {statusPesanan[4].id === value && (
                             <Link
                               to='/garansi'
-                              className='font-bold text-blue-600 hover:text-blue-800'>
+                              className='font-bold text-blue-600 hover:text-blue-800'
+                            >
                               Ajukan Garansi
                             </Link>
                           )}
                         </div>
                       </div>
                     </div>
-                  )
-                })}
-                <ul className='border-t p-2 border-b'>
-                  {statusPesanan[4].id === value ? (
-                    ''
-                  ) : (
+                  ))}
+                  <ul className='border-t p-2 border-b'>
+                    {statusPesanan[4].id === value ? (
+                      ''
+                    ) : (
+                      <li className='flex flex-row justify-between items-start p-0 bg-transparent'>
+                        <p>Tipe</p>
+                        <p>Pemesanan</p>
+                      </li>
+                    )}
                     <li className='flex flex-row justify-between items-start p-0 bg-transparent'>
-                      <p>Tipe</p>
-                      <p>Pemesanan</p>
+                      <p>Total Pesanan</p>
+                      <p>
+                        {formatCurrency(
+                          item.Barangs.reduce(
+                            (acc, cur) => cur.harga,
+                            0
+                          )
+                        )}
+                      </p>
                     </li>
-                  )}
-                  <li className='flex flex-row justify-between items-start p-0 bg-transparent'>
-                    <p>Total Pesanan</p>
-                    <p>
-                      {statusPesanan[0].id === value
-                        ? 'Rp 3.400.000'
-                        : 'Rp 3.420.000'}
-                    </p>
-                  </li>
-                </ul>
-              </div>
+                  </ul>
+                </div>
+              ))}
 
-              {statusPesanan[4].id === value ? (
+              {/* {statusPesanan[4].id === value ? (
                 ''
               ) : (
                 <div
@@ -160,7 +196,8 @@ const PesananSaya = () => {
                   style={{
                     backgroundColor: '#F9F9F9',
                     boxShadow: 'rgba(0, 0, 0, 0.24) 5px 5px 6px',
-                  }}>
+                  }}
+                >
                   <div className='px-2 m-0 w-11/12'>
                     <p>ID: #7</p>
                   </div>
@@ -199,14 +236,14 @@ const PesananSaya = () => {
                     </li>
                   </ul>
                 </div>
-              )}
+              )} */}
             </div>
             <div className='w-5/12'>
-              <RincianPesanan
-                dataPesanan={dataPesanan}
+              {/* <RincianPesanan
+                dataPesanan={pesanan}
                 value={value}
                 statusPesanan={statusPesanan}
-              />
+              /> */}
             </div>
           </div>
         </div>
