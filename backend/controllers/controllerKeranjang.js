@@ -21,7 +21,8 @@ const allCartList = async (req, res) => {
 
 // daftar barang pelanggan di keranjang
 const daftarKeranjang = async (req, res) => {
-  const logged = req.headers.authorization.split(' ')[1]
+  // const logged = req.headers.authorization.split(' ')[1]
+  const logged = req.cookies.logged_account
   // decode cookie's token from jwt to get the id of Akun
   const decoded = jwt.verify(logged, 'jwtAkunId')
 
@@ -64,7 +65,8 @@ const daftarKeranjang = async (req, res) => {
 
 // add item into shopping cart (for customers)
 const tambahKeKeranjang = async (req, res) => {
-  const logged = req.headers.authorization.split(' ')[1]
+  // const logged = req.headers.authorization.split(' ')[1]
+  const logged = req.cookies.logged_account
   const idBarang = req.params.id
   const decoded = jwt.verify(logged, 'jwtAkunId')
 
@@ -130,7 +132,8 @@ const tambahKeKeranjang = async (req, res) => {
 
 // delete item from shopping cart
 const hapusDariKeranjang = async (req, res) => {
-  const logged = req.headers.authorization.split(' ')[1]
+  // const logged = req.headers.authorization.split(' ')[1]
+  const logged = req.cookies.logged_account
   const decoded = jwt.verify(logged, 'jwtAkunId')
   const { id } = req.params
   // const { barangId } = req.body;
@@ -166,7 +169,8 @@ const hapusDariKeranjang = async (req, res) => {
 }
 
 const ubahJumlahBarang = async (req, res) => {
-  const logged = req.headers.authorization.split(' ')[1]
+  // const logged = req.headers.authorization.split(' ')[1]
+  const logged = req.cookies.logged_account
   const decoded = jwt.verify(logged, 'jwtAkunId')
   const { id } = req.params
   const { jumlah } = req.body

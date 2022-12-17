@@ -16,6 +16,18 @@ module.exports = (sequelize, DataTypes) => {
           name: 'bydId'
         }
       });
+
+      BarangYangDipesan.belongsTo(models.Barang, {
+        foreignKey: {
+          name: 'BarangId'
+        }
+      })
+
+      BarangYangDipesan.belongsTo(models.Pemesanan, {
+        foreignKey: {
+          name: 'PemesananId'
+        }
+      })
     }
   }
   BarangYangDipesan.init({

@@ -37,6 +37,12 @@ module.exports = (sequelize, DataTypes) => {
         }
       });
 
+      Barang.hasMany(models.BarangYangDipesan, {
+        foreignKeys: {
+          name: 'BarangId'
+        }
+      })
+
       Barang.hasOne(models.FotoBarang, {
         foreignKeys: {
           name: 'BarangId'

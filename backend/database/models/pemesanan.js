@@ -24,6 +24,12 @@ module.exports = (sequelize, DataTypes) => {
         }
       });
 
+      Pemesanan.hasMany(models.BarangYangDipesan, {
+        foreignKey: {
+          name: 'pemesananId'
+        }
+      })
+
       Pemesanan.belongsTo(models.Akun, {
         foreignKey: {
           name: 'akunId'

@@ -16,6 +16,7 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       garansiExpired: {
+        allowNull: false,
         type: Sequelize.BOOLEAN
       }
     });

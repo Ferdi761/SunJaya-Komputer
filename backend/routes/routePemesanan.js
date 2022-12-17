@@ -27,6 +27,7 @@ const {
   checkout,
   uploadBuktiBayar,
   daftarSemuaPesanan,
+  pesananSelesai,
   umpanBalik,
   byd,
 
@@ -34,12 +35,14 @@ const {
   daftarKonfirmasiPesanan,
   konfirmasiPesanan,
   batalkanPesanan,
-  ubahStatusKirim
+  ubahStatusKirim,
+  konfirmasiPesananSampai
 } = require('../controllers/controllerPemesanan');
 
 routerPemesanan.route("/").get(loginCheck, daftarSemuaPesanan);
 routerPemesanan.route("/checkout").post(loginCheck, checkout);
 routerPemesanan.route("/checkout/upload/:id").put(loginCheck, upload.single('buktiPembayaran'), uploadBuktiBayar);
+routerPemesanan.route("/selesai/:id").put(loginCheck, pesananSelesai);
 routerPemesanan.route("/ulasan/:id").put(loginCheck, umpanBalik);
 // check only
 routerPemesanan.route("/byd/:pmsID").get(byd);
@@ -50,5 +53,6 @@ routerPemesanan.route("/admin/konfirmasi").get(loginCheck, isAdmin, daftarKonfir
 routerPemesanan.route("/admin/konfirmasi/:id").post(loginCheck, isAdmin, konfirmasiPesanan);
 routerPemesanan.route("/admin/batalkan/:id").delete(loginCheck, isAdmin, batalkanPesanan);
 routerPemesanan.route("/admin/kirim/:id").put(loginCheck, isAdmin, ubahStatusKirim);
+routerPemesanan.route("/admin/sampai/:id").put(loginCheck, isAdmin, konfirmasiPesananSampai);
 
 module.exports = routerPemesanan;

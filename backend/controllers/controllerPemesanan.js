@@ -17,7 +17,8 @@ let dataBYD = []
 let waktuPembayaran
 
 const checkout = async (req, res) => {
-  const logged = req.headers.authorization.split(' ')[1]
+  // const logged = req.headers.authorization.split(' ')[1]
+  const logged = req.cookies.logged_account
   const decoded = jwt.verify(logged, 'jwtAkunId')
 
   const { alamatTujuan, jasaPengiriman, biayaPengiriman } = req.body
@@ -218,10 +219,44 @@ const uploadBuktiBayar = async (req, res) => {
 const pesananSelesai = async (req, res) => {
   const logged = req.cookies.logged_account
   const decoded = jwt.verify(logged, 'jwtAkunId')
-  const { id } = req.params
+  const idPesanan = req.params.id
 
   try {
-  } catch (err) {}
+    const pesanan = await Pemesanan.findOne({
+      include: BarangYangDipesan,
+      where: {
+        [Op.and]: [
+          { id: idPesanan },
+          { akunId: decoded.id },
+          { tanggalSampai: { [Op.not]: null } }
+        ]
+      }
+    })
+
+    if (!pesanan) throw 'Pesanan tidak ditemukan!'
+
+    // pesanan.update({
+
+    // })
+
+    res
+    .status(200)
+    .json({
+      status: 'success',
+      data: pesanan
+    })
+    .end()
+  } 
+  catch (err) {
+    console.log(err)
+    res
+      .status(500)
+      .json({
+        status: 'fail',
+        message: [err],
+      })
+      .end()
+  }
 }
 
 const umpanBalik = async (req, res) => {
@@ -453,32 +488,27 @@ const ubahStatusKirim = async (req, res) => {
   const { id } = req.params
 
   try {
-    const pesanan = await BuktiPembayaranPemesanan.findOne({
-      include: [
-        {
-          model: Pemesanan,
-          where: {
-            id: id,
-          },
-        },
-      ],
+    const pesanan = await Pemesanan.findOne({
+      where: {
+        id: id,
+        pembayaranLunas: true
+      }
     })
 
     const aWeek = 604800000
     const today = new Date()
 
     await pesanan.update({
-      Pemesanan: {
-        tanggalKirim: Date.now(),
-      },
+      tanggalKirim: Date.now()
     })
+    await pesanan.save()
 
-    const thisDate = pesanan.Pemesanan.tanggalKirim
+    const thisDate = pesanan.tanggalKirim
     const aDay = new Date(thisDate.getTime() + aWeek)
 
-    console.log(pesanan.Pemesanan.tanggalKirim)
-    console.log(pesanan.Pemesanan.tanggalKirim.getHours())
-    console.log(pesanan.Pemesanan.tanggalKirim.getHours() + 2)
+    console.log(pesanan.tanggalKirim)
+    console.log(pesanan.tanggalKirim.getHours())
+    console.log(pesanan.tanggalKirim.getHours() + 2)
     console.log(thisDate.toLocaleString())
     console.log(thisDate.valueOf() === aDay.valueOf())
     // console.log((thisDate + (thisDate.getHours() + 2)).toLocaleString());
@@ -512,23 +542,31 @@ const konfirmasiPesananSampai = async (req, res) => {
   const { id } = req.params
 
   try {
-    const pesanan = await BuktiPembayaranPemesanan.findOne(
+    const pesanan = await Pemesanan.findOne(
       {
         where: {
-          pemesananId: id,
+          id: id,
+          tanggalKirim: {
+            [Op.not]: null
+          }
         },
-      },
-      {
-        include: Pemesanan,
       }
     )
 
     pesanan.update({
-      Pemesanan: {
-        tanggalSampai: Date.now(),
-      },
+      tanggalSampai: Date.now()
     })
-  } catch (err) {
+
+    res
+    .status(200)
+    .json({
+      status: 'success',
+      message: 'Pesanan Telah sampai ke pelanggan!',
+      data: pesanan
+    })
+    .end()
+  } 
+  catch (err) {
     console.log(err)
     res
       .status(500)
@@ -544,7 +582,8 @@ const konfirmasiPesananSampai = async (req, res) => {
 
 // Pesanan dengan semua status
 const daftarSemuaPesanan = async (req, res) => {
-  const logged = req.headers.authorization.split(' ')[1]
+  // const logged = req.headers.authorization.split(' ')[1]
+  const logged = req.cookies.logged_account
   const decoded = jwt.verify(logged, 'jwtAkunId')
 
   try {
@@ -553,11 +592,7 @@ const daftarSemuaPesanan = async (req, res) => {
         include: Pemesanan,
       },
       {
-        where: {
-          Pemesanan: {
-            akunId: decoded.id,
-          },
-        },
+        where: { Pemesanan: { akunId: decoded.id } }
       }
     )
 
@@ -734,6 +769,7 @@ const pesananDikirim = async (req, res) => {
 module.exports = {
   checkout,
   uploadBuktiBayar,
+  pesananSelesai,
   umpanBalik,
   byd, // testing barang yang dipesan
 
