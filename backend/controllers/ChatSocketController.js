@@ -30,25 +30,29 @@ class ChatSocketController {
             // autentikasi untuk memberikan role pada chat
             socket.on("auth", function(message) {
                 let socketData = that.socketConnectionData.get(socket);
-                if (message == "admin" || message == "karyawan") {
-                    socketData.auth = EMPLOYEE;
-
-                    that.socketConnectionData.forEach(function(data, socket) {
-                        if (data.auth == CUSTOMER) {
-                            socket.emit("aktif", "Aktif");
-                        }
-                    });
-                    that.employeeWhoOpenChatMenu.add(socket);
-                }
-                else {
-                    socketData.auth = CUSTOMER;
+                if (socketData != undefined && socketData != null) {
+                    if (message == "admin" || message == "karyawan") {
+                        socketData.auth = EMPLOYEE;
+    
+                        that.socketConnectionData.forEach(function(data, socket) {
+                            if (data != undefined && data != null && data.auth == CUSTOMER) {
+                                socket.emit("aktif", "Aktif");
+                            }
+                        });
+                        that.employeeWhoOpenChatMenu.add(socket);
+                    }
+                    else {
+                        socketData.auth = CUSTOMER;
+                    }
                 }
             });
 
             socket.on("name", function(message) {
                 let socketData = that.socketConnectionData.get(socket);
-                if (socketData.auth == CUSTOMER) {
-                    socketData.name = message;
+                if (socketData != undefined && socketData != null) {
+                    if (socketData.auth == CUSTOMER) {
+                        socketData.name = message;
+                    }
                 }
             });
 
@@ -83,125 +87,129 @@ class ChatSocketController {
 
             socket.on("read", function(message) {
                 let socketData = that.socketConnectionData.get(socket);
-                let read = parseInt(message);
+                if (socketData != undefined && socketData != null) {
+                    let read = parseInt(message);
 
-                // kalau yang mengirim adalah karyawan
-                if (socketData.auth == EMPLOYEE) {
+                    // kalau yang mengirim adalah karyawan
+                    if (socketData.auth == EMPLOYEE) {
 
-                    // sebelum join chat lain, karyawan harus keluar dari chat yang
-                    // dibukanya sekarang
-                    employeeOutFromRoom(socketData);
+                        // sebelum join chat lain, karyawan harus keluar dari chat yang
+                        // dibukanya sekarang
+                        employeeOutFromRoom(socketData);
 
-                    // bila id pelanggan adalah -1 itu artinya karyawan keluar dari menu chat
-                    if (read != -1) {
+                        // bila id pelanggan adalah -1 itu artinya karyawan keluar dari menu chat
+                        if (read != -1) {
 
-                        // mengambil data room
-                        let roomData = that.room.get(read);
-    
-                        if (roomData === undefined) {
-                            // kalau room tidak ada maka dibuat terlebih dahulu
-                            that.room.set(read, {employee: socket, customer: null});
-                            socketData.read = read;
+                            // mengambil data room
+                            let roomData = that.room.get(read);
+        
+                            if (roomData === undefined) {
+                                // kalau room tidak ada maka dibuat terlebih dahulu
+                                that.room.set(read, {employee: socket, customer: null});
+                                socketData.read = read;
 
-                            socket.emit("aktif", "Tidak Aktif");
-                        }
-                        else if (roomData.employee == null && roomData.customer != null) {
-                            // bila room sudah ada dan belum ada karyawan yang membuka chat
-                            // maka karyawan bisa membuka
-                            roomData.employee = socket;
-                            socketData.read = read;
+                                socket.emit("aktif", "Tidak Aktif");
+                            }
+                            else if (roomData.employee == null && roomData.customer != null) {
+                                // bila room sudah ada dan belum ada karyawan yang membuka chat
+                                // maka karyawan bisa membuka
+                                roomData.employee = socket;
+                                socketData.read = read;
 
-                            roomData.customer.emit("readall", "readall");
+                                roomData.customer.emit("readall", "readall");
 
-                            roomData.employee.emit("aktif", "Aktif");
-                        }
-                        else {
-                            socket.emit("denied", "denied");
-                        }
+                                roomData.employee.emit("aktif", "Aktif");
+                            }
+                            else {
+                                socket.emit("denied", "denied");
+                            }
 
-                        that.employeeWhoOpenChatMenu.add(socket);
-                    }
-                }
-                else if (socketData.auth == CUSTOMER) {
-                    if (read != -1) {
-                        // mengambil data room
-                        let roomData = that.room.get(socketData.id);
-    
-                        if (roomData === undefined) {
-                            // kalau room tidak ada maka dibuat terlebih dahulu
-                            that.room.set(socketData.id, {employee: null, customer: socket});
-                            socketData.read = 0;
-                        }
-                        else if (roomData.customer == null && roomData.employee != null) {
-                            // bila room sudah ada karena sudah dibuat oleh karyawan,
-                            // maka tinggal masuk saja
-                            roomData.customer = socket;
-                            socketData.read = 0;
-
-                            roomData.employee.emit("readall", "readall");
-                            // semua chat sudah dibaca oleh salah satu karyawan
-                            that.employeeWhoOpenChatMenu.forEach(function(value) {
-                                value.emit("readed", socketData.id);
-                            });
-                            
-                            roomData.employee.emit("aktif", "Aktif");
-                        }
-
-                        if (that.employeeWhoOpenChatMenu.size > 0) {
-                            socket.emit("aktif", "Aktif");
-                        }
-                        else {
-                            socket.emit("aktif", "Tidak Aktif");
+                            that.employeeWhoOpenChatMenu.add(socket);
                         }
                     }
-                    else {
-                        customerOutOfRoom(socketData);
+                    else if (socketData.auth == CUSTOMER) {
+                        if (read != -1) {
+                            // mengambil data room
+                            let roomData = that.room.get(socketData.id);
+        
+                            if (roomData === undefined) {
+                                // kalau room tidak ada maka dibuat terlebih dahulu
+                                that.room.set(socketData.id, {employee: null, customer: socket});
+                                socketData.read = 0;
+                            }
+                            else if (roomData.customer == null && roomData.employee != null) {
+                                // bila room sudah ada karena sudah dibuat oleh karyawan,
+                                // maka tinggal masuk saja
+                                roomData.customer = socket;
+                                socketData.read = 0;
+
+                                roomData.employee.emit("readall", "readall");
+                                // semua chat sudah dibaca oleh salah satu karyawan
+                                that.employeeWhoOpenChatMenu.forEach(function(value) {
+                                    value.emit("readed", socketData.id);
+                                });
+                                
+                                roomData.employee.emit("aktif", "Aktif");
+                            }
+
+                            if (that.employeeWhoOpenChatMenu.size > 0) {
+                                socket.emit("aktif", "Aktif");
+                            }
+                            else {
+                                socket.emit("aktif", "Tidak Aktif");
+                            }
+                        }
+                        else {
+                            customerOutOfRoom(socketData);
+                        }
                     }
                 }
             });
 
             socket.on("message to", function(message) {
                 let socketData = that.socketConnectionData.get(socket);
-                
-                if (socketData.auth == CUSTOMER) {
-                    let roomData = that.room.get(socketData.id);
 
-                    try {
+                if (socketData != undefined && socketData != null) {
+                    if (socketData.auth == CUSTOMER) {
+                        let roomData = that.room.get(socketData.id);
+
+                        try {
+                            let read = "unread";
+                            if (roomData.employee != null) {
+                                roomData.employee.emit("message to", message);
+                                read = "read";
+                            }
+                            else {
+        
+                            }
+        
+                            that.employeeWhoOpenChatMenu.forEach(function(value) {
+                                value.emit("coming " + read, socketData.id + "!$!" + socketData.name + "!$!" + message);
+                            });
+                            socket.emit("message self " + read, message);
+                        } catch (error) {
+                            
+                        }
+                    }
+                    else if (socketData.auth == EMPLOYEE && socketData.read !== -1) {
+                        let roomData = that.room.get(socketData.read);
+                        
                         let read = "unread";
-                        if (roomData.employee != null) {
-                            roomData.employee.emit("message to", message);
+                        if (roomData.customer != null) {
+                            roomData.customer.emit("message to", message);
                             read = "read";
                         }
                         else {
-    
-                        }
-    
-                        that.employeeWhoOpenChatMenu.forEach(function(value) {
-                            value.emit("coming " + read, socketData.id + "!$!" + socketData.name + "!$!" + message);
-                        });
-                        socket.emit("message self " + read, message);
-                    } catch (error) {
-                        
-                    }
-                }
-                else if (socketData.auth == EMPLOYEE && socketData.read !== -1) {
-                    let roomData = that.room.get(socketData.read);
-                    
-                    let read = "unread";
-                    if (roomData.customer != null) {
-                        roomData.customer.emit("message to", message);
-                        read = "read";
-                    }
-                    else {
 
+                        }
+                        socket.emit("message self " + read, message);
                     }
-                    socket.emit("message self " + read, message);
                 }
             });
 
             socket.on("disconnect", function(reason) {
                 let socketData = that.socketConnectionData.get(socket);
-                if (socketData != undefined) {
+                if (socketData != undefined && socketData != null) {
                     if (socketData.auth == CUSTOMER) {
                         customerOutOfRoom(socketData);
 
@@ -216,7 +224,7 @@ class ChatSocketController {
                         that.employeeWhoOpenChatMenu.delete(socket);
                         if (that.employeeWhoOpenChatMenu.size == 0) {
                             that.socketConnectionData.forEach(function(data, customer_socket) {
-                                if (data.auth == CUSTOMER) {
+                                if (data != undefined && data != null && data.auth == CUSTOMER) {
                                     customer_socket.emit("aktif", "Tidak Aktif");
                                 }
                             });
