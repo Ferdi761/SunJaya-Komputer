@@ -7,6 +7,8 @@ interface ChatProps {
   chat: string
   setChat: Dispatch<SetStateAction<string>>
   location: ReturnType<typeof useLocation>
+  id: number
+  chatMasuk: string[]
 }
 
 const Chat = ({
@@ -14,6 +16,8 @@ const Chat = ({
   chat,
   setChat,
   location,
+  id,
+  chatMasuk,
 }: ChatProps) => {
   if (location.pathname == '/admin/chat/0') {
     return (
@@ -29,7 +33,11 @@ const Chat = ({
         <p className='font-bold text-xl'>Sun Jaya Komputer</p>
         <p id='aktif'>Aktif</p>
       </div>
-      <div id='chats' className='flex-grow'></div>
+      <div id='chats' className='flex items-center justify-center'>
+        {chatMasuk.map((chat, index) => (
+          <div key={index}>{chat}</div>
+        ))}
+      </div>
       <form
         className='flex'
         onSubmit={function (e) {

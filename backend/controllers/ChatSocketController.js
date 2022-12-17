@@ -24,7 +24,7 @@ class ChatSocketController {
         this.socketIO.on("connection", function(socket) {
 
             socket.on("init", function(message) {
-                that.socketConnectionData.set(socket, {id: parseInt(message), read: -1, auth: -1});
+                that.socketConnectionData.set(socket, {id: parseInt(message), name: "", read: -1, auth: -1});
             });
 
             // autentikasi untuk memberikan role pada chat
@@ -38,9 +38,17 @@ class ChatSocketController {
                             socket.emit("aktif", "Aktif");
                         }
                     });
+                    that.employeeWhoOpenChatMenu.add(socket);
                 }
                 else {
                     socketData.auth = CUSTOMER;
+                }
+            });
+
+            socket.on("name", function(message) {
+                let socketData = that.socketConnectionData.get(socket);
+                if (socketData.auth == CUSTOMER) {
+                    socketData.name = message;
                 }
             });
 
@@ -97,7 +105,7 @@ class ChatSocketController {
 
                             socket.emit("aktif", "Tidak Aktif");
                         }
-                        else if (roomData.employee == null) {
+                        else if (roomData.employee == null && roomData.customer != null) {
                             // bila room sudah ada dan belum ada karyawan yang membuka chat
                             // maka karyawan bisa membuka
                             roomData.employee = socket;
@@ -113,9 +121,6 @@ class ChatSocketController {
 
                         that.employeeWhoOpenChatMenu.add(socket);
                     }
-                    else {
-                        that.employeeWhoOpenChatMenu.delete(socket);
-                    }
                 }
                 else if (socketData.auth == CUSTOMER) {
                     if (read != -1) {
@@ -127,7 +132,7 @@ class ChatSocketController {
                             that.room.set(socketData.id, {employee: null, customer: socket});
                             socketData.read = 0;
                         }
-                        else  {
+                        else if (roomData.customer == null && roomData.employee != null) {
                             // bila room sudah ada karena sudah dibuat oleh karyawan,
                             // maka tinggal masuk saja
                             roomData.customer = socket;
@@ -161,19 +166,23 @@ class ChatSocketController {
                 if (socketData.auth == CUSTOMER) {
                     let roomData = that.room.get(socketData.id);
 
-                    let read = "unread";
-                    if (roomData.employee != null) {
-                        roomData.employee.emit("message to", message);
-                        read = "read";
+                    try {
+                        let read = "unread";
+                        if (roomData.employee != null) {
+                            roomData.employee.emit("message to", message);
+                            read = "read";
+                        }
+                        else {
+    
+                        }
+    
+                        that.employeeWhoOpenChatMenu.forEach(function(value) {
+                            value.emit("coming " + read, socketData.id + "!$!" + socketData.name + "!$!" + message);
+                        });
+                        socket.emit("message self " + read, message);
+                    } catch (error) {
+                        
                     }
-                    else {
-
-                    }
-
-                    that.employeeWhoOpenChatMenu.forEach(function(value) {
-                        value.emit("coming " + read, socketData.id);
-                    });
-                    socket.emit("message self " + read, message);
                 }
                 else if (socketData.auth == EMPLOYEE && socketData.read !== -1) {
                     let roomData = that.room.get(socketData.read);
@@ -194,7 +203,7 @@ class ChatSocketController {
                 let socketData = that.socketConnectionData.get(socket);
                 if (socketData != undefined) {
                     if (socketData.auth == CUSTOMER) {
-                        that.customerOutOfRoom(socketData);
+                        customerOutOfRoom(socketData);
 
                         let roomData = that.room.get(socketData.id);
                         if (roomData != undefined && roomData.employee != null) {
@@ -204,6 +213,7 @@ class ChatSocketController {
                     else if (socketData.auth == EMPLOYEE) {
                         employeeOutFromRoom(socketData);
 
+                        that.employeeWhoOpenChatMenu.delete(socket);
                         if (that.employeeWhoOpenChatMenu.size == 0) {
                             that.socketConnectionData.forEach(function(data, customer_socket) {
                                 if (data.auth == CUSTOMER) {

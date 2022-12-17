@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { io } from 'socket.io-client'
 import { ChatSocketController } from '../util/ChatSocketController'
@@ -6,6 +6,10 @@ import { userStorage } from '../util/userStorage'
 
 const ChatPage = () => {
   const [chat, setChat] = useState('')
+
+  const [chatSendiri, setChatSendiri] = useState<string[]>([])
+  let chatLawan: string[] = []
+
   const { user } = userStorage()
 
   if (!user) {
@@ -25,50 +29,60 @@ const ChatPage = () => {
       io('http://localhost:8000').connect()
     )
 
-    chatSocketController.addCallback(
-      'message self read',
-      function (message: string) {
-        // munculkan teks yang dikirim sendiri dengan penanda sudah di read
-      }
-    )
+    useEffect(() => {
+      chatSocketController.addCallback(
+        'message self read',
+        function (message: string) {
+          // munculkan teks yang dikirim sendiri dengan penanda sudah di read
+          console.log('message self read: ' + message)
+          setChatSendiri((chat) => [...chat, message])
+          console.log(chatSendiri)
+        }
+      )
 
-    chatSocketController.addCallback(
-      'message self unread',
-      function (message: string) {
-        // munculkan teks yang dikirim sendiri dengan penanda belum di read
-      }
-    )
+      chatSocketController.addCallback(
+        'message self unread',
+        function (message: string) {
+          // munculkan teks yang dikirim sendiri dengan penanda belum di read
+          console.log('message self unread: ' + message)
+          setChatSendiri((chat) => [...chat, message])
+          console.log(chatSendiri)
+        }
+      )
 
-    chatSocketController.addCallback(
-      'message to',
-      function (message: string) {
-        // munculkan teks yang dikirim dari toko (lawan bicara)
-      }
-    )
+      chatSocketController.addCallback(
+        'message to',
+        function (message: string) {
+          // munculkan teks yang dikirim dari toko (lawan bicara)
+          console.log('message to: ' + message)
+          chatLawan.push(message)
+        }
+      )
 
-    chatSocketController.addCallback(
-      'aktif',
-      function (message: string) {
-        // mengganti tanda apakah ada karyawan toko yang aktif atau tidak
-        let aktif = document.getElementById(
-          'aktif'
-        ) as HTMLParagraphElement
-        aktif.innerHTML = message
-      }
-    )
+      chatSocketController.addCallback(
+        'aktif',
+        function (message: string) {
+          let aktif = document.getElementById(
+            'aktif'
+          ) as HTMLParagraphElement
+          aktif.innerHTML = message
+        }
+      )
 
-    chatSocketController.addCallback(
-      'readall',
-      function (message: string) {
-        // buat semua chat dari toko ditandai sudah di read
-      }
-    )
+      chatSocketController.addCallback(
+        'readall',
+        function (message: string) {
+          // buat semua chat dari toko ditandai sudah di read
+        }
+      )
 
-    chatSocketController.init(user.id)
-    chatSocketController.auth(user.izin)
-    chatSocketController.read(1)
-    // read pada pelanggan hanya untuk menandakan pelanggan membuka chat, nilainya dibuat menjadi 1
-    // karena nilai apapun yang lebih dari 0 (>0) menandakan pelanggan membuka chat.
+      chatSocketController.init(user.id)
+      chatSocketController.auth(user.izin)
+      chatSocketController.name(user.nama)
+      chatSocketController.read(1)
+      // read pada pelanggan hanya untuk menandakan pelanggan membuka chat, nilainya dibuat menjadi 1
+      // karena nilai apapun yang lebih dari 0 (>0) menandakan pelanggan membuka chat.
+    }, [])
 
     return (
       <div className='bg-primary h-screen text-white flex justify-center'>
@@ -78,7 +92,14 @@ const ChatPage = () => {
               <p className='font-bold text-2xl'>Sun Jaya Komputer</p>
               <p id='aktif'>Aktif</p>
             </div>
-            <div id='chats' className='flex-grow'></div>
+            <div
+              id='chats'
+              className='flex items-center justify-center'
+            >
+              {chatSendiri.map((chat, index) => (
+                <div key={index}>{chat}</div>
+              ))}
+            </div>
             <form
               className='flex'
               onSubmit={function (e) {
@@ -97,22 +118,21 @@ const ChatPage = () => {
                 id='chat-input'
                 value={chat}
                 onChange={(e) => setChat(e.target.value)}
-                // onKeyDown={function (e) {
-                //   if (e.key == 'Enter') {
-                //     let chatText = (
-                //       document.getElementById(
-                //         'chat-input'
-                //       ) as HTMLInputElement
-                //     ).value
-                //     ;(
-                //       document.getElementById(
-                //         'chat-input'
-                //       ) as HTMLInputElement
-                //     ).value = ''
-                //     chatSocketController.sendMessage(chatText)
-                //     console.log(chatSocketController)
-                //   }
-                // }}
+                onKeyDown={function (e) {
+                  if (e.key == 'Enter') {
+                    let chatText = (
+                      document.getElementById(
+                        'chat-input'
+                      ) as HTMLInputElement
+                    ).value
+                    ;(
+                      document.getElementById(
+                        'chat-input'
+                      ) as HTMLInputElement
+                    ).value = ''
+                    chatSocketController.sendMessage(chatText)
+                  }
+                }}
               />
               <button
                 className='bg-blue-700 w-1/12 rounded-lg'

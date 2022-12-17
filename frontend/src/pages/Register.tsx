@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 
 const Register = () => {
   const [akun, setAkun] = React.useState({
-    nama: 'Nugraha Akbar',
+    nama: '',
     email: '',
     password: '',
     izin: 'user',
@@ -60,13 +60,28 @@ const Register = () => {
         </h1>
         <div className='mb-4'>
           <label className='block text-black font-semibold text-lg mb-2'>
-            Nama atau Email
+            Nama 
           </label>
           <input
             className='focus:ring-2 focus:ring-black focus:outline-none appearance-none w-full text-sm leading-6 text-slate-900 placeholder-primary rounded-md py-2 pl-5 ring-1 ring-slate-200 shadow-sm bg-formInput'
             type='text'
-            aria-label='nama atau email'
-            placeholder='nama atau email'
+            aria-label='nama'
+            placeholder='nama'
+            value={akun.nama}
+            onChange={(e) =>
+              setAkun({ ...akun, nama: e.target.value })
+            }
+          />
+        </div>
+        <div className='mb-4'>
+          <label className='block text-black font-semibold text-lg mb-2'>
+            Email
+          </label>
+          <input
+            className='focus:ring-2 focus:ring-black focus:outline-none appearance-none w-full text-sm leading-6 text-slate-900 placeholder-primary rounded-md py-2 pl-5 ring-1 ring-slate-200 shadow-sm bg-formInput'
+            type='text'
+            aria-label='email'
+            placeholder='email'
             value={akun.email}
             onChange={(e) =>
               setAkun({ ...akun, email: e.target.value })
