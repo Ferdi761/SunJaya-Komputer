@@ -6,7 +6,8 @@ import { userStorage } from '../util/userStorage'
 
 const ChatPage = () => {
   const [chat, setChat] = useState('')
-
+  const [chatSocketController, setChatSocketController] =
+    useState<ChatSocketController>()
   const [chatSendiri, setChatSendiri] = useState<string[]>([])
   let chatLawan: string[] = []
 
@@ -25,11 +26,23 @@ const ChatPage = () => {
       </div>
     )
   } else {
-    const chatSocketController = new ChatSocketController(
-      io('http://localhost:8000').connect()
-    )
-
     useEffect(() => {
+      const socket = io('http://localhost:8000')
+      setChatSocketController(new ChatSocketController(socket))
+
+      if (chatSocketController != undefined) {
+        chatSocketController.init(user.id)
+        chatSocketController.auth(user.izin)
+        chatSocketController.name(user.nama)
+        chatSocketController.read(1)
+        // read pada pelanggan hanya untuk menandakan pelanggan membuka chat, nilainya dibuat menjadi 1
+        // karena nilai apapun yang lebih dari 0 (>0) menandakan pelanggan membuka chat.
+      } else {
+        console.log('chatSocketController undefined')
+      }
+    }, [])
+
+    if (chatSocketController != undefined) {
       chatSocketController.addCallback(
         'message self read',
         function (message: string) {
@@ -75,14 +88,7 @@ const ChatPage = () => {
           // buat semua chat dari toko ditandai sudah di read
         }
       )
-
-      chatSocketController.init(user.id)
-      chatSocketController.auth(user.izin)
-      chatSocketController.name(user.nama)
-      chatSocketController.read(1)
-      // read pada pelanggan hanya untuk menandakan pelanggan membuka chat, nilainya dibuat menjadi 1
-      // karena nilai apapun yang lebih dari 0 (>0) menandakan pelanggan membuka chat.
-    }, [])
+    }
 
     return (
       <div className='bg-primary h-screen text-white flex justify-center'>
@@ -105,7 +111,9 @@ const ChatPage = () => {
               onSubmit={function (e) {
                 e.preventDefault()
 
-                chatSocketController.sendMessage(chat)
+                if (chatSocketController != undefined) {
+                  chatSocketController.sendMessage(chat)
+                }
 
                 setChat('')
 
@@ -118,21 +126,6 @@ const ChatPage = () => {
                 id='chat-input'
                 value={chat}
                 onChange={(e) => setChat(e.target.value)}
-                onKeyDown={function (e) {
-                  if (e.key == 'Enter') {
-                    let chatText = (
-                      document.getElementById(
-                        'chat-input'
-                      ) as HTMLInputElement
-                    ).value
-                    ;(
-                      document.getElementById(
-                        'chat-input'
-                      ) as HTMLInputElement
-                    ).value = ''
-                    chatSocketController.sendMessage(chatText)
-                  }
-                }}
               />
               <button
                 className='bg-blue-700 w-1/12 rounded-lg'
