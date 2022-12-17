@@ -22,39 +22,34 @@ const daftarKeranjang = async (req, res) => {
     const decoded = jwt.verify(logged, 'jwtAkunId');
 
     try {
-        // const akun = await Akun.findOne({
-        //     where: { id: decoded.id }
-        // });
-        // if (!akun) throw 'Pengguna tidak ditemukan!';
+        const akun = await Akun.findOne({
+            where: { id: decoded.id }
+        });
+        if (!akun) throw 'Pengguna tidak ditemukan!';
 
         const daftarBarang = await FotoBarang.findAll({
             include: {
                 model: Barang,
-                where: {
-                    id: { [Op.not]: null }
-                },
                 include: {
-                    model: Akun,
+                    model: Keranjang,
                     where: {
-                        id: decoded.id
+                        akunId: decoded.id
                     }
                 }
-            }
-        });
+            },
+        })
 
-        // let totalPrice = 0;
-        // for(let item in Barangs) {
-        //     totalPrice += Barangs[item].harga * Barangs[item].Keranjang.jumlah;
-        // }
-        
-        // const keranjang = await Keranjang.findAll({ where: { akunId: user.id } });
-        // if (!keranjang) throw 'Keranjang tidak ditemukan!';
+        let totalPrice = 0;
+        for(let item in daftarBarang) {
+            totalPrice += daftarBarang[item].Barang.harga * daftarBarang[item].Barang.Keranjangs[0].jumlah;
+            console.log(daftarBarang[item].Barang.harga);
+        }
         
         res.status(200).json({
             status: "success",
             data: { 
                 daftarBarang,
-                // totalHarga: totalPrice
+                totalHarga: totalPrice
             }
         }).end();
     }
@@ -90,8 +85,7 @@ const tambahKeKeranjang = async (req, res) => {
 
         if (findCart) {
             const currJumlah = findCart.getDataValue('jumlah');
-            
-            console.log(currJumlah);
+
             findCart.update({
                 jumlah: currJumlah + parseInt(jumlah)
             });

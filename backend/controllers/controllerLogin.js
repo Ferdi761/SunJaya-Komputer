@@ -7,9 +7,6 @@ const login = async (req, res) => {
 
   try {
     const akun = await Akun.loginCheck(email, password)
-    // console.log("--------------------------------");
-    // console.log(`email: ${akun.email} \n password: ${akun.passwordHashed}`);
-    // console.log("--------------------------------");
     const id = akun.id
     const token = jwt.sign({ id }, 'jwtAkunId', {})
 
@@ -19,7 +16,7 @@ const login = async (req, res) => {
       .status(201)
       .json({
         status: 'success',
-        msg: 'Login berhasil',
+        message: 'Login berhasil',
         data: {
           id: akun.id,
           nama: akun.nama,

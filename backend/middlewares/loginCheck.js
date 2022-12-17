@@ -1,6 +1,6 @@
 const loginCheck = async (req, res, next) => {
-  const logged = req.headers.authorization
-  // const logged = req.cookies.logged_account;
+  // const logged = req.headers.authorization
+  const logged = req.cookies.logged_account;
   try {
     if (!logged)
       return res.status(200).json({ msg: 'Anda belum login!' }).end()

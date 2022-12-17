@@ -24,6 +24,12 @@ module.exports = (sequelize, DataTypes) => {
         }
       });
 
+      Barang.hasMany(models.Keranjang, {
+        foreignKey: {
+          name: 'BarangId'
+        }
+      })
+
       Barang.belongsToMany(models.Pemesanan, {
         through: models.BarangYangDipesan,
         foreignKeys: {

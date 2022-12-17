@@ -32,6 +32,12 @@ module.exports = (sequelize, DataTypes) => {
           name: 'akunId'
         }
       });
+
+      Akun.hasMany(models.Keranjang, {
+        foreignKey: {
+          name: 'akunId'
+        }
+      })
     }
   }
   Akun.init({
