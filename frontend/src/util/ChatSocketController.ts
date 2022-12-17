@@ -15,6 +15,10 @@ class ChatSocketController {
         this.socket.emit("auth", auth);
     }
 
+    name(auth : string) {
+        this.socket.emit("name", auth);
+    }
+
     read(id : number) {
         this.socket.emit("read", id.toString());
     }

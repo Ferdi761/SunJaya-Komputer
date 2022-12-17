@@ -29,6 +29,7 @@ const ChatPage = () => {
       'message self read',
       function (message: string) {
         // munculkan teks yang dikirim sendiri dengan penanda sudah di read
+        console.log("message self read: " + message);
       }
     )
 
@@ -36,6 +37,7 @@ const ChatPage = () => {
       'message self unread',
       function (message: string) {
         // munculkan teks yang dikirim sendiri dengan penanda belum di read
+        console.log("message self unread: " + message);
       }
     )
 
@@ -43,16 +45,14 @@ const ChatPage = () => {
       'message to',
       function (message: string) {
         // munculkan teks yang dikirim dari toko (lawan bicara)
+        console.log("message to: " + message);
       }
     )
 
     chatSocketController.addCallback(
       'aktif',
       function (message: string) {
-        // mengganti tanda apakah ada karyawan toko yang aktif atau tidak
-        let aktif = document.getElementById(
-          'aktif'
-        ) as HTMLParagraphElement
+        let aktif = document.getElementById('aktif') as HTMLParagraphElement
         aktif.innerHTML = message
       }
     )
@@ -66,6 +66,7 @@ const ChatPage = () => {
 
     chatSocketController.init(user.id)
     chatSocketController.auth(user.izin)
+    chatSocketController.name(user.nama)
     chatSocketController.read(1)
     // read pada pelanggan hanya untuk menandakan pelanggan membuka chat, nilainya dibuat menjadi 1
     // karena nilai apapun yang lebih dari 0 (>0) menandakan pelanggan membuka chat.
@@ -97,22 +98,21 @@ const ChatPage = () => {
                 id='chat-input'
                 value={chat}
                 onChange={(e) => setChat(e.target.value)}
-                // onKeyDown={function (e) {
-                //   if (e.key == 'Enter') {
-                //     let chatText = (
-                //       document.getElementById(
-                //         'chat-input'
-                //       ) as HTMLInputElement
-                //     ).value
-                //     ;(
-                //       document.getElementById(
-                //         'chat-input'
-                //       ) as HTMLInputElement
-                //     ).value = ''
-                //     chatSocketController.sendMessage(chatText)
-                //     console.log(chatSocketController)
-                //   }
-                // }}
+                onKeyDown={function (e) {
+                  if (e.key == 'Enter') {
+                    let chatText = (
+                      document.getElementById(
+                        'chat-input'
+                      ) as HTMLInputElement
+                    ).value
+                    ;(
+                      document.getElementById(
+                        'chat-input'
+                      ) as HTMLInputElement
+                    ).value = ''
+                    chatSocketController.sendMessage(chatText)
+                  }
+                }}
               />
               <button
                 className='bg-blue-700 w-1/12 rounded-lg'

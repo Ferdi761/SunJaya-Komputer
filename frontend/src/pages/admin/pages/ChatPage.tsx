@@ -31,6 +31,12 @@ const ChatPage = () => {
       'message self read',
       function (message: string) {
         // munculkan teks yang dikirim sendiri dengan penanda sudah di read
+        // jadi chat yang kita tulis tidak langsung ditampilkan di layar namun 
+        // dikirim dahulu ke server, kemudian chat akan dikirim balik oleh server
+        // baru dimunculkan
+        // chat yang dikirim juga ditandai sudah di read
+
+        console.log("message self read: " + message);
       }
     )
 
@@ -38,20 +44,24 @@ const ChatPage = () => {
       'message self unread',
       function (message: string) {
         // munculkan teks yang dikirim sendiri dengan penanda belum di read
+        // sama kayak "message self read" cuman belum di read 
+        console.log("message self unread: " + message);
       }
     )
 
     chatSocketController.addCallback(
       'message to',
       function (message: string) {
-        // munculkan teks yang dikirim dari pelanggan (lawan bicara)
+        // munculkan teks yang dikirim dari lawan bicara (pelanggan)
+        // dapat chat dari lawan bicara (pelanggan)
+        console.log("message to: " + message);
       }
     )
 
     chatSocketController.addCallback(
       'aktif',
       function (message: string) {
-        // mengganti tanda apakah pelanggan aktif atau tidak
+        // mengganti tanda apakah pelanggan yang dibuka chatnya aktif atau tidak
         let aktif = document.getElementById(
           'aktif'
         ) as HTMLParagraphElement
@@ -63,6 +73,8 @@ const ChatPage = () => {
       'readall',
       function (message: string) {
         // buat semua chat dari pelanggan ditandai sudah di read
+        // chat sendiri, bukan daftar pelanggan (yang di kiri layar itu, yang daftar-daftar
+        // chat dari pelanggan) yang ngechat
       }
     )
 
@@ -70,6 +82,9 @@ const ChatPage = () => {
       'denied',
       function (message: string) {
         // buat tulisan kalau chat tidak bisa dibaca karena sudah ada karyawan lain yang buka chat ini
+        // ini dikirim oleh server ketika kita mencoba membuka chat pelanggan, hanya boleh 1 akun yang
+        // membuka 1 chat pelanggan pada waktu yang bersamaan
+
       }
     )
 
@@ -78,6 +93,10 @@ const ChatPage = () => {
       function (message: string) {
         let customerID = parseInt(message)
         // tandai list chat pelanggan dengan ID: customerID sudah di read (sudah ada karyawan yang membuka chat ini)
+
+        // jadi itu yang daftar chat masuk dari pelanggan-pelanggan yang ada di kiri layar, ditandai kalau sudah
+        // dibaca, ini bisa terjadi karena karyawan kan ada banyak dan yang lain bisa baca jadi ketika ada satu karyawan
+        // yang sudah baca, semua karyawan diberi tahu kalau chat pelanggan tertentu sudah dibaca
       }
     )
 
@@ -86,6 +105,8 @@ const ChatPage = () => {
       function (message: string) {
         let customerID = parseInt(message)
         // perbarui list chat pelanggan karena pelanggan dengan ID: customerID mengirim chat baru namun belum dibaca
+        // Ini update daftar chat masuk dari pelanggan yang ada di kiri layar dan diberi tahu kalau chat ini belum dibaca
+        // karena belum ada yang buka chatnya 
       }
     )
 
@@ -94,12 +115,14 @@ const ChatPage = () => {
       function (message: string) {
         let customerID = parseInt(message)
         // perbarui list chat pelanggan karena pelanggan dengan ID: customerID mengirim chat baru dan telah dibaca
+
+        // sama kayak "coming unread" hanya saja sudah dibaca
       }
     )
 
     chatSocketController.init(user.id)
     chatSocketController.auth(user.izin)
-    chatSocketController.read(-1)
+    chatSocketController.read(3)
     // pada admin dan karyawan, read itu dibutuhkan untuk menandakan chat pelanggan mana yang ingin dibuka
     // parameternya adalah ID pelanggan yang mau dibuka chatnya
     // kalau nilainya -1 artinya tidak membuka satupun chat pelanggan
