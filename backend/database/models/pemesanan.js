@@ -48,7 +48,8 @@ module.exports = (sequelize, DataTypes) => {
     tanggalKirim: DataTypes.DATE,
     tanggalSampai: DataTypes.DATE,
     rating: DataTypes.DECIMAL,
-    testimoni: DataTypes.TEXT
+    testimoni: DataTypes.TEXT,
+    status: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Pemesanan',

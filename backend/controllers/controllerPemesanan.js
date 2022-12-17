@@ -22,7 +22,7 @@ const checkout = async (req, res) => {
   const logged = req.cookies.logged_account
   const decoded = jwt.verify(logged, 'jwtAkunId')
 
-  const { alamatTujuan, jasaPengiriman, biayaPengiriman } = req.body
+  const { alamatTujuan } = req.body
 
   try {
     const userCart = await Akun.findOne({
@@ -40,46 +40,37 @@ const checkout = async (req, res) => {
         Barangs[item].harga * Barangs[item].Keranjang.jumlah
     }
     console.log('total price item: ' + typeof totalPriceItem)
-    let totalAll = totalPriceItem + parseFloat(biayaPengiriman)
-    console.log('total all: ' + typeof totalAll)
+    // console.log('total all: ' + typeof totalAll)
     //const today = new Date();
     const oneDay = 86400000
 
-    const buatPesanan = await BuktiPembayaranPemesanan.create(
+    const buatPesanan = await Pemesanan.create(
       {
-        buktiPembayaran: null,
-        Pemesanan: {
-          akunId: userCart.id,
-          alamatTujuan,
-          jasaPengiriman,
-          biayaPengiriman,
-          totalHargaBarang: totalPriceItem,
-          totalBiayaYangHarusDibayar: totalAll,
-          pembayaranLunas: false,
-          tanggalMulaiMenungguPembayaran: Date.now(),
-        },
-      },
-      {
-        include: Pemesanan,
+        akunId: userCart.id,
+        alamatTujuan,
+        totalHargaBarang: totalPriceItem,
+        status: 1
       }
     )
 
     // Memasukkan data barang yang dipesan dari Barangs ke dalam array untuk sementara
     Barangs.forEach((item) => {
       dataBYD.push({
-        pemesananId: buatPesanan.pemesananId,
+        pemesananId: buatPesanan.id,
         BarangId: item.Keranjang.BarangId,
         jumlah: item.Keranjang.jumlah,
         totalHarga: item.harga * item.Keranjang.jumlah,
       })
     })
-    // console.log(dataBYD);
+    console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
+    console.log(dataBYD);
+    console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
 
     // add transaction
     // t = await sequelize.transaction();
     dataBYD.forEach(async (item) => {
       await BarangYangDipesan.create(item)
-      let barang = await Barang.findOne({
+      const barang = await Barang.findOne({
         where: {
           id: item.BarangId,
         },
@@ -102,49 +93,12 @@ const checkout = async (req, res) => {
       },
     })
 
-    waktuPembayaran = setTimeout(async () => {
-      console.log('waktu habis, pemesanan dibatalkan!')
-
-      dataBYD.forEach(async (item) => {
-        let barang = await Barang.findOne({
-          where: {
-            id: item.BarangId,
-          },
-        })
-
-        const stokBarang = await barang.getDataValue('stok')
-        let updateStok = stokBarang + item.jumlah
-
-        await barang.update({
-          stok: updateStok,
-        })
-
-        await BarangYangDipesan.destroy({
-          where: {
-            pemesananId: item.pemesananId,
-            BarangId: item.BarangId,
-          },
-        })
-      })
-
-      await buatPesanan.destroy()
-
-      // set ulang array menjadi nol
-      dataBYD = []
-    }, 50000)
-
     res
       .status(200)
       .json({
         status: 'success',
-        message:
-          'Pesanan telah dibuat, menunggu pembayaran hingga 24 jam kedepan!',
-        data: {
-          Keranjang: userCart,
-          Pesanan: buatPesanan,
-          totalHarga: totalPriceItem,
-          statusPesanan: 'Bayar',
-        },
+        message: 'Pesanan telah dibuat, menunggu konfirmasi dari admin!',
+        idPemesanan: buatPesanan.id
       })
       .end()
   } catch (err) {
@@ -376,29 +330,95 @@ const daftarKonfirmasiPesanan = async (req, res) => {
 // konfirmasi pesanan pelanggan
 const konfirmasiPesanan = async (req, res) => {
   const { id } = req.params
+  let timeOut = new Date()
+  const aDay = timeOut.getTime() + 10000
 
   try {
-    const pesanan = await BuktiPembayaranPemesanan.findOne({
-      where: {
-        pemesananId: id,
-      },
-      include: Pemesanan,
+    const pesanan = await Pemesanan.findOne({ where: { id } })
+
+    await pesanan.update({
+      status: 2,
+      tanggalMulaiMenungguPembayaran: Date.now()
     })
 
-    await pesanan['Pemesanan'].update({
-      pembayaranLunas: true,
-    })
-    await pesanan.save()
+    // let checkTimeout = setInterval(async () => {
+    //   if (Date.now() > aDay) {
+    //     console.log('waktu habis, pemesanan dibatalkan!')
+  
+    //     dataBYD.forEach(async (item) => {
+    //       let barang = await Barang.findOne({
+    //         where: {
+    //           id: item.BarangId,
+    //         },
+    //       })
+  
+    //       const stokBarang = await barang.getDataValue('stok')
+    //       let updateStok = stokBarang + item.jumlah
+  
+    //       await barang.update({
+    //         stok: updateStok,
+    //       })
+  
+    //       await BarangYangDipesan.destroy({
+    //         where: {
+    //           pemesananId: item.pemesananId,
+    //           BarangId: item.BarangId,
+    //         },
+    //       })
+    //     })
+  
+    //     await pesanan.destroy()
+  
+    //     // set ulang array menjadi nol
+    //     dataBYD = []
+  
+    //     console.log('Waktu habis, pemesanan dibatalkan!')
+    //     res.json({
+    //       status: 'success',
+    //       message: 'Waktu habis, pemesanan dibatalkan!'
+    //     }).end()
+        
+    //     clearInterval(checkTimeout)
+    //   }
+    // }, 1000)
+
+    waktuPembayaran = setTimeout(async () => {
+      console.log('waktu habis, pemesanan dibatalkan!')
+
+      dataBYD.forEach(async (item) => {
+        let barang = await Barang.findOne({
+          where: {
+            id: item.BarangId,
+          },
+        })
+
+        const stokBarang = await barang.getDataValue('stok')
+        let updateStok = stokBarang + item.jumlah
+
+        await barang.update({
+          stok: updateStok,
+        })
+
+        await BarangYangDipesan.destroy({
+          where: {
+            pemesananId: item.pemesananId,
+            BarangId: item.BarangId,
+          },
+        })
+      })
+
+      await pesanan.destroy()
+
+      // set ulang array menjadi nol
+      dataBYD = []
+
+      console.log('Waktu habis, pemesanan dibatalkan!')
+    }, 10000)
 
     res
-      .status(200)
       .json({
         status: 'success',
-        message: 'Pembayaran berhasil dikonfirmasi!',
-        data: {
-          pesanan: pesanan,
-          statusPesanan: 'Diproses',
-        },
+        message: 'Pemesanan telah dikonfirmasi, menunggu pembayaran 24 jam kedepan!',
       })
       .end()
   } catch (err) {

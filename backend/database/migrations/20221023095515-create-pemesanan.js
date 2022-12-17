@@ -15,7 +15,6 @@ module.exports = {
       },
       jasaPengiriman: {
         type: Sequelize.STRING,
-        allowNull: false,
       },
       totalHargaBarang: {
         type: Sequelize.DECIMAL,
@@ -24,20 +23,17 @@ module.exports = {
       },
       biayaPengiriman: {
         type: Sequelize.DECIMAL,
-        allowNull: false,
-        defaultValue: 0,
       },
       totalBiayaYangHarusDibayar: {
         type: Sequelize.DECIMAL,
-        allowNull: false,
-        defaultValue: 0,
       },
       tanggalMulaiMenungguPembayaran: {
         type: Sequelize.DATE,
-        allowNull: false,
       },
       pembayaranLunas: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
       },
       tanggalKirim: {
         type: Sequelize.DATE
@@ -50,6 +46,9 @@ module.exports = {
       },
       testimoni: {
         type: Sequelize.TEXT
+      },
+      status: {
+        type: Sequelize.INTEGER
       }
     });
   },
