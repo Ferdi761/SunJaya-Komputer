@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { io } from 'socket.io-client'
 import { ChatSocketController } from '../../../util/ChatSocketController'
@@ -7,6 +7,9 @@ import Chat from './Chat'
 
 const ChatPage = () => {
   const [chat, setChat] = useState('')
+  const [id, setId] = useState(0)
+  const [chatMasuk, setChatMasuk] = useState<string[]>([])
+
   const { user } = userStorage()
   const location = useLocation()
 
@@ -31,12 +34,12 @@ const ChatPage = () => {
       'message self read',
       function (message: string) {
         // munculkan teks yang dikirim sendiri dengan penanda sudah di read
-        // jadi chat yang kita tulis tidak langsung ditampilkan di layar namun 
+        // jadi chat yang kita tulis tidak langsung ditampilkan di layar namun
         // dikirim dahulu ke server, kemudian chat akan dikirim balik oleh server
         // baru dimunculkan
         // chat yang dikirim juga ditandai sudah di read
 
-        console.log("message self read: " + message);
+        console.log('message self read: ' + message)
       }
     )
 
@@ -44,8 +47,8 @@ const ChatPage = () => {
       'message self unread',
       function (message: string) {
         // munculkan teks yang dikirim sendiri dengan penanda belum di read
-        // sama kayak "message self read" cuman belum di read 
-        console.log("message self unread: " + message);
+        // sama kayak "message self read" cuman belum di read
+        console.log('message self unread: ' + message)
       }
     )
 
@@ -54,7 +57,9 @@ const ChatPage = () => {
       function (message: string) {
         // munculkan teks yang dikirim dari lawan bicara (pelanggan)
         // dapat chat dari lawan bicara (pelanggan)
-        console.log("message to: " + message);
+        console.log('message to: ' + message)
+        setChatMasuk((chat) => [...chat, message])
+        console.log(chatMasuk)
       }
     )
 
@@ -84,7 +89,6 @@ const ChatPage = () => {
         // buat tulisan kalau chat tidak bisa dibaca karena sudah ada karyawan lain yang buka chat ini
         // ini dikirim oleh server ketika kita mencoba membuka chat pelanggan, hanya boleh 1 akun yang
         // membuka 1 chat pelanggan pada waktu yang bersamaan
-
       }
     )
 
@@ -106,7 +110,7 @@ const ChatPage = () => {
         let customerID = parseInt(message)
         // perbarui list chat pelanggan karena pelanggan dengan ID: customerID mengirim chat baru namun belum dibaca
         // Ini update daftar chat masuk dari pelanggan yang ada di kiri layar dan diberi tahu kalau chat ini belum dibaca
-        // karena belum ada yang buka chatnya 
+        // karena belum ada yang buka chatnya
       }
     )
 
@@ -122,7 +126,12 @@ const ChatPage = () => {
 
     chatSocketController.init(user.id)
     chatSocketController.auth(user.izin)
-    chatSocketController.read(3)
+    chatSocketController.read(2)
+
+    useEffect(() => {
+      console.log('masuk')
+    }, [chatMasuk])
+
     // pada admin dan karyawan, read itu dibutuhkan untuk menandakan chat pelanggan mana yang ingin dibuka
     // parameternya adalah ID pelanggan yang mau dibuka chatnya
     // kalau nilainya -1 artinya tidak membuka satupun chat pelanggan
@@ -164,6 +173,7 @@ const ChatPage = () => {
                   ? 'bg-dark'
                   : 'hover:bg-dark'
               }`}
+              onClick={() => setId(12)}
             >
               <p className='font-medium text-lg'>Nama Pelanggan</p>
               <p id='aktif' className='text-sm text-gray-400'>
@@ -172,10 +182,12 @@ const ChatPage = () => {
             </Link>
           </div>
           <Chat
+            id={id}
             chatSocketController={chatSocketController}
             chat={chat}
             setChat={setChat}
             location={location}
+            chatMasuk={chatMasuk}
           />
         </div>
       </div>
