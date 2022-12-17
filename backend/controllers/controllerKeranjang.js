@@ -42,7 +42,6 @@ const daftarKeranjang = async (req, res) => {
         let totalPrice = 0;
         for(let item in daftarBarang) {
             totalPrice += daftarBarang[item].Barang.harga * daftarBarang[item].Barang.Keranjangs[0].jumlah;
-            console.log(daftarBarang[item].Barang.harga);
         }
         
         res.status(200).json({
