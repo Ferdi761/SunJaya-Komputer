@@ -21,75 +21,80 @@ const allCartList = async (req, res) => {
 
 // daftar barang pelanggan di keranjang
 const daftarKeranjang = async (req, res) => {
-  // const logged = req.headers.authorization.split(' ')[1]
-  const logged = req.cookies.logged_account
+  const logged = req.headers.authorization.split(' ')[1]
+  // const logged = req.cookies.logged_account
   // decode cookie's token from jwt to get the id of Akun
   const decoded = jwt.verify(logged, 'jwtAkunId')
 
-    try {
-        const akun = await Akun.findOne({
-            where: { id: decoded.id }
-        });
-        if (!akun) throw 'Pengguna tidak ditemukan!';
+  try {
+    const akun = await Akun.findOne({
+      where: { id: decoded.id },
+    })
+    if (!akun)
+      return res
+        .status(404)
+        .json({ message: 'Akun tidak ditemukan!' })
 
-        // const daftarBarang = await FotoBarang.findAll({
-        //     include: {
-        //         model: Barang,
-        //         include: {
-        //             model: Keranjang,
-        //             where: {
-        //                 akunId: decoded.id,
-        //                 BarangId: {
-        //                     [Op.not]: null
-        //                 }
-        //             }
-        //         }
-        //     },
-        // })
+    // const daftarBarang = await FotoBarang.findAll({
+    //     include: {
+    //         model: Barang,
+    //         include: {
+    //             model: Keranjang,
+    //             where: {
+    //                 akunId: decoded.id,
+    //                 BarangId: {
+    //                     [Op.not]: null
+    //                 }
+    //             }
+    //         }
+    //     },
+    // })
 
-        const daftarBarang = await Keranjang.findAll({
-            include: {
-                model: Barang,
-                include: {
-                    model: FotoBarang
-                }
-            },
-            where: {
-                akunId: decoded.id,
-                BarangId: {
-                    [Op.not]: null
-                }
-            }
+    const daftarBarang = await Keranjang.findAll({
+      include: {
+        model: Barang,
+        include: {
+          model: FotoBarang,
+        },
+      },
+      where: {
+        akunId: decoded.id,
+        BarangId: {
+          [Op.not]: null,
+        },
+      },
+    })
 
-        })
-
-        // let totalPrice = 0;
-        // for(let item in daftarBarang) {
-        //     totalPrice += daftarBarang[item].Barang.harga * daftarBarang[item].Barang.Keranjangs[0].jumlah;
-        // }
-        
-        res.status(200).json({
-            status: "success",
-            data: { 
-                daftarBarang,
-                //totalHarga: totalPrice
-            }
-        }).end();
+    let totalPrice = 0
+    for (let item in daftarBarang) {
+      totalPrice +=
+        daftarBarang[item].Barang.harga * daftarBarang[item].jumlah
     }
-    catch (err) {
-        console.log(err);
-        res.status(500).json({ msg: err }).end();
-    }
-};
+
+    res
+      .status(200)
+      .json({
+        status: 'success',
+        data: {
+          daftarBarang,
+          totalHarga: totalPrice,
+        },
+      })
+      .end()
+  } catch (err) {
+    console.log(err)
+    res.status(500).json({ msg: err }).end()
+  }
+}
 
 // add item into shopping cart (for customers)
 const tambahKeKeranjang = async (req, res) => {
-  // const logged = req.headers.authorization.split(' ')[1]
-  const logged = req.cookies.logged_account
+  const logged = req.headers.authorization.split(' ')[1]
+  // const logged = req.cookies.logged_account
   const idBarang = req.params.id
   const decoded = jwt.verify(logged, 'jwtAkunId')
 
-  let jumlah = 1;
+  let jumlah = 1
 
   try {
     const user = await Akun.findByPk(decoded.id)
@@ -99,12 +104,12 @@ const tambahKeKeranjang = async (req, res) => {
     const barang = await Barang.findByPk(idBarang)
     if (!barang) throw 'Barang tidak ditemukan!'
 
-        // if (findCart) {
-        //     const currJumlah = findCart.getDataValue('jumlah');
+    // if (findCart) {
+    //     const currJumlah = findCart.getDataValue('jumlah');
 
-        //     findCart.update({
-        //         jumlah: currJumlah + parseInt(jumlah)
-        //     });
+    //     findCart.update({
+    //         jumlah: currJumlah + parseInt(jumlah)
+    //     });
 
     const findCart = await Keranjang.findOne({
       where: {
@@ -151,8 +156,8 @@ const tambahKeKeranjang = async (req, res) => {
 
 // delete item from shopping cart
 const hapusDariKeranjang = async (req, res) => {
-  // const logged = req.headers.authorization.split(' ')[1]
-  const logged = req.cookies.logged_account
+  const logged = req.headers.authorization.split(' ')[1]
+  // const logged = req.cookies.logged_account
   const decoded = jwt.verify(logged, 'jwtAkunId')
   const { id } = req.params
   // const { barangId } = req.body;
@@ -188,8 +193,8 @@ const hapusDariKeranjang = async (req, res) => {
 }
 
 const ubahJumlahBarang = async (req, res) => {
-  // const logged = req.headers.authorization.split(' ')[1]
-  const logged = req.cookies.logged_account
+  const logged = req.headers.authorization.split(' ')[1]
+  // const logged = req.cookies.logged_account
   const decoded = jwt.verify(logged, 'jwtAkunId')
   const { id } = req.params
   const { jumlah } = req.body
@@ -197,10 +202,13 @@ const ubahJumlahBarang = async (req, res) => {
   try {
     const akun = await Akun.findByPk(decoded.id)
     if (!akun) {
-        return  res.status(404).json({
-            status: 'fail',
-            message: 'Akun tidak ditemukan!'
-        }).end()
+      return res
+        .status(404)
+        .json({
+          status: 'fail',
+          message: 'Akun tidak ditemukan!',
+        })
+        .end()
     }
 
     const keranjang = await Keranjang.findOne({

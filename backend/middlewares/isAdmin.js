@@ -3,8 +3,8 @@ const { Akun } = require('../database/models')
 
 const isAdmin = async (req, res, next) => {
   // console.log(req.cookies.logged_account);
-  // let logged = req.headers.authorization
-  let logged = req.cookies.logged_account;
+  let logged = req.headers.authorization
+  // let logged = req.cookies.logged_account;
 
   // console.log(logged_account);
   if (!logged) {
