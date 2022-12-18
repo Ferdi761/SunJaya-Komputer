@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 import Modal from '../components/Modal'
+import { formatCurrency } from '../util/formatCurrency'
 
 import type { Pesanan } from '../util/type'
 import { userStorage } from '../util/userStorage'
@@ -52,7 +53,7 @@ const Pembayaran = () => {
     fetch(
       `http://localhost:8000/api/pemesanan/checkout/upload/${pesanan?.id}`,
       {
-        method: 'POST',
+        method: 'PUT',
         headers: {
           Authorization: `Bearer ${user?.token}`,
         },
@@ -107,7 +108,7 @@ const Pembayaran = () => {
                       </p>
                       <div className='font-bold text-end'>
                         <p className='text-blue-500 font-bold'>
-                          Total: {data.harga}
+                          Total: {formatCurrency(data.harga)}
                         </p>
                       </div>
                     </div>
@@ -122,13 +123,14 @@ const Pembayaran = () => {
             <div className='p-10 text-white rounded bg-dark'>
               <h5 className='mb-5 text-3xl'>Rincian Pesanan</h5>
               <ul className=' mb-2'>
-                <li className='text-gray-400'>ID Pesanan: #17</li>
-                <li className='text-gray-400'>TOtal Berat: 10 Kg</li>
+                <li className='text-gray-400'>
+                  ID Pesanan: #{pesanan?.id}
+                </li>
+                <li className='text-gray-400'>Total Berat: 10 Kg</li>
                 <li className='text-gray-400'>
                   Alamat Tujuan:{' '}
                   <span className='text-white'>
-                    Jalan Keputih Tegal Timur No. 2A, Keputih,
-                    Sukolilo, Surabaya, Jawa Timur
+                    {pesanan?.alamatTujuan}
                   </span>
                 </li>
               </ul>
@@ -140,29 +142,42 @@ const Pembayaran = () => {
                     className='w-1/5 h-auto'
                   />
                 ) : (
-                  <div className='flex flex-col justify-center items-center h-3/4'>
+                  <div className='flex justify-center items-center h-3/4'>
                     <p className='text-gray-400'>
                       Upload Bukti Pembayaran
                     </p>
                   </div>
                 )}
-                <div className='bg-black'>
-                  <input
-                    type='file'
-                    name='buktiPembayaran'
-                    id='buktiPembayaran'
-                    onChange={handleFileChange}
-                  />
-                </div>
+                <input
+                  type='file'
+                  name='buktiPembayaran'
+                  id='buktiPembayaran'
+                  onChange={handleFileChange}
+                  className='text-black ml-3'
+                />
               </div>
               <ul className='my-3 flex flex-col gap-3'>
                 <li className='flex justify-between items-start'>
                   <p>Subtotal Produk</p>
-                  <p>Rp 3.400.000</p>
+                  <p>
+                    {pesanan
+                      ? formatCurrency(
+                          pesanan.Barangs.reduce((acc, cur) => {
+                            return cur.harga
+                          }, 0)
+                        )
+                      : 'null'}
+                  </p>
                 </li>
                 <li className='flex justify-between items-start'>
                   <p>Subtotal Pengiriman</p>
-                  <p>Rp 20.000</p>
+                  <p>
+                    {pesanan
+                      ? pesanan.biayaPengiriman
+                        ? formatCurrency(pesanan.biayaPengiriman)
+                        : 'null'
+                      : 'null'}
+                  </p>
                 </li>
                 <li className='flex justify-between items-start'>
                   <p>Tipe</p>
@@ -170,7 +185,15 @@ const Pembayaran = () => {
                 </li>
                 <li className='flex justify-between items-start text-xl font-semibold'>
                   <p>Total Pesanan</p>
-                  <p>Rp 3.400.000</p>
+                  <p>
+                    {pesanan
+                      ? pesanan.totalBiayaYangHarusDibayar
+                        ? formatCurrency(
+                            pesanan.totalBiayaYangHarusDibayar
+                          )
+                        : formatCurrency(pesanan.totalHargaBarang)
+                      : 'null'}
+                  </p>
                 </li>
               </ul>
               <div className='flex flex-col'>
