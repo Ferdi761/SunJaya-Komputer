@@ -2,7 +2,7 @@ import { Routes, Route } from 'react-router-dom'
 
 import Navbar from './components/Navbar'
 import Dashboard from './pages/Dashboard'
-import Pesanan from './pages/Pesanan'
+import Pemesanan from './pages/Pemesanan'
 import Garansi from './pages/Garansi'
 import Barang from './pages/Barang'
 import TambahBarang from './pages/TambahBarang'
@@ -40,7 +40,7 @@ const Admin = () => {
           <Navbar />
           <Routes>
             <Route path='/' element={<Dashboard />} />
-            <Route path='/pesanan' element={<Pesanan />} />
+            <Route path='/pesanan' element={<Pemesanan />} />
             <Route
               path='/pesanan/diskusi'
               element={<PesananDiskusi />}

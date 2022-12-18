@@ -39,6 +39,7 @@ const PesananSaya = () => {
 
   const [pesanan, setPesanan] = useState<Pesanan[]>([])
   const [value, setValue] = useState(6)
+  const [urutan, setUrutan] = useState(0)
 
   const { user } = userStorage()
 
@@ -130,7 +131,12 @@ const PesananSaya = () => {
               {pesanan.map((item) => (
                 <div
                   key={item.id}
-                  className='mb-4 py-5 px-10 flex flex-col rounded-xl bg-light gap-2'
+                  onClick={() => setUrutan(item.id)}
+                  className={`mb-4 py-5 px-10 flex flex-col rounded-xl bg-light gap-2 cursor-pointer ${
+                    urutan === item.id
+                      ? 'bg-gray-200'
+                      : 'hover:bg-gray-200'
+                  }`}
                   style={{
                     boxShadow: 'rgba(0, 0, 0, 0.24) 5px 5px 6px',
                   }}
@@ -255,11 +261,13 @@ const PesananSaya = () => {
               )} */}
             </div>
             <div className='w-5/12'>
-              {/* <RincianPesanan
-                dataPesanan={pesanan}
-                value={value}
-                statusPesanan={statusPesanan}
-              /> */}
+              {urutan > 0 ? (
+                <RincianPesanan
+                  dataPesanan={pesanan[urutan - 1]}
+                  value={value}
+                  statusPesanan={statusPesanan}
+                />
+              ) : null}
             </div>
           </div>
         </div>

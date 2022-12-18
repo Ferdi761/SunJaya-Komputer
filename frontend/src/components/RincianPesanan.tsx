@@ -1,17 +1,14 @@
-import React from 'react'
 import moment from 'moment'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+
 import StarRating from './StarRating'
+import type { Pesanan } from '../util/type'
+import { userStorage } from '../util/userStorage'
+import { formatCurrency } from '../util/formatCurrency'
 
 type RincianPesananProps = {
-  dataPesanan: {
-    _id: number
-    gambar: string
-    nama: string
-    jumlah: number
-    harga: string
-  }[]
+  dataPesanan: Pesanan
   statusPesanan: { id: number; status: string }[]
   value: number
 }
@@ -22,6 +19,8 @@ const RincianPesanan = ({
   value,
 }: RincianPesananProps) => {
   const [rating, setRating] = useState(0)
+
+  const { user } = userStorage()
 
   const handleRating = (rate: number) => {
     setRating(rate)
@@ -34,22 +33,23 @@ const RincianPesanan = ({
         <h5 className='mb-4 text-xl'>Rincian Pesanan</h5>
         <ul className='mb-3'>
           <li className='mb-3'>Alamat Pengiriman</li>
-          <li className='text-gray-400'>Nugraha Akbar Nurhakim</li>
-          <li className='text-gray-400'>(+61) 87855431437</li>
+          <li className='text-gray-400'>{user?.nama}</li>
+          <li className='text-gray-400'>{user?.noTelp}</li>
           <li className='text-gray-400'>
-            Jalan Keputih Tegal Timur No. 2A, Keputih, Sukolilo,
-            Surabaya, Jawa Timur, 60111
+            {dataPesanan.alamatTujuan}
           </li>
         </ul>
 
         <ul className='mb-3 bg-white text-black'>
-          {dataPesanan.map((data) => {
+          {dataPesanan.Barangs.map((data) => {
             return (
-              <li className='py-3 px-8' key={data._id}>
+              <li className='py-3 px-8' key={data.id}>
                 <div className='flex flex-row gap-3 border-t py-3'>
                   <div className='w-3/12'>
                     <img
-                      src={data.gambar}
+                      src={`http://localhost:8000/produk/${
+                        data.FotoBarang.foto.split('\\')[2]
+                      }`}
                       alt='cpu'
                       width='77px'
                       height='77px'
@@ -60,12 +60,13 @@ const RincianPesanan = ({
                     <p style={{ fontSize: '12px' }}>
                       Jumlah:{' '}
                       <span className='font-bold'>
-                        {data.jumlah} buah
+                        {data.BarangYangDipesan.jumlah} buah
                       </span>
                     </p>
                     <p
                       className='text-right text-blue-600 font-bold'
-                      style={{ fontSize: '12px' }}>
+                      style={{ fontSize: '12px' }}
+                    >
                       Total: {data.harga}
                     </p>
                   </div>
@@ -78,12 +79,21 @@ const RincianPesanan = ({
         <ul className='flex flex-col gap-3 mb-3'>
           <li className='flex justify-between items-start border-0'>
             <p>Subtotal Produk</p>
-            <p>Rp 3.400.000</p>
+            <p>
+              {formatCurrency(
+                dataPesanan.Barangs.reduce(
+                  (acc, cur) =>
+                    acc + cur.harga * cur.BarangYangDipesan.jumlah,
+                  0
+                )
+              )}
+            </p>
           </li>
           <li className='flex justify-between items-start border-0'>
             <p>Subtotal Pengiriman</p>
             <p>
-              {statusPesanan[0].id === value
+              {statusPesanan[0].id === value ||
+              dataPesanan.biayaPengiriman == null
                 ? 'Menunggu persetujuan'
                 : 'Rp 20.000'}
             </p>
@@ -95,14 +105,19 @@ const RincianPesanan = ({
           <li className='flex justify-between items-start border-0'>
             <p>Total Pesanan</p>
             <p>
-              {statusPesanan[0].id === value
-                ? 'Rp 3.400.000'
-                : 'Rp 3.420.000'}
+              {statusPesanan[0].id === value ||
+              dataPesanan.biayaPengiriman == null
+                ? `${formatCurrency(dataPesanan.totalHargaBarang)}`
+                : `${formatCurrency(
+                    dataPesanan.totalBiayaYangHarusDIbayar == null
+                      ? 0
+                      : dataPesanan.totalBiayaYangHarusDIbayar
+                  )}`}
             </p>
           </li>
         </ul>
 
-        {statusPesanan[0].id === value ? (
+        {statusPesanan[0].id === value || dataPesanan.status == 1 ? (
           <>
             <button className='bg-black border border-white mb-2 float-right rounded-xl px-5'>
               Batalkan Pesanan
@@ -157,7 +172,8 @@ const RincianPesanan = ({
                 </div>
                 <textarea
                   placeholder='Tulis ulasanmu disini'
-                  className='bg-transparent border w-full p-2 rounded-0 h-36'></textarea>
+                  className='bg-transparent border w-full p-2 rounded-0 h-36'
+                ></textarea>
               </>
             ) : (
               <div className='flex flex-row justify-between my-3'>
@@ -178,7 +194,8 @@ const RincianPesanan = ({
                   statusPesanan[3].id === value
                     ? 'chat'
                     : 'pembayaran'
-                }`}>
+                }`}
+              >
                 <button className='bg-blue-700 hover:bg-blue-900 py-2 w-full rounded-full'>
                   {statusPesanan[3].id === value
                     ? 'Konfirmasi Barang Sampai'
