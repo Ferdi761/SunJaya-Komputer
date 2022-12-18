@@ -25,6 +25,7 @@ const isAdmin = require('../middlewares/isAdmin')
 
 const {
   checkout,
+  pesanan,
   uploadBuktiBayar,
   daftarSemuaPesanan,
   pesananSelesai,
@@ -41,6 +42,7 @@ const {
 } = require('../controllers/controllerPemesanan')
 
 routerPemesanan.route('/').get(loginCheck, daftarSemuaPesanan)
+routerPemesanan.route('/:id').get(loginCheck, pesanan)
 routerPemesanan.route('/checkout').post(loginCheck, checkout)
 routerPemesanan
   .route('/checkout/upload/:id')
@@ -51,7 +53,9 @@ routerPemesanan.route('/ulasan/:id').put(loginCheck, umpanBalik)
 routerPemesanan.route('/byd/:pmsID').get(byd)
 
 // ADMIN ONLY
-routerPemesanan.route('/admin/').get(loginCheck, isAdmin, semuaPesananPelanggan)
+routerPemesanan
+  .route('/admin/')
+  .get(loginCheck, isAdmin, semuaPesananPelanggan)
 routerPemesanan
   .route('/admin/konfirmasi')
   .get(loginCheck, isAdmin, daftarKonfirmasiPesanan)

@@ -1,8 +1,9 @@
-import React from 'react'
 import { Link } from 'react-router-dom'
 import { HiChatBubbleLeftRight } from 'react-icons/hi2'
 
-const TabelPesanan = () => {
+import type { Pesanan } from '../../../util/type'
+
+const TabelPesanan = (pesanan: Pesanan) => {
   return (
     <div className='rounded-lg bg-light py-2 mb-10'>
       <div className='flex flex-row gap-10 px-5 mb-2 shadow-lg'>
@@ -42,7 +43,8 @@ const TabelPesanan = () => {
               </p>
               <Link
                 to='/admin/garansi'
-                className='text-lg font-normal text-blue-500 hover:text-blue-700'>
+                className='text-lg font-normal text-blue-500 hover:text-blue-700'
+              >
                 Rincian
               </Link>
             </div>

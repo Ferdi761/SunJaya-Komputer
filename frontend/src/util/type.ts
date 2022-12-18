@@ -27,7 +27,7 @@ export type Pesanan = {
   jasaPengiriman: string | null
   totalHargaBarang: number
   biayaPengiriman: number | null
-  totalBiayaYangHarusDIbayar: number | null
+  totalBiayaYangHarusDibayar: number | null
   tanggalMulaiMenungguPembayaran: string | null
   pembayaranLunas: boolean
   tanggalKirim: string | null

@@ -1,49 +1,122 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import dataPesanan from '../data/dataProduk'
+import { useState, useEffect } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+
 import Modal from '../components/Modal'
 
+import type { Pesanan } from '../util/type'
+import { userStorage } from '../util/userStorage'
+
 const Pembayaran = () => {
-  const [modal, setModal] = React.useState(false)
+  const [modal, setModal] = useState(false)
+  const [pesanan, setPesanan] = useState<Pesanan>()
+
+  const [bukti, setBukti] = useState({
+    preview: '',
+    data: '',
+  })
+
+  const location = useLocation()
+  const navigate = useNavigate()
+  const { user } = userStorage()
+  const id = location.pathname.split('/')[2]
+
+  useEffect(() => {
+    fetch(`http://localhost:8000/api/pemesanan/${id}`, {
+      headers: {
+        Authorization: `Bearer ${user?.token}`,
+      },
+    })
+      .then(async (res) => {
+        const data = await res.json()
+        setPesanan(data.data)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }, [])
+
+  const handleFileChange = (e: any) => {
+    const foto = {
+      preview: URL.createObjectURL(e.target.files[0]),
+      data: e.target.files[0],
+    }
+    setBukti(foto)
+  }
+
+  const handleSubmit = (e: any) => {
+    e.preventDefault()
+
+    const formData = new FormData()
+    formData.append('buktiPembayaran', bukti.data)
+
+    fetch(
+      `http://localhost:8000/api/pemesanan/checkout/upload/${pesanan?.id}`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${user?.token}`,
+        },
+        body: formData,
+      }
+    )
+      .then(async (res) => {
+        const data = await res.json()
+        console.log(data)
+
+        if (data.status === 'success') {
+          navigate('/pesanan-saya')
+        }
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
 
   return (
     <>
       <div className='my-10 mx-20'>
         <div className='flex flex-row gap-10'>
           <div className='w-7/12'>
-            {dataPesanan.map((data) => {
-              return (
-                <div
-                  className='flex flex-row gap-5 mb-4 py-5 px-10 items-center rounded bg-light'
-                  style={{
-                    boxShadow: 'rgba(0, 0, 0, 0.24) 5px 5px 6px',
-                  }}
-                  key={data._id}>
-                  <div className='w-3/12'>
-                    <img
-                      src={data.gambar}
-                      alt='cpu'
-                      width='128px'
-                      height='128px'
-                    />
-                  </div>
-                  <div className='w-9/12'>
-                    <p className='font-bold'>{data.nama}</p>
-                    <p>
-                      Jumlah:{' '}
-                      <span className='font-bold'>
-                        {data.jumlah} buah
-                      </span>
-                    </p>
-                    <div className='font-bold text-end'>
-                      <p className='text-blue-500 font-bold'>
-                        Total: {data.harga}
+            {pesanan !== undefined ? (
+              pesanan.Barangs.map((data) => {
+                return (
+                  <div
+                    className='flex flex-row gap-5 mb-4 py-5 px-10 items-center rounded bg-light'
+                    style={{
+                      boxShadow: 'rgba(0, 0, 0, 0.24) 5px 5px 6px',
+                    }}
+                    key={data.id}
+                  >
+                    <div className='w-3/12'>
+                      <img
+                        src={`http://localhost:8000/produk/${
+                          data.FotoBarang.foto.split('\\')[2]
+                        }`}
+                        alt='cpu'
+                        width='128px'
+                        height='128px'
+                      />
+                    </div>
+                    <div className='w-9/12'>
+                      <p className='font-bold'>{data.nama}</p>
+                      <p>
+                        Jumlah:{' '}
+                        <span className='font-bold'>
+                          {data.BarangYangDipesan.jumlah} buah
+                        </span>
                       </p>
+                      <div className='font-bold text-end'>
+                        <p className='text-blue-500 font-bold'>
+                          Total: {data.harga}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              )
-            })}
+                )
+              })
+            ) : (
+              <p>Fetch Gagal</p>
+            )}
           </div>
           <div className='w-5/12'>
             <div className='p-10 text-white rounded bg-dark'>
@@ -59,7 +132,29 @@ const Pembayaran = () => {
                   </span>
                 </li>
               </ul>
-              <textarea className='h-36 w-full rounded-lg'></textarea>
+              <div className='h-36 w-full rounded-lg bg-white'>
+                {bukti.preview ? (
+                  <img
+                    src={bukti.preview}
+                    alt='bukti'
+                    className='w-1/5 h-auto'
+                  />
+                ) : (
+                  <div className='flex flex-col justify-center items-center h-3/4'>
+                    <p className='text-gray-400'>
+                      Upload Bukti Pembayaran
+                    </p>
+                  </div>
+                )}
+                <div className='bg-black'>
+                  <input
+                    type='file'
+                    name='buktiPembayaran'
+                    id='buktiPembayaran'
+                    onChange={handleFileChange}
+                  />
+                </div>
+              </div>
               <ul className='my-3 flex flex-col gap-3'>
                 <li className='flex justify-between items-start'>
                   <p>Subtotal Produk</p>
@@ -78,21 +173,21 @@ const Pembayaran = () => {
                   <p>Rp 3.400.000</p>
                 </li>
               </ul>
-              <div className='flex flex-row justify-between'>
-                <button className='border px-5 rounded-full hover:bg-white hover:text-black transition-all ease-in-out duration-300'>
-                  Upload Pembayaran
-                </button>
+              <div className='flex flex-col'>
                 <button
-                  className='border px-5 rounded-full hover:bg-white hover:text-black transition-all ease-in-out duration-300'
-                  onClick={() => setModal(true)}>
+                  className='border px-5 rounded-full hover:bg-white hover:text-black transition-all ease-in-out duration-300 self-end'
+                  onClick={() => setModal(true)}
+                >
                   Daftar Rekening
                 </button>
-              </div>
-              <Link to='/pesanan-saya'>
-                <button className='rounded-full bg-blue-700 py-3 w-full mt-5 hover:bg-blue-900 transition-all ease-in-out duration-300'>
+                <button
+                  className='rounded-full bg-blue-700 py-3 w-full mt-5 hover:bg-blue-900 transition-all ease-in-out duration-300'
+                  type='submit'
+                  onClick={handleSubmit}
+                >
                   Simpan
                 </button>
-              </Link>
+              </div>
             </div>
           </div>
         </div>

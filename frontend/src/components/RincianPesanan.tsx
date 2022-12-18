@@ -92,10 +92,10 @@ const RincianPesanan = ({
           <li className='flex justify-between items-start border-0'>
             <p>Subtotal Pengiriman</p>
             <p>
-              {statusPesanan[0].id === value ||
+              {dataPesanan.status < 3 ||
               dataPesanan.biayaPengiriman == null
-                ? 'Menunggu persetujuan'
-                : 'Rp 20.000'}
+                ? 'Menunggu Persetujuan'
+                : formatCurrency(dataPesanan.biayaPengiriman)}
             </p>
           </li>
           <li className='flex justify-between items-start border-0'>
@@ -105,19 +105,19 @@ const RincianPesanan = ({
           <li className='flex justify-between items-start border-0'>
             <p>Total Pesanan</p>
             <p>
-              {statusPesanan[0].id === value ||
+              {dataPesanan.status == 1 ||
               dataPesanan.biayaPengiriman == null
                 ? `${formatCurrency(dataPesanan.totalHargaBarang)}`
                 : `${formatCurrency(
-                    dataPesanan.totalBiayaYangHarusDIbayar == null
+                    dataPesanan.totalBiayaYangHarusDibayar == null
                       ? 0
-                      : dataPesanan.totalBiayaYangHarusDIbayar
+                      : dataPesanan.totalBiayaYangHarusDibayar
                   )}`}
             </p>
           </li>
         </ul>
 
-        {statusPesanan[0].id === value || dataPesanan.status == 1 ? (
+        {dataPesanan.status == 1 ? (
           <>
             <button className='bg-black border border-white mb-2 float-right rounded-xl px-5'>
               Batalkan Pesanan
@@ -128,15 +128,10 @@ const RincianPesanan = ({
               </button>
             </Link>
           </>
-        ) : statusPesanan[1].id === value ||
-          statusPesanan[2].id === value ||
-          statusPesanan[3].id === value ||
-          statusPesanan[4].id === value ? (
+        ) : (
           <>
             <ul className=''>
-              {statusPesanan[2].id === value ||
-              statusPesanan[3].id === value ||
-              statusPesanan[4].id === value ? (
+              {dataPesanan.status > 2 ? (
                 ''
               ) : (
                 <li className='flex justify-between text-red-500'>
@@ -193,7 +188,7 @@ const RincianPesanan = ({
                 to={`/${
                   statusPesanan[3].id === value
                     ? 'chat'
-                    : 'pembayaran'
+                    : `bayar/${dataPesanan.id}`
                 }`}
               >
                 <button className='bg-blue-700 hover:bg-blue-900 py-2 w-full rounded-full'>
@@ -204,9 +199,21 @@ const RincianPesanan = ({
               </Link>
             )}
           </>
-        ) : (
-          ''
         )}
+        {/* {dataPesanan.status == 1 ? (
+          <>
+            <button className='bg-black border border-white mb-2 float-right rounded-xl px-5'>
+              Batalkan Pesanan
+            </button>
+            <Link to='/chat'>
+              <button className='bg-blue-600 hover:bg-blue-800 py-2 w-full rounded-full'>
+                Diskusi Pengiriman
+              </button>
+            </Link>
+          </>
+        ) : dataPesanan.status == 2 ? (
+            
+        )} */}
       </div>
     </>
   )

@@ -52,6 +52,7 @@ const PesananSaya = () => {
       .then(async (res) => {
         const data = await res.json()
         setPesanan(data.data.pesanan)
+        console.log(data.data.pesanan)
       })
       .catch((err) => {
         console.log(err)
@@ -263,7 +264,12 @@ const PesananSaya = () => {
             <div className='w-5/12'>
               {urutan > 0 ? (
                 <RincianPesanan
-                  dataPesanan={pesanan[urutan - 1]}
+                  dataPesanan={pesanan.reduce((acc, cur) => {
+                    if (cur.id === urutan) {
+                      acc = cur
+                    }
+                    return acc
+                  })}
                   value={value}
                   statusPesanan={statusPesanan}
                 />

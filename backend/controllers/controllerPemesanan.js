@@ -110,7 +110,8 @@ const checkout = async (req, res) => {
 }
 
 const uploadBuktiBayar = async (req, res) => {
-  const logged = req.cookies.logged_account
+  const logged = req.headers.authorization.split(' ')[1]
+  // const logged = req.cookies.logged_account
   // decode cookie's token from jwt to get the id of Akun
   const decoded = jwt.verify(logged, 'jwtAkunId')
   const { id } = req.params
@@ -138,11 +139,11 @@ const uploadBuktiBayar = async (req, res) => {
     await buktiBayar.update({
       buktiPembayaran: imagePath,
     })
-    await Keranjang.destroy({
-      where: {
-        akunId: decoded.id,
-      },
-    })
+    // await Keranjang.destroy({
+    //   where: {
+    //     akunId: decoded.id,
+    //   },
+    // })
 
     clearTimeout(waktuPembayaran)
 
@@ -289,16 +290,14 @@ const byd = async (req, res) => {
 // Daftar semua pesanan pelanggan
 const semuaPesananPelanggan = async (req, res) => {
   try {
-    const listPesanan = await Pemesanan.findAll(
-      {
-        include: [
-          {
-            model: Barang,
-            include: FotoBarang,
-          },
-        ],
-      }
-    )
+    const listPesanan = await Pemesanan.findAll({
+      include: [
+        {
+          model: Barang,
+          include: FotoBarang,
+        },
+      ],
+    })
 
     //console.log(listPesanan.Pemesanan.);
     res
@@ -411,38 +410,38 @@ const konfirmasiPesanan = async (req, res) => {
     //   }
     // }, 1000)
 
-    waktuPembayaran = setTimeout(async () => {
-      console.log('waktu habis, pemesanan dibatalkan!')
+    // waktuPembayaran = setTimeout(async () => {
+    //   console.log('waktu habis, pemesanan dibatalkan!')
 
-      dataBYD.forEach(async (item) => {
-        let barang = await Barang.findOne({
-          where: {
-            id: item.BarangId,
-          },
-        })
+    //   dataBYD.forEach(async (item) => {
+    //     let barang = await Barang.findOne({
+    //       where: {
+    //         id: item.BarangId,
+    //       },
+    //     })
 
-        const stokBarang = await barang.getDataValue('stok')
-        let updateStok = stokBarang + item.jumlah
+    //     const stokBarang = await barang.getDataValue('stok')
+    //     let updateStok = stokBarang + item.jumlah
 
-        await barang.update({
-          stok: updateStok,
-        })
+    //     await barang.update({
+    //       stok: updateStok,
+    //     })
 
-        await BarangYangDipesan.destroy({
-          where: {
-            pemesananId: item.pemesananId,
-            BarangId: item.BarangId,
-          },
-        })
-      })
+    //     await BarangYangDipesan.destroy({
+    //       where: {
+    //         pemesananId: item.pemesananId,
+    //         BarangId: item.BarangId,
+    //       },
+    //     })
+    //   })
 
-      await pesanan.destroy()
+    //   await pesanan.destroy()
 
-      // set ulang array menjadi nol
-      dataBYD = []
+    //   // set ulang array menjadi nol
+    //   dataBYD = []
 
-      console.log('Waktu habis, pemesanan dibatalkan!')
-    }, 10000)
+    //   console.log('Waktu habis, pemesanan dibatalkan!')
+    // }, 10000)
 
     res
       .json({
@@ -672,6 +671,44 @@ const daftarSemuaPesanan = async (req, res) => {
   }
 }
 
+const pesanan = async (req, res) => {
+  const logged = req.headers.authorization.split(' ')[1]
+  const decoded = jwt.verify(logged, 'jwtAkunId')
+  const { id } = req.params
+
+  try {
+    const pesanan = await Pemesanan.findOne({
+      include: [
+        {
+          model: Barang,
+          include: FotoBarang,
+        },
+      ],
+      where: {
+        [Op.and]: [
+          {
+            id,
+          },
+          {
+            akunId: decoded.id,
+          },
+        ],
+      },
+    })
+
+    res.status(200).json({
+      status: 'success',
+      data: pesanan,
+    })
+  } catch (err) {
+    console.log(err)
+    res.status(500).json({
+      status: 'fail',
+      message: [err],
+    })
+  }
+}
+
 // Pesanan belum dibayar
 const pesananBelumBayar = async (req, res) => {
   const logged = req.cookies.logged_account
@@ -821,6 +858,7 @@ const pesananDikirim = async (req, res) => {
 
 module.exports = {
   checkout,
+  pesanan,
   uploadBuktiBayar,
   pesananSelesai,
   umpanBalik,
