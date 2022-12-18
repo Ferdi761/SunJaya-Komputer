@@ -18,6 +18,7 @@ const ChatPage = () => {
   const [daftarLawanBicara, setDaftarLawanBicara] = useState<Map<number, ChatSenderData>>(new Map<number, ChatSenderData>)
   const [daftarLawanBicaraArray, setDaftarLawanBicaraArray] = useState<ChatSenderData[]>([])
   const [lawanBicara, setLawanBicara] = useState("")
+  const [lawanBicaraAktif, setLawanBicaraAktif] = useState("Tidak Aktif")
 
   const { user } = userStorage()
   const location = useLocation()
@@ -75,10 +76,7 @@ const ChatPage = () => {
         'aktif',
         function (message: string) {
           // mengganti tanda apakah pelanggan yang dibuka chatnya aktif atau tidak
-          let aktif = document.getElementById(
-            'aktif'
-          ) as HTMLParagraphElement
-          aktif.innerHTML = message
+          setLawanBicaraAktif(message);
         }
       )
   
@@ -234,6 +232,7 @@ const ChatPage = () => {
             location={location}
             chatMasuk={daftarChat}
             lawanBicara={lawanBicara}
+            lawanBicaraAktif={lawanBicaraAktif}
           />
         </div>
       </div>
