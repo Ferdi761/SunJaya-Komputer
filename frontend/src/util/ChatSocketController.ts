@@ -29,6 +29,10 @@ class ChatSocketController {
         });
     }
 
+    removeCallback(event : string) {
+        this.socket.off(event);
+    }
+
     sendMessage(message: string) {
         this.socket.emit("message to", message);
     }

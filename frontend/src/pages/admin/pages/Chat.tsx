@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction } from 'react'
 import { ChatSocketController } from '../../../util/ChatSocketController'
 import { useLocation } from 'react-router-dom'
+import { ChatData } from '../../../util/ChatData'
 
 interface ChatProps {
   chatSocketController: ChatSocketController
@@ -8,7 +9,7 @@ interface ChatProps {
   setChat: Dispatch<SetStateAction<string>>
   location: ReturnType<typeof useLocation>
   id: number
-  chatMasuk: string[]
+  chatMasuk: ChatData[]
 }
 
 const Chat = ({
@@ -33,9 +34,9 @@ const Chat = ({
         <p className='font-bold text-xl'>Sun Jaya Komputer</p>
         <p id='aktif'>Aktif</p>
       </div>
-      <div id='chats' className='flex items-center justify-center'>
+      <div id='chats' className='flex flex-col items-center justify-center'>
         {chatMasuk.map((chat, index) => (
-          <div key={index}>{chat}</div>
+          <div key={index} className={`${chat.isFromOther() ? "self-start" : "self-end"}`}>{chat.getMessage()}</div>
         ))}
       </div>
       <form
@@ -56,22 +57,6 @@ const Chat = ({
           id='chat-input'
           value={chat}
           onChange={(e) => setChat(e.target.value)}
-          // onKeyDown={function (e) {
-          //   if (e.key == 'Enter') {
-          //     let chatText = (
-          //       document.getElementById(
-          //         'chat-input'
-          //       ) as HTMLInputElement
-          //     ).value
-          //     ;(
-          //       document.getElementById(
-          //         'chat-input'
-          //       ) as HTMLInputElement
-          //     ).value = ''
-          //     chatSocketController.sendMessage(chatText)
-          //     console.log(chatSocketController)
-          //   }
-          // }}
         />
         <button
           className='bg-blue-700 w-1/12 rounded-lg'
