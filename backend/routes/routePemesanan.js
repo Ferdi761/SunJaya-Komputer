@@ -32,6 +32,7 @@ const {
   byd,
 
   // ADMIN ONLY
+  semuaPesananPelanggan,
   daftarKonfirmasiPesanan,
   konfirmasiPesanan,
   batalkanPesanan,
@@ -50,6 +51,7 @@ routerPemesanan.route('/ulasan/:id').put(loginCheck, umpanBalik)
 routerPemesanan.route('/byd/:pmsID').get(byd)
 
 // ADMIN ONLY
+routerPemesanan.route('/admin/').get(loginCheck, isAdmin, semuaPesananPelanggan)
 routerPemesanan
   .route('/admin/konfirmasi')
   .get(loginCheck, isAdmin, daftarKonfirmasiPesanan)

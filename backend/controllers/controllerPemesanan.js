@@ -286,6 +286,40 @@ const byd = async (req, res) => {
 
 // ADMIN ONLY
 
+// Daftar semua pesanan pelanggan
+const semuaPesananPelanggan = async (req, res) => {
+  try {
+    const listPesanan = await Pemesanan.findAll(
+      {
+        include: [
+          {
+            model: Barang,
+            include: FotoBarang,
+          },
+        ],
+      }
+    )
+
+    //console.log(listPesanan.Pemesanan.);
+    res
+      .status(200)
+      .json({
+        status: 'success',
+        data: listPesanan,
+      })
+      .end()
+  } catch (err) {
+    console.log(err)
+    res
+      .status(500)
+      .json({
+        status: 'fail',
+        message: [err],
+      })
+      .end()
+  }
+}
+
 // Lihat pesanan yang belum dikonfirmasi tetapi sudah dibayar pelanggan
 const daftarKonfirmasiPesanan = async (req, res) => {
   try {
@@ -322,7 +356,7 @@ const daftarKonfirmasiPesanan = async (req, res) => {
   }
 }
 
-// konfirmasi pesanan pelanggan
+// Admin konfirmasi pesanan pelanggan
 const konfirmasiPesanan = async (req, res) => {
   const { id } = req.params
   let timeOut = new Date()
@@ -793,6 +827,7 @@ module.exports = {
   byd, // testing barang yang dipesan
 
   // ADMIN ONLY
+  semuaPesananPelanggan,
   daftarKonfirmasiPesanan,
   konfirmasiPesanan,
   batalkanPesanan,
