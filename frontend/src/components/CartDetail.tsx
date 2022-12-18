@@ -33,7 +33,7 @@ const CartDetail = (props: CartItemProps) => {
   // const [mode, setMode] = useState<'+' | '-' | '0'>('0')
 
   const { user } = userStorage()
-  const { cartStatus, changeCart } = cartStorage()
+  const { changeCart } = cartStorage()
 
   const handleDelete = () => {
     fetch(`http://localhost:8000/api/keranjang/${BarangId}`, {
@@ -47,7 +47,7 @@ const CartDetail = (props: CartItemProps) => {
         console.log(data)
 
         if (data.status === 'success') {
-          changeCart(!cartStatus)
+          changeCart()
         }
       })
       .catch((err) => {
@@ -62,13 +62,15 @@ const CartDetail = (props: CartItemProps) => {
         Authorization: `Bearer ${user?.token}`,
       },
       body: JSON.stringify({
-        jumlah: jumlah + 1,
+        jumlah: jumlah - 1,
       }),
     })
       .then(async (res) => {
         const data = await res.json()
+        console.log(data)
+
         if (data.status === 'success') {
-          changeCart(!cartStatus)
+          changeCart()
         }
       })
       .catch((err) => {
@@ -93,7 +95,7 @@ const CartDetail = (props: CartItemProps) => {
       .then(async (res) => {
         const data = await res.json()
         if (data.status === 'success') {
-          changeCart(!cartStatus)
+          changeCart()
         }
       })
       .catch((err) => {

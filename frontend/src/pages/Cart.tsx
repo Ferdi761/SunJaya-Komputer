@@ -73,8 +73,8 @@ const Cart = () => {
       .then(async (res) => {
         const data = await res.json()
         if (data.status === 'success') {
-          changeCart(!cartStatus)
-          navigate('/pemesanan')
+          changeCart()
+          navigate('/pesanan-saya')
         }
       })
       .catch((err) => {

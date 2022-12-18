@@ -2,15 +2,16 @@ import create from 'zustand'
 import { persist } from 'zustand/middleware'
 
 type Cart = {
-  cartStatus: boolean
-  changeCart: (cart: Cart['cartStatus']) => void
+  cartStatus: number
+  changeCart: () => void
 }
 
 export const cartStorage = create(
   persist<Cart>(
-    (set, get) => ({
-      cartStatus: false,
-      changeCart: (cart) => set({ cartStatus: cart }),
+    (set) => ({
+      cartStatus: 0,
+      changeCart: () =>
+        set((state) => ({ cartStatus: state.cartStatus + 1 })),
     }),
     {
       name: 'cart',

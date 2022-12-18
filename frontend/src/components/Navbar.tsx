@@ -4,6 +4,7 @@ import { FaShoppingCart } from 'react-icons/fa'
 import { AiOutlineSearch } from 'react-icons/ai'
 import { RiShoppingBagFill } from 'react-icons/ri'
 import { BsChatTextFill } from 'react-icons/bs'
+
 import { userStorage } from '../util/userStorage'
 import { cartStorage } from '../util/cartStorage'
 
@@ -101,7 +102,10 @@ const Navbar = () => {
           <FaShoppingCart />
           {cart.daftarBarang.length > 0 && (
             <div className='rounded-full bg-red-600 flex justify-center items-center text-white w-7 h-7 absolute bottom-0 right-0 translate-x-1/4 translate-y-1/4'>
-              {cart.daftarBarang.length}
+              {cart.daftarBarang.reduce(
+                (acc, cur) => acc + cur.jumlah,
+                0
+              )}
             </div>
           )}
         </button>

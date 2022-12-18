@@ -4,8 +4,8 @@ import { RiShoppingBagFill } from 'react-icons/ri'
 import { Link } from 'react-router-dom'
 
 import RincianPesanan from '../components/RincianPesanan'
-import { formatCurrency } from '../util/formatCurrency'
 
+import { formatCurrency } from '../util/formatCurrency'
 import type { Pesanan } from '../util/type'
 import { userStorage } from '../util/userStorage'
 
@@ -31,15 +31,19 @@ const PesananSaya = () => {
       id: 5,
       status: 'Selesai',
     },
+    {
+      id: 6,
+      status: 'Semua',
+    },
   ]
 
   const [pesanan, setPesanan] = useState<Pesanan[]>([])
-  const [value, setValue] = useState(1)
+  const [value, setValue] = useState(6)
 
   const { user } = userStorage()
 
   useEffect(() => {
-    fetch('http://localhost:8000/api/pemesanan', {
+    fetch(`http://localhost:8000/api/pemesanan/`, {
       headers: {
         Authorization: `Bearer ${user?.token}`,
       },
@@ -66,6 +70,15 @@ const PesananSaya = () => {
             <h1>Pesanan Saya</h1>
           </div>
           <ul className='flex flex-row gap-5'>
+            <li
+              className={`cursor-pointer ${
+                statusPesanan[5].id === value && 'font-bold'
+              }`}
+              value={6}
+              onClick={valueChange}
+            >
+              Semua
+            </li>
             <li
               className={`cursor-pointer ${
                 statusPesanan[0].id === value && 'font-bold'
@@ -145,7 +158,7 @@ const PesananSaya = () => {
                         <p>
                           Jumlah:{' '}
                           <span className='font-bold'>
-                            {item.Barangs.length} buah
+                            {data.BarangYangDipesan.jumlah} buah
                           </span>
                         </p>
                         <div className='font-bold text-right'>
@@ -178,7 +191,10 @@ const PesananSaya = () => {
                       <p>
                         {formatCurrency(
                           item.Barangs.reduce(
-                            (acc, cur) => cur.harga,
+                            (acc, cur) =>
+                              acc +
+                              cur.BarangYangDipesan.jumlah *
+                                cur.harga,
                             0
                           )
                         )}

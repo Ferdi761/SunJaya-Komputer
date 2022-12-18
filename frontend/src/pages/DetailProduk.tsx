@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
+import { cartStorage } from '../util/cartStorage'
 import { formatCurrency } from '../util/formatCurrency'
 import { userStorage } from '../util/userStorage'
 
@@ -26,6 +27,7 @@ const DetailProduk = () => {
 
   const location = useLocation()
   const { user } = userStorage()
+  const { cartStatus, changeCart } = cartStorage()
 
   useEffect(() => {
     fetch(
@@ -40,7 +42,7 @@ const DetailProduk = () => {
       .catch((err) => {
         console.log(err)
       })
-  }, [])
+  }, [cartStatus])
 
   const tambahCart = (id: number) => {
     const data = {
@@ -58,7 +60,9 @@ const DetailProduk = () => {
     })
       .then(async (res) => {
         const data = await res.json()
-        console.log(data)
+        if (data.status === 'success') {
+          changeCart()
+        }
       })
       .catch((err) => {
         console.log(err)

@@ -102,7 +102,10 @@ const tambahKeKeranjang = async (req, res) => {
       res.status(404).json({ message: 'Akun tidak ditemukan!' }).end()
 
     const barang = await Barang.findByPk(idBarang)
-    if (!barang) throw 'Barang tidak ditemukan!'
+    if (!barang)
+      return res
+        .status(404)
+        .json({ message: 'Barang tidak ditemukan!' })
 
     // if (findCart) {
     //     const currJumlah = findCart.getDataValue('jumlah');
@@ -128,7 +131,7 @@ const tambahKeKeranjang = async (req, res) => {
       res
         .status(200)
         .json({
-          status: 'Success',
+          status: 'success',
           data: findCart,
         })
         .end()
@@ -144,7 +147,7 @@ const tambahKeKeranjang = async (req, res) => {
     res
       .status(200)
       .json({
-        status: 'Success',
+        status: 'success',
         data: addToCart,
       })
       .end()
@@ -218,10 +221,13 @@ const ubahJumlahBarang = async (req, res) => {
     })
 
     const ubahJumlah = await keranjang.update({
-      jumlah: jumlah,
+      jumlah,
     })
     if (!ubahJumlah)
-      throw 'Gagal mengubah jumlah barang dari keranjang!'
+      return res.status(500).json({
+        status: 'fail',
+        message: 'Gagal mengubah jumlah barang!',
+      })
 
     res
       .status(200)

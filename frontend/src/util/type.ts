@@ -8,7 +8,7 @@ type Barang = {
   berat: number
   jenisId: number
   BarangYangDipesan: {
-    jumalah: number
+    jumlah: number
     totalHarga: number
     garansiExpired: boolean
     BarangId: number
