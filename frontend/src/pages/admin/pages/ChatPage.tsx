@@ -17,6 +17,7 @@ const ChatPage = () => {
   const [daftarChat, setDaftarChat] = useState<ChatData[]>([])
   const [daftarLawanBicara, setDaftarLawanBicara] = useState<Map<number, ChatSenderData>>(new Map<number, ChatSenderData>)
   const [daftarLawanBicaraArray, setDaftarLawanBicaraArray] = useState<ChatSenderData[]>([])
+  const [lawanBicara, setLawanBicara] = useState("")
 
   const { user } = userStorage()
   const location = useLocation()
@@ -213,7 +214,10 @@ const ChatPage = () => {
                     ? 'bg-dark'
                     : 'hover:bg-dark'
                 }`}
-                onClick={() => setId(dataLawanBicara.getID())}
+                onClick={() => {
+                  setId(dataLawanBicara.getID())
+                  setLawanBicara(dataLawanBicara.getName())
+                }}
               key={dataLawanBicara.getID()}>
                 <p className='font-medium text-lg'>{dataLawanBicara.getName()}</p>
                 <p className='text-sm text-gray-400'>
@@ -229,6 +233,7 @@ const ChatPage = () => {
             setChat={setChat}
             location={location}
             chatMasuk={daftarChat}
+            lawanBicara={lawanBicara}
           />
         </div>
       </div>

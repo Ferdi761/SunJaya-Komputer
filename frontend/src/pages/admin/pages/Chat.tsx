@@ -9,7 +9,9 @@ interface ChatProps {
   setChat: Dispatch<SetStateAction<string>>
   location: ReturnType<typeof useLocation>
   id: number
-  chatMasuk: ChatData[]
+  chatMasuk: ChatData[],
+  lawanBicara: string,
+  lawanBicaraAktif: string
 }
 
 const Chat = ({
@@ -19,6 +21,8 @@ const Chat = ({
   location,
   id,
   chatMasuk,
+  lawanBicara,
+  lawanBicaraAktif
 }: ChatProps) => {
   if (location.pathname == '/admin/chat/0') {
     return (
@@ -31,8 +35,8 @@ const Chat = ({
   return (
     <div className='w-3/4 flex flex-col h-full'>
       <div className='flex flex-col py-5 px-10 border-b border-dark'>
-        <p className='font-bold text-xl'>Sun Jaya Komputer</p>
-        <p id='aktif'>Aktif</p>
+        <p className='font-bold text-xl'>{lawanBicara}</p>
+        <p id='aktif'>{lawanBicaraAktif}</p>
       </div>
       <div id='chats' className='flex flex-col items-center justify-center'>
         {chatMasuk.map((chat, index) => (
