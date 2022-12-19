@@ -125,10 +125,10 @@ const uploadBuktiBayar = async (req, res) => {
     if (!userCart)
       return res.status(404).json('Akun tidak ditemukan!').end()
 
-    const buktiBayar = await BuktiPembayaranPemesanan.findOne(
-      { where: { pemesananId: id } },
-      { include: Pemesanan }
-    )
+    const buktiBayar = await BuktiPembayaranPemesanan.findOne({
+      where: { pemesananId: id },
+      include: Pemesanan 
+    })
     if (!buktiBayar)
       return res.status(404).json('Pemesanan tidak ditemukan!').end()
 
