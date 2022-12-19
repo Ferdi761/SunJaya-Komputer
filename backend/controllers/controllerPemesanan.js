@@ -365,8 +365,9 @@ const daftarKonfirmasiPesanan = async (req, res) => {
 const konfirmasiPesanan = async (req, res) => {
   const { id } = req.params
   const { biayaPengiriman, jasaPengiriman } = req.body
-  let timeOut = new Date()
-  const aDay = timeOut.getTime() + 10000
+  // for test time
+  // let timeOut = new Date()
+  // const aDay = timeOut.getTime() + 10000
 
   try {
     const pesanan = await Pemesanan.findOne({ where: { id } })
@@ -419,38 +420,38 @@ const konfirmasiPesanan = async (req, res) => {
     //   }
     // }, 1000)
 
-    // waktuPembayaran = setTimeout(async () => {
-    //   console.log('waktu habis, pemesanan dibatalkan!')
+    waktuPembayaran = setTimeout(async () => {
+      console.log('waktu habis, pemesanan dibatalkan!')
 
-    //   dataBYD.forEach(async (item) => {
-    //     let barang = await Barang.findOne({
-    //       where: {
-    //         id: item.BarangId,
-    //       },
-    //     })
+      dataBYD.forEach(async (item) => {
+        let barang = await Barang.findOne({
+          where: {
+            id: item.BarangId,
+          },
+        })
 
-    //     const stokBarang = await barang.getDataValue('stok')
-    //     let updateStok = stokBarang + item.jumlah
+        const stokBarang = await barang.getDataValue('stok')
+        let updateStok = stokBarang + item.jumlah
 
-    //     await barang.update({
-    //       stok: updateStok,
-    //     })
+        await barang.update({
+          stok: updateStok,
+        })
 
-    //     await BarangYangDipesan.destroy({
-    //       where: {
-    //         pemesananId: item.pemesananId,
-    //         BarangId: item.BarangId,
-    //       },
-    //     })
-    //   })
+        await BarangYangDipesan.destroy({
+          where: {
+            pemesananId: item.pemesananId,
+            BarangId: item.BarangId,
+          },
+        })
+      })
 
-    //   await pesanan.destroy()
+      await pesanan.destroy()
 
-    //   // set ulang array menjadi nol
-    //   dataBYD = []
+      // set ulang array menjadi nol
+      dataBYD = []
 
-    //   console.log('Waktu habis, pemesanan dibatalkan!')
-    // }, 10000)
+      console.log('Waktu habis, pemesanan dibatalkan!')
+    }, 10000)
 
     res
       .json({
