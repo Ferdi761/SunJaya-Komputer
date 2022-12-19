@@ -22,8 +22,8 @@ const TambahAkun = () => {
     fetch('http://localhost:8000/api/signup', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
         Authorization: `Bearer ${user?.token}`,
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(akun),
     })

@@ -5,10 +5,6 @@ import { ChatSocketController } from '../util/ChatSocketController'
 import { userStorage } from '../util/userStorage'
 import { ChatData } from '../util/ChatData'
 
-const chatSocketController : ChatSocketController = new ChatSocketController(
-  io('http://localhost:8000').connect()
-)
-
 const ChatPage = () => {
   const [chat, setChat] = useState('')
   const [daftarChat, setDaftarChat] = useState<ChatData[]>([])
@@ -28,8 +24,10 @@ const ChatPage = () => {
       </div>
     )
   } else {
-    useEffect(() => {
+    const chatSocketController: ChatSocketController =
+      new ChatSocketController(io('http://localhost:8000').connect())
 
+    useEffect(() => {
       if (chatSocketController != undefined) {
         chatSocketController.init(user.id)
         chatSocketController.auth(user.izin)
@@ -42,26 +40,35 @@ const ChatPage = () => {
           'message self read',
           function (message: string) {
             // munculkan teks yang dikirim sendiri dengan penanda sudah di read
-            setDaftarChat((chat) => [...chat, new ChatData(message, false)])
+            setDaftarChat((chat) => [
+              ...chat,
+              new ChatData(message, false),
+            ])
           }
         )
-  
+
         chatSocketController.addCallback(
           'message self unread',
           function (message: string) {
             // munculkan teks yang dikirim sendiri dengan penanda belum di read
-            setDaftarChat((chat) => [...chat, new ChatData(message, false)])
+            setDaftarChat((chat) => [
+              ...chat,
+              new ChatData(message, false),
+            ])
           }
         )
-  
+
         chatSocketController.addCallback(
           'message to',
           function (message: string) {
             // munculkan teks yang dikirim dari toko (lawan bicara)
-            setDaftarChat((chat) => [...chat, new ChatData(message, true)])
+            setDaftarChat((chat) => [
+              ...chat,
+              new ChatData(message, true),
+            ])
           }
         )
-  
+
         chatSocketController.addCallback(
           'aktif',
           function (message: string) {
@@ -71,23 +78,22 @@ const ChatPage = () => {
             aktif.innerHTML = message
           }
         )
-  
+
         chatSocketController.addCallback(
           'readall',
           function (message: string) {
             // buat semua chat dari toko ditandai sudah di read
           }
         )
-        
+
         return () => {
-          chatSocketController.removeCallback("message self read");
-          chatSocketController.removeCallback("message self unread");
-          chatSocketController.removeCallback("message to");
-          chatSocketController.removeCallback("aktif");
-          chatSocketController.removeCallback("readall");
+          chatSocketController.removeCallback('message self read')
+          chatSocketController.removeCallback('message self unread')
+          chatSocketController.removeCallback('message to')
+          chatSocketController.removeCallback('aktif')
+          chatSocketController.removeCallback('readall')
         }
-      } 
-      else {
+      } else {
         console.log('chatSocketController undefined')
       }
     }, [])
@@ -105,7 +111,16 @@ const ChatPage = () => {
               className='flex flex-col grow items-center overflow-y-scroll'
             >
               {daftarChat.map((chat, index) => (
-                <div key={index} className={`${chat.isFromOther() ? "w-fit px-5 bg-gray-600 text-white rounded-full py-2 m-1 self-start" : "w-fit px-5 bg-blue-600 text-white rounded-full py-2 m-1 self-end"}`}>{chat.getMessage()}</div>
+                <div
+                  key={index}
+                  className={`${
+                    chat.isFromOther()
+                      ? 'w-fit px-5 bg-gray-600 text-white rounded-full py-2 m-1 self-start'
+                      : 'w-fit px-5 bg-blue-600 text-white rounded-full py-2 m-1 self-end'
+                  }`}
+                >
+                  {chat.getMessage()}
+                </div>
               ))}
             </div>
             <form
