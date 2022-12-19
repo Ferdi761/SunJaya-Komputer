@@ -66,8 +66,6 @@ const Cart = () => {
       },
       body: JSON.stringify({
         alamatTujuan: alamat,
-        jasaPengiriman: 'JNE',
-        biayaPengiriman: 10000,
       }),
     })
       .then(async (res) => {

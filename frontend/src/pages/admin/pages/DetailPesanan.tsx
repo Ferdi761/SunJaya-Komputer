@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react'
-import { Link, useLocation } from 'react-router-dom'
-import { formatCurrency } from '../../../util/formatCurrency'
+import { useState, useEffect, FormEvent } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 
+import { formatCurrency } from '../../../util/formatCurrency'
 import type { Pesanan } from '../../../util/type'
 import { userStorage } from '../../../util/userStorage'
 
@@ -15,25 +15,7 @@ const DetailPesanan = () => {
   const { user } = userStorage()
 
   const { pathname } = useLocation()
-
-  useEffect(() => {
-    fetch(`http://localhost:8000/api/pemesanan/detail/1`, {
-      headers: {
-        Authorization: `Bearer ${user?.token}`,
-      },
-    })
-      .then(async (res) => {
-        const data = await res.json()
-        setPesanan(data.data)
-      })
-      .catch((err) => {
-        console.log(err)
-      })
-  }, [])
-
-  let total: number = pesanan
-    ? pesanan?.totalHargaBarang + parseInt(pengiriman.biayaPengiriman)
-    : 0
+  const navigate = useNavigate()
 
   const handleDelete = () => {
     fetch(
@@ -56,7 +38,9 @@ const DetailPesanan = () => {
       })
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault()
+
     fetch(
       `http://localhost:8000/api/pemesanan/admin/konfirmasi/${
         pathname.split('/')[3]
@@ -70,7 +54,33 @@ const DetailPesanan = () => {
         body: JSON.stringify(pengiriman),
       }
     )
+      .then(async (res) => {
+        const data = await res.json()
+        if (data.status == 'success') {
+          navigate('/admin/pesanan')
+        }
+      })
+      .catch((err) => {
+        console.log(err)
+      })
   }
+
+  useEffect(() => {
+    fetch(`http://localhost:8000/api/pemesanan/detail/1`, {
+      headers: {
+        Authorization: `Bearer ${user?.token}`,
+      },
+    })
+      .then(async (res) => {
+        const data = await res.json()
+        setPesanan(data.data)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }, [])
+
+  if (!pesanan) return <p>Loading...</p>
 
   return (
     <div className='flex flex-row gap-10 mt-10 px-20'>
@@ -78,16 +88,16 @@ const DetailPesanan = () => {
         {pesanan?.Barangs.map((barang) => (
           <div
             key={barang.id}
-            className='bg-light drop-shadow-xl h-fit flex p-3'
+            className='bg-light drop-shadow-xl h-fit flex p-3 gap-2'
           >
-            <div className='flex-none w-24 h-24 relative mr-5'>
-              <img
-                src={`http://localhost:8000/produk/${barang.FotoBarang.foto}`}
-                alt={barang.nama}
-                className='absolute inset-0 w-full h-full object-cover'
-                loading='lazy'
-              />
-            </div>
+            <img
+              src={`http://localhost:8000/produk/${
+                barang.FotoBarang.foto.split('\\')[2]
+              }`}
+              alt={barang.nama}
+              className='w-1/4 h-auto'
+              loading='lazy'
+            />
             <div className='flex flex-col w-full'>
               <h3 className='text-lg font-semibold text-slate-900'>
                 {barang.nama}
@@ -157,27 +167,46 @@ const DetailPesanan = () => {
             Alamat Tujuan :{' '}
             <span className='font-bold'>{pesanan?.alamatTujuan}</span>
           </li>
-          <li className='flex flex-row gap-7'>
-            <p>Biaya Pengiriman : Rp</p>
-            <input
-              type='number'
-              className='w-8/12 pl-3 text-black rounded-lg'
-              placeholder='-- nominal tanpa titik --'
-              onChange={(e) => {
-                setPengiriman({
-                  ...pengiriman,
-                  biayaPengiriman: e.target.value,
-                })
-              }}
-            />
+          <li className='flex flex-row gap-3'>
+            <p>Biaya Pengiriman :</p>
+            {pesanan?.status == 1 ? (
+              <input
+                className='w-9/12 pl-3 text-black rounded-lg'
+                placeholder='-- nominal tanpa titik --'
+                value={pengiriman.biayaPengiriman}
+                onChange={(e) => {
+                  setPengiriman({
+                    ...pengiriman,
+                    biayaPengiriman: e.target.value,
+                  })
+                }}
+              />
+            ) : (
+              <p>
+                {pesanan?.biayaPengiriman
+                  ? formatCurrency(pesanan?.biayaPengiriman)
+                  : 0}
+              </p>
+            )}
           </li>
           <li className='flex flex-row gap-3'>
             <p>Jasa Pengiriman : </p>
-            <input
-              type='text'
-              className='w-9/12 text-sm pl-3 text-black rounded-lg'
-              placeholder='-- jasa pengiriman | tulis dalam format "nama jasa - tipe layanan" --'
-            />
+            {pesanan?.status == 1 ? (
+              <input
+                type='text'
+                className='w-9/12 text-sm pl-3 text-black rounded-lg'
+                placeholder='e.g. JNE, TIKI, POS'
+                value={pengiriman.jasaPengiriman}
+                onChange={(e) => {
+                  setPengiriman({
+                    ...pengiriman,
+                    jasaPengiriman: e.target.value,
+                  })
+                }}
+              />
+            ) : (
+              <p>{pesanan?.jasaPengiriman}</p>
+            )}
           </li>
           <li>
             Total Berat :{' '}
@@ -185,33 +214,74 @@ const DetailPesanan = () => {
           </li>
           <li className='font-bold text-lg'>
             Total Biaya :{' '}
-            {pesanan
-              ? formatCurrency(pesanan?.totalHargaBarang)
-              : 'null'}
+            {pesanan ? formatCurrency(pesanan?.totalHargaBarang) : 0}
           </li>
         </ul>
-        <div className='mb-4 flex justify-end'>
-          <Link
-            to='/admin/chat'
-            className='text-center font-bold text-black bg-white rounded-full text-2xl py-2 px-5'
-          >
-            Diskusi Pengiriman
-          </Link>
-        </div>
-        <div className='flex flex-row gap-10'>
-          <button
-            className='font-bold bg-red-600 w-1/2 rounded-full text-2xl py-2'
-            onClick={() => handleDelete()}
-          >
-            Hapus Pesanan
-          </button>
-          <button
-            className='font-bold uppercase bg-blue-700 w-1/2 rounded-full text-2xl py-2'
-            type='submit'
-          >
-            konfirmasi
-          </button>
-        </div>
+        {pesanan?.status == 1 ? (
+          <>
+            <div className='mb-4 flex justify-end'>
+              <Link
+                to='/admin/chat'
+                className='text-center font-bold text-black bg-white rounded-full text-2xl py-2 px-5'
+              >
+                Diskusi Pengiriman
+              </Link>
+            </div>
+            <div className='flex flex-row gap-10'>
+              <button
+                className='font-bold bg-red-600 w-1/2 rounded-full text-2xl py-2'
+                onClick={() => handleDelete()}
+              >
+                Hapus Pesanan
+              </button>
+              <button
+                className='font-bold uppercase bg-blue-700 w-1/2 rounded-full text-2xl py-2'
+                type='submit'
+              >
+                konfirmasi
+              </button>
+            </div>
+          </>
+        ) : pesanan?.status == 2 ? (
+          <>
+            <div className='bg-darkGrey'>
+              <img src='' alt='' />
+            </div>
+            <div className='flex flex-row gap-10 mt-10'>
+              <Link
+                to='/admin/chat'
+                className='font-bold bg-white w-1/2 rounded-full text-2xl py-2 text-black text-center'
+              >
+                Diskusi Pengiriman
+              </Link>
+              <button
+                className='font-bold uppercase bg-blue-700 w-1/2 rounded-full text-2xl py-2'
+                type='submit'
+              >
+                lunas
+              </button>
+            </div>
+          </>
+        ) : pesanan?.status == 3 ? (
+          <div className='flex justify-center'>
+            <p className='font-bold uppercase bg-blue-700 w-1/2 rounded-full text-2xl py-2'>
+              telah dikirim
+            </p>
+          </div>
+        ) : pesanan?.status == 4 ? (
+          <ul className='flex flex-col gap-3'>
+            <li>Tanggal Pengiriman : {pesanan?.tanggalKirim}</li>
+            <li>Tanggal Diterima : -</li>
+            <li>Penilaian : -</li>
+            <li>Testimoni</li>
+            <li className='bg-darkGrey'>{pesanan?.testimoni}</li>
+            <li className='flex justify-center'>
+              <p className='font-bold uppercase bg-blue-700 w-1/2 rounded-full text-2xl py-2'>
+                telah dikirim
+              </p>
+            </li>
+          </ul>
+        ) : null}
       </form>
     </div>
   )

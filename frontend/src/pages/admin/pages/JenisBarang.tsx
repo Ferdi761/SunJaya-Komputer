@@ -3,6 +3,7 @@ import { BsPlusCircleFill } from 'react-icons/bs'
 import { useEffect, useState } from 'react'
 
 import ModalJenis from '../components/ModalJenis'
+import { userStorage } from '../../../util/userStorage'
 
 const JenisBarang = () => {
   const [jenis, setJenis] = useState([
@@ -19,6 +20,8 @@ const JenisBarang = () => {
 
   const [q, setQ] = useState('')
   const [searchParam] = useState(['nama'])
+
+  const { user } = userStorage()
 
   const search = (rows: any) => {
     return rows.filter((row: any) =>
@@ -41,13 +44,17 @@ const JenisBarang = () => {
   }, [loading])
 
   const deleteJenis = (id: number) => {
-    fetch(`http://localhost:8000/api/jenis/${id}/hapus`, {
+    fetch(`http://localhost:8000/api/jenis/hapus/${id}`, {
       method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${user?.token}`,
+      },
     })
       .then(async (res) => {
         const data = await res.json()
-        console.log(data)
-        setLoading(!loading)
+        if (data.status === 'success') {
+          setLoading(!loading)
+        }
       })
       .catch((err) => {
         console.log(err)

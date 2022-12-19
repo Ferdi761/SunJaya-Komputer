@@ -30,27 +30,6 @@ const Pemesanan = () => {
       })
   }, [statusPesanan])
 
-  const handleConfirm = (id: number) => {
-    fetch(
-      `http://localhost:8000/api/pemesanan/admin/konfirmasi/${id}`,
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${user?.token}`,
-        },
-      }
-    )
-      .then(async (res) => {
-        const data = await res.json()
-        if (data.status === 'success') {
-          setStatusPesanan(statusPesanan + 1)
-        }
-      })
-      .catch((err) => {
-        console.log(err)
-      })
-  }
-
   return (
     <div className='flex justify-center'>
       <div className='w-2/3 my-20'>

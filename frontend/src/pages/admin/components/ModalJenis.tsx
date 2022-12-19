@@ -43,7 +43,7 @@ const ModalJenis: React.FC<ModalProps> = (props: ModalProps) => {
           console.log(err)
         })
     } else if (props.mode === 'edit') {
-      fetch(`http://localhost:8000/api/jenis/${props.id}/edit`, {
+      fetch(`http://localhost:8000/api/jenis/edit/${props.id}`, {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${user?.token}`,
