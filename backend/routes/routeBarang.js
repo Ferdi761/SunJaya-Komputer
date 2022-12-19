@@ -31,9 +31,6 @@ const {
   cariBarang,
 } = require('../controllers/controllerBarang')
 
-const {
-  tambahKeKeranjang,
-} = require('../controllers/controllerKeranjang')
 const isAdmin = require('../middlewares/isAdmin')
 
 routerBarang.route('/').get(daftarBarang)
