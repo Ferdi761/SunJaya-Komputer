@@ -39,13 +39,6 @@ const Navbar = () => {
 
   const location = useLocation()
 
-  if (
-    location.pathname === '/login' ||
-    location.pathname === '/register' ||
-    location.pathname.startsWith('/admin')
-  )
-    return null
-
   const { user, clearUser, getUser } = userStorage()
   const { cartStatus } = cartStorage()
 
@@ -53,20 +46,22 @@ const Navbar = () => {
 
   useEffect(() => {
     getUser()
-    fetch('http://localhost:8000/api/keranjang', {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${user?.token}`,
-      },
-    })
-      .then(async (res) => {
-        const data = await res.json()
-        setCart(data.data)
-      })
-      .catch((err) => {
-        console.log(err)
-      })
-  }, [cartStatus])
+    user
+      ? fetch('http://localhost:8000/api/keranjang', {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${user?.token}`,
+          },
+        })
+          .then(async (res) => {
+            const data = await res.json()
+            setCart(data.data)
+          })
+          .catch((err) => {
+            console.log(err)
+          })
+      : null
+  }, [cartStatus, user])
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -75,6 +70,8 @@ const Navbar = () => {
       navigate(`/search?q=${q}`)
     }
   }
+
+  if (location.pathname.startsWith('/admin')) return null
 
   return (
     <nav className='flex flex-row justify-center gap-5 items-center h-20 p-7 sticky top-0 z-50 bg-black'>

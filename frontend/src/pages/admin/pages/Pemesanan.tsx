@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { BsFillBagFill } from 'react-icons/bs'
-
-import TabelPesanan from '../components/TabelPesanan'
+import { HiChatAlt2 } from 'react-icons/hi'
 
 import type { Pesanan } from '../../../util/type'
 import { userStorage } from '../../../util/userStorage'
-import { HiChatBubbleLeftRight } from 'react-icons/hi2'
 import { formatCurrency } from '../../../util/formatCurrency'
+import moment from 'moment'
 
 const Pemesanan = () => {
   const [pesanan, setPesanan] = useState<Pesanan[]>([])
@@ -116,7 +115,7 @@ const Pemesanan = () => {
                 ID: #{item.akunId}
               </p>
               <Link to='/admin/chat'>
-                <HiChatBubbleLeftRight className='w-8 h-8 text-blue-500' />
+                <HiChatAlt2 className='w-8 h-8 text-blue-500' />
               </Link>
             </div>
             <div className='px-5'>
@@ -162,7 +161,9 @@ const Pemesanan = () => {
                 <p className='text-lg font-normal text-slate-900'>
                   {item.status == 1
                     ? '-'
-                    : item.tanggalMulaiMenungguPembayaran}
+                    : moment(
+                        item.tanggalMulaiMenungguPembayaran
+                      ).format('DD MMMM YYYY')}
                 </p>
                 <div className='flex flex-col w-full'>
                   <div className='grid grid-cols-2 gap-3'>
