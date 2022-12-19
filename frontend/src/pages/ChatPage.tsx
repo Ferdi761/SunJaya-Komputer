@@ -3,13 +3,15 @@ import { Link } from 'react-router-dom'
 import { io } from 'socket.io-client'
 import { ChatSocketController } from '../util/ChatSocketController'
 import { userStorage } from '../util/userStorage'
+import { ChatData } from '../util/ChatData'
+
+const chatSocketController : ChatSocketController = new ChatSocketController(
+  io('http://localhost:8000').connect()
+)
 
 const ChatPage = () => {
   const [chat, setChat] = useState('')
-  const [chatSocketController, setChatSocketController] =
-    useState<ChatSocketController>()
-  const [chatSendiri, setChatSendiri] = useState<string[]>([])
-  let chatLawan: string[] = []
+  const [daftarChat, setDaftarChat] = useState<ChatData[]>([])
 
   const { user } = userStorage()
 
@@ -27,8 +29,6 @@ const ChatPage = () => {
     )
   } else {
     useEffect(() => {
-      const socket = io('http://localhost:8000')
-      setChatSocketController(new ChatSocketController(socket))
 
       if (chatSocketController != undefined) {
         chatSocketController.init(user.id)
@@ -37,58 +37,60 @@ const ChatPage = () => {
         chatSocketController.read(1)
         // read pada pelanggan hanya untuk menandakan pelanggan membuka chat, nilainya dibuat menjadi 1
         // karena nilai apapun yang lebih dari 0 (>0) menandakan pelanggan membuka chat.
-      } else {
+
+        chatSocketController.addCallback(
+          'message self read',
+          function (message: string) {
+            // munculkan teks yang dikirim sendiri dengan penanda sudah di read
+            setDaftarChat((chat) => [...chat, new ChatData(message, false)])
+          }
+        )
+  
+        chatSocketController.addCallback(
+          'message self unread',
+          function (message: string) {
+            // munculkan teks yang dikirim sendiri dengan penanda belum di read
+            setDaftarChat((chat) => [...chat, new ChatData(message, false)])
+          }
+        )
+  
+        chatSocketController.addCallback(
+          'message to',
+          function (message: string) {
+            // munculkan teks yang dikirim dari toko (lawan bicara)
+            setDaftarChat((chat) => [...chat, new ChatData(message, true)])
+          }
+        )
+  
+        chatSocketController.addCallback(
+          'aktif',
+          function (message: string) {
+            let aktif = document.getElementById(
+              'aktif'
+            ) as HTMLParagraphElement
+            aktif.innerHTML = message
+          }
+        )
+  
+        chatSocketController.addCallback(
+          'readall',
+          function (message: string) {
+            // buat semua chat dari toko ditandai sudah di read
+          }
+        )
+        
+        return () => {
+          chatSocketController.removeCallback("message self read");
+          chatSocketController.removeCallback("message self unread");
+          chatSocketController.removeCallback("message to");
+          chatSocketController.removeCallback("aktif");
+          chatSocketController.removeCallback("readall");
+        }
+      } 
+      else {
         console.log('chatSocketController undefined')
       }
     }, [])
-
-    if (chatSocketController != undefined) {
-      chatSocketController.addCallback(
-        'message self read',
-        function (message: string) {
-          // munculkan teks yang dikirim sendiri dengan penanda sudah di read
-          console.log('message self read: ' + message)
-          setChatSendiri((chat) => [...chat, message])
-          console.log(chatSendiri)
-        }
-      )
-
-      chatSocketController.addCallback(
-        'message self unread',
-        function (message: string) {
-          // munculkan teks yang dikirim sendiri dengan penanda belum di read
-          console.log('message self unread: ' + message)
-          setChatSendiri((chat) => [...chat, message])
-          console.log(chatSendiri)
-        }
-      )
-
-      chatSocketController.addCallback(
-        'message to',
-        function (message: string) {
-          // munculkan teks yang dikirim dari toko (lawan bicara)
-          console.log('message to: ' + message)
-          chatLawan.push(message)
-        }
-      )
-
-      chatSocketController.addCallback(
-        'aktif',
-        function (message: string) {
-          let aktif = document.getElementById(
-            'aktif'
-          ) as HTMLParagraphElement
-          aktif.innerHTML = message
-        }
-      )
-
-      chatSocketController.addCallback(
-        'readall',
-        function (message: string) {
-          // buat semua chat dari toko ditandai sudah di read
-        }
-      )
-    }
 
     return (
       <div className='bg-primary h-screen text-white flex justify-center'>
@@ -100,10 +102,10 @@ const ChatPage = () => {
             </div>
             <div
               id='chats'
-              className='flex items-center justify-center'
+              className='flex flex-col grow items-center overflow-y-scroll'
             >
-              {chatSendiri.map((chat, index) => (
-                <div key={index}>{chat}</div>
+              {daftarChat.map((chat, index) => (
+                <div key={index} className={`${chat.isFromOther() ? "w-fit px-5 bg-gray-600 text-white rounded-full py-2 m-1 self-start" : "w-fit px-5 bg-blue-600 text-white rounded-full py-2 m-1 self-end"}`}>{chat.getMessage()}</div>
               ))}
             </div>
             <form
