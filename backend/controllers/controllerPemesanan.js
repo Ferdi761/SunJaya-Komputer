@@ -291,14 +291,13 @@ const byd = async (req, res) => {
 const semuaPesananPelanggan = async (req, res) => {
   try {
     const listPesanan = await Pemesanan.findAll({
-      include:
-        {
-          model: Barang,
-          include: {
-            model: FotoBarang,
-            required: true
-          },
+      include: {
+        model: Barang,
+        include: {
+          model: FotoBarang,
+          required: true,
         },
+      },
     })
 
     //console.log(listPesanan.Pemesanan.);
@@ -703,8 +702,9 @@ const daftarSemuaPesanan = async (req, res) => {
   }
 }
 
-const pesanan = async (req, res) => {
+const detailPesanan = async (req, res) => {
   const logged = req.headers.authorization.split(' ')[1]
+  // const logged = req.cookies.logged_account
   const decoded = jwt.verify(logged, 'jwtAkunId')
   const { id } = req.params
 
@@ -719,7 +719,7 @@ const pesanan = async (req, res) => {
       where: {
         [Op.and]: [
           {
-            id,
+            id: id,
           },
           {
             akunId: decoded.id,
@@ -890,7 +890,7 @@ const pesananDikirim = async (req, res) => {
 
 module.exports = {
   checkout,
-  pesanan,
+  detailPesanan,
   uploadBuktiBayar,
   pesananSelesai,
   umpanBalik,

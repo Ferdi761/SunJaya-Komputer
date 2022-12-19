@@ -10,7 +10,7 @@ let destBuktiBayar = path.join(__dirname, './public/buktiPembayaran')
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, destBuktiBayar)
+    cb(null, './public/buktiPembayaran')
   },
   filename: (req, file, cb) => {
     const namaFile = `${Date.now()}-${file.originalname}`
@@ -25,7 +25,7 @@ const isAdmin = require('../middlewares/isAdmin')
 
 const {
   checkout,
-  pesanan,
+  detailPesanan,
   uploadBuktiBayar,
   daftarSemuaPesanan,
   pesananSelesai,
@@ -43,7 +43,7 @@ const {
 } = require('../controllers/controllerPemesanan')
 
 routerPemesanan.route('/').get(loginCheck, daftarSemuaPesanan)
-routerPemesanan.route('/:id').get(loginCheck, pesanan)
+// routerPemesanan.route('/:id').get(loginCheck, detailPesanan)
 routerPemesanan.route('/checkout').post(loginCheck, checkout)
 routerPemesanan
   .route('/checkout/upload/:id')

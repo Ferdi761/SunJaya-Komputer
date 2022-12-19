@@ -23,6 +23,7 @@ const loginCheck = require('../middlewares/loginCheck')
 
 const {
   daftarBarang,
+  kategoriBarang,
   tambahBarang,
   detailBarang,
   ubahDataBarang,
@@ -36,13 +37,12 @@ const {
 const isAdmin = require('../middlewares/isAdmin')
 
 routerBarang.route('/').get(daftarBarang)
+routerBarang.route('/:slug').get(kategoriBarang)
 routerBarang.route('/cari').get(cariBarang)
 routerBarang
   .route('/tambah')
   .post(upload.single('foto'), isAdmin, tambahBarang)
-routerBarang
-  .route('/:id')
-  .get(detailBarang)
+routerBarang.route('/:id').get(detailBarang)
 routerBarang
   .route('/edit/:id')
   .put(upload.single('foto'), isAdmin, ubahDataBarang)

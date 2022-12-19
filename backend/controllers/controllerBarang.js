@@ -27,6 +27,31 @@ const daftarBarang = async (req, res) => {
   }
 }
 
+const kategoriBarang = async (req, res) => {
+  const { slug } = req.params
+
+  try {
+    const semuaBarang = await FotoBarang.findAll({
+      include: {
+        model: Barang,
+        required: true,
+        include: {
+          model: JenisBarang,
+          required: true, // inner join
+        },
+      },
+      where: {
+        slug: slug,
+      },
+    })
+
+    res.status(200).json(semuaBarang).end()
+  } catch (err) {
+    console.log(err)
+    res.status(500).json({ message: err }).end()
+  }
+}
+
 // admin only
 const tambahBarang = async (req, res) => {
   const { namaBarang, merek, berat, jenis, harga, stok, deskripsi } =
@@ -290,6 +315,7 @@ const cariBarang = async (req, res) => {
 
 module.exports = {
   daftarBarang,
+  kategoriBarang,
   tambahBarang,
   detailBarang,
   ubahDataBarang,
