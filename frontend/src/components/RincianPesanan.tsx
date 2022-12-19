@@ -27,6 +27,26 @@ const RincianPesanan = ({
     console.log(rating)
   }
 
+  const handleConfirm = () => {
+    fetch(
+      `http://localhost:8000/api/pemesanan/selesai/${dataPesanan.id}`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${user?.token}`,
+        },
+      }
+    )
+      .then(async (res) => {
+        const data = await res.json()
+        console.log(data)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+
   return (
     <>
       <div className='px-10 py-5 text-white rounded-xl pb-5 bg-dark'>
@@ -136,30 +156,37 @@ const RincianPesanan = ({
               ) : (
                 <li className='flex justify-between text-red-500'>
                   <p>Tenggat Pembayaran</p>
-                  <p>{moment().format('LLL')}</p>
+                  <p>
+                    {moment(
+                      dataPesanan.tanggalMulaiMenungguPembayaran
+                    ).format('LLL')}
+                  </p>
                 </li>
               )}
               <li className='flex justify-between border-0'>
                 <p>Waktu Pemesanan</p>
                 <p>{moment().format('LLL')}</p>
               </li>
-              {statusPesanan[3].id === value ||
-              statusPesanan[4].id === value ? (
+              {dataPesanan.status == 3 || dataPesanan.status == 4 ? (
                 <li className='flex justify-between'>
                   <p>Waktu Pengiriman</p>
-                  <p>{moment().format('LLL')}</p>
+                  <p>
+                    {moment(dataPesanan.tanggalKirim).format('LLL')}
+                  </p>
                 </li>
               ) : (
                 ''
               )}
-              {statusPesanan[4].id === value && (
+              {dataPesanan.status == 5 && (
                 <li className='flex justify-between'>
                   <p>Waktu Sampai</p>
-                  <p>{moment().format('LLL')}</p>
+                  <p>
+                    {moment(dataPesanan.tanggalSampai).format('LLL')}
+                  </p>
                 </li>
               )}
             </ul>
-            {statusPesanan[4].id === value ? (
+            {dataPesanan.status == 5 ? (
               <>
                 <p>Ulasan</p>
                 <div className='border text-center'>
@@ -175,29 +202,27 @@ const RincianPesanan = ({
                 <button className='bg-black text-white border px-3 mb-2 float-start rounded-full'>
                   Diskusi Pesanan
                 </button>
-                <button className='bg-black text-white border px-3 mb-2 float-start rounded-full'>
-                  Batalkan Pesanan
-                </button>
+                {dataPesanan.status < 3 ? (
+                  <button className='bg-black text-white border px-3 mb-2 float-start rounded-full'>
+                    Batalkan Pesanan
+                  </button>
+                ) : null}
               </div>
             )}
-            {statusPesanan[2].id === value ||
-            statusPesanan[4].id === value ? (
-              ''
-            ) : (
-              <Link
-                to={`/${
-                  statusPesanan[3].id === value
-                    ? 'chat'
-                    : `bayar/${dataPesanan.id}`
-                }`}
-              >
+            {dataPesanan.status == 2 ? (
+              <Link to={`/bayar/${dataPesanan.id}`}>
                 <button className='bg-blue-700 hover:bg-blue-900 py-2 w-full rounded-full'>
-                  {statusPesanan[3].id === value
-                    ? 'Konfirmasi Barang Sampai'
-                    : 'Bayar'}
+                  Bayar
                 </button>
               </Link>
-            )}
+            ) : dataPesanan.status == 4 ? (
+              <button
+                className='bg-blue-700 hover:bg-blue-900 py-2 w-full rounded-full'
+                onClick={() => handleConfirm()}
+              >
+                Konfirmasi Barang Sampai
+              </button>
+            ) : null}
           </>
         )}
         {/* {dataPesanan.status == 1 ? (

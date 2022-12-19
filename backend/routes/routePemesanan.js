@@ -37,6 +37,7 @@ const {
   daftarKonfirmasiPesanan,
   konfirmasiPesanan,
   batalkanPesanan,
+  ubahStatusDiproses,
   ubahStatusKirim,
   konfirmasiPesananSampai,
   pengirimanPesanan,
@@ -63,6 +64,9 @@ routerPemesanan
 routerPemesanan
   .route('/admin/konfirmasi/:id')
   .post(loginCheck, isAdmin, konfirmasiPesanan)
+routerPemesanan
+  .route('/admin/proses/:id')
+  .put(loginCheck, isAdmin, ubahStatusDiproses)
 routerPemesanan
   .route('/admin/pengiriman/:id')
   .post(loginCheck, isAdmin, pengirimanPesanan)

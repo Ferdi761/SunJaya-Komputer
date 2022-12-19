@@ -30,7 +30,7 @@ const Pembayaran = () => {
       .then(async (res) => {
         const data = await res.json()
         if (data.data) {
-          setPesanan(data.data)
+          setPesanan(data.data.pesanan)
         }
       })
       .catch((err) => {
@@ -53,7 +53,7 @@ const Pembayaran = () => {
     formData.append('buktiPembayaran', bukti.data)
 
     fetch(
-      `http://localhost:8000/api/pemesanan/checkout/upload/${id}`,
+      `http://localhost:8000/api/pemesanan/checkout/upload/${pesanan?.id}`,
       {
         method: 'PUT',
         headers: {

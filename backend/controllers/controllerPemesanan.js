@@ -52,6 +52,16 @@ const checkout = async (req, res) => {
       status: 1,
     })
 
+    await BuktiPembayaranPemesanan.create(
+      {
+        pemesananId: buatPesanan.id,
+        buktiPembayaran: '',
+      },
+      {
+        include: Pemesanan,
+      }
+    )
+
     // Memasukkan data barang yang dipesan dari Barangs ke dalam array untuk sementara
     Barangs.forEach((item) => {
       dataBYD.push({
@@ -127,12 +137,14 @@ const uploadBuktiBayar = async (req, res) => {
 
     const buktiBayar = await BuktiPembayaranPemesanan.findOne({
       where: { pemesananId: id },
-      include: Pemesanan 
     })
+
     if (!buktiBayar)
       return res.status(404).json('Pemesanan tidak ditemukan!').end()
 
-    await buktiBayar.update({ buktiPembayaran: imagePath })
+    buktiBayar.update({
+      buktiPembayaran: imagePath,
+    })
     clearTimeout(waktuPembayaran)
 
     res
@@ -140,7 +152,6 @@ const uploadBuktiBayar = async (req, res) => {
       .json({
         status: 'success',
         message: 'Berhasil mengupload bukti pembayaran!',
-        statusPesanan: ['Semua', 'Menunggu konfirmasi'],
         data: buktiBayar,
       })
       .end()
@@ -157,7 +168,8 @@ const uploadBuktiBayar = async (req, res) => {
 }
 
 const pesananSelesai = async (req, res) => {
-  const logged = req.cookies.logged_account
+  // const logged = req.cookies.logged_account\
+  const logged = req.headers.authorization.split(' ')[1]
   const decoded = jwt.verify(logged, 'jwtAkunId')
   const idPesanan = req.params.id
 
@@ -177,6 +189,10 @@ const pesananSelesai = async (req, res) => {
         .status(404)
         .json({ message: 'Pemesanan tidak ditemukan' })
         .end()
+
+    await pesanan.update({
+      status: 5,
+    })
 
     res
       .status(200)
@@ -357,49 +373,10 @@ const konfirmasiPesanan = async (req, res) => {
       status: 2,
       biayaPengiriman,
       jasaPengiriman,
+      totalBiayaYangHarusDibayar:
+        pesanan.totalHargaBarang + parseInt(biayaPengiriman),
       tanggalMulaiMenungguPembayaran: Date.now(),
     })
-
-    // let checkTimeout = setInterval(async () => {
-    //   if (Date.now() > aDay) {
-    //     console.log('waktu habis, pemesanan dibatalkan!')
-
-    //     dataBYD.forEach(async (item) => {
-    //       let barang = await Barang.findOne({
-    //         where: {
-    //           id: item.BarangId,
-    //         },
-    //       })
-
-    //       const stokBarang = await barang.getDataValue('stok')
-    //       let updateStok = stokBarang + item.jumlah
-
-    //       await barang.update({
-    //         stok: updateStok,
-    //       })
-
-    //       await BarangYangDipesan.destroy({
-    //         where: {
-    //           pemesananId: item.pemesananId,
-    //           BarangId: item.BarangId,
-    //         },
-    //       })
-    //     })
-
-    //     await pesanan.destroy()
-
-    //     // set ulang array menjadi nol
-    //     dataBYD = []
-
-    //     console.log('Waktu habis, pemesanan dibatalkan!')
-    //     res.json({
-    //       status: 'success',
-    //       message: 'Waktu habis, pemesanan dibatalkan!'
-    //     }).end()
-
-    //     clearInterval(checkTimeout)
-    //   }
-    // }, 1000)
 
     waktuPembayaran = setTimeout(async () => {
       console.log('waktu habis, pemesanan dibatalkan!')
@@ -557,6 +534,40 @@ const batalkanPesanan = async (req, res) => {
   }
 }
 
+const ubahStatusDiproses = async (req, res) => {
+  const { id } = req.params
+
+  try {
+    const pesanan = await Pemesanan.findOne({
+      where: {
+        id,
+      },
+    })
+
+    await pesanan.update({
+      status: 3,
+      pembayaranLunas: true,
+    })
+    await pesanan.save()
+
+    res
+      .json({
+        status: 'success',
+        message: 'Status pesanan telah diubah!',
+      })
+      .end()
+  } catch (err) {
+    console.log(err)
+    res
+      .status(500)
+      .json({
+        status: 'fail',
+        message: [err],
+      })
+      .end()
+  }
+}
+
 // Mengubah status pesanan menjadi dikirim
 const ubahStatusKirim = async (req, res) => {
   const { id } = req.params
@@ -573,6 +584,7 @@ const ubahStatusKirim = async (req, res) => {
     const today = new Date()
 
     await pesanan.update({
+      status: 4,
       tanggalKirim: Date.now(),
     })
     await pesanan.save()
@@ -729,9 +741,18 @@ const detailPesanan = async (req, res) => {
       },
     })
 
+    const buktiPembayaran = await BuktiPembayaranPemesanan.findOne({
+      where: {
+        pemesananId: id,
+      },
+    })
+
     res.status(200).json({
       status: 'success',
-      data: pesanan,
+      data: {
+        buktiPembayaran: buktiPembayaran,
+        pesanan: pesanan,
+      },
     })
   } catch (err) {
     console.log(err)
@@ -902,6 +923,7 @@ module.exports = {
   daftarKonfirmasiPesanan,
   konfirmasiPesanan,
   batalkanPesanan,
+  ubahStatusDiproses,
   ubahStatusKirim,
   konfirmasiPesananSampai,
   pengirimanPesanan,

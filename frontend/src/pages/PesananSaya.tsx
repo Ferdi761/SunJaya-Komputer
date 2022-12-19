@@ -52,7 +52,6 @@ const PesananSaya = () => {
       .then(async (res) => {
         const data = await res.json()
         setPesanan(data.data.pesanan)
-        console.log(data.data.pesanan)
       })
       .catch((err) => {
         console.log(err)
@@ -210,57 +209,8 @@ const PesananSaya = () => {
                   </ul>
                 </div>
               ))}
-
-              {/* {statusPesanan[4].id === value ? (
-                ''
-              ) : (
-                <div
-                  className='mb-2 py-3 px-2 flex flex-col items-center rounded-xl'
-                  style={{
-                    backgroundColor: '#F9F9F9',
-                    boxShadow: 'rgba(0, 0, 0, 0.24) 5px 5px 6px',
-                  }}
-                >
-                  <div className='px-2 m-0 w-11/12'>
-                    <p>ID: #7</p>
-                  </div>
-                  <div className='flex flex-row gap-3 w-11/12 p-2 border-t items-center'>
-                    <div className='w-3/12 py-2 mb-3'>
-                      <img
-                        src={dataPesanan[0].gambar}
-                        alt='cpu'
-                        width='128px'
-                        height='128px'
-                      />
-                    </div>
-                    <div className='w-9/12 py-2 mb-3'>
-                      <p className='font-bold'>
-                        {dataPesanan[0].nama}
-                      </p>
-                      <p>
-                        Jumlah:{' '}
-                        <span className='font-bold'>
-                          {dataPesanan[0].jumlah} buah
-                        </span>
-                      </p>
-                      <p className='float-end text-blue-600 font-bold text-right'>
-                        Rp 0
-                      </p>
-                    </div>
-                  </div>
-                  <ul className='border-top p-2 w-11/12 order-bottom border-t'>
-                    <li className='flex flex-row justify-between p-0'>
-                      <p>Tipe</p>
-                      <p>Garansi</p>
-                    </li>
-                    <li className='flex flex-row gap-10 justify-between p-0'>
-                      <p>Total Pesanan</p>
-                      <p>Rp 0</p>
-                    </li>
-                  </ul>
-                </div>
-              )} */}
             </div>
+
             <div className='w-5/12'>
               {urutan > 0 ? (
                 <RincianPesanan
