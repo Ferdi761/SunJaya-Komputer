@@ -37,7 +37,7 @@ const {
 const isAdmin = require('../middlewares/isAdmin')
 
 routerBarang.route('/').get(daftarBarang)
-routerBarang.route('/:slug').get(kategoriBarang)
+routerBarang.route('kategori/:slug').get(kategoriBarang)
 routerBarang.route('/cari').get(cariBarang)
 routerBarang
   .route('/tambah')

@@ -25,6 +25,7 @@ import ChatPage from './pages/ChatPage'
 
 import { userStorage } from '../../util/userStorage'
 import EditBarang from './pages/EditBarang'
+import DetailPesanan from './pages/DetailPesanan'
 
 const Admin = () => {
   const { user } = userStorage()
@@ -41,6 +42,7 @@ const Admin = () => {
           <Routes>
             <Route path='/' element={<Dashboard />} />
             <Route path='/pesanan' element={<Pemesanan />} />
+            <Route path='/pesanan/:id' element={<DetailPesanan />} />
             <Route
               path='/pesanan/diskusi'
               element={<PesananDiskusi />}

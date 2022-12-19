@@ -67,7 +67,7 @@ const RincianPesanan = ({
                       className='text-right text-blue-600 font-bold'
                       style={{ fontSize: '12px' }}
                     >
-                      Total: {data.harga}
+                      Total: {formatCurrency(data.harga)}
                     </p>
                   </div>
                 </div>

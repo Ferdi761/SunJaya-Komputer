@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { BsFillBagFill } from 'react-icons/bs'
 import { HiChatAlt2 } from 'react-icons/hi'
+import moment from 'moment'
 
 import type { Pesanan } from '../../../util/type'
 import { userStorage } from '../../../util/userStorage'
 import { formatCurrency } from '../../../util/formatCurrency'
-import moment from 'moment'
 
 const Pemesanan = () => {
   const [pesanan, setPesanan] = useState<Pesanan[]>([])
@@ -178,21 +178,12 @@ const Pemesanan = () => {
                         ? 'Dikirim'
                         : 'Selesai'}
                     </p>
-                    {item.status == 1 ? (
-                      <button
-                        className='text-lg font-normal text-blue-500 hover:text-blue-700'
-                        onClick={() => handleConfirm(item.id)}
-                      >
-                        Konfirmasi
-                      </button>
-                    ) : (
-                      <Link
-                        to={`/admin/pesanan/${item.id}`}
-                        className='text-lg font-normal text-blue-500 hover:text-blue-700'
-                      >
-                        Detail
-                      </Link>
-                    )}
+                    <Link
+                      to={`/admin/pesanan/${item.id}`}
+                      className='text-lg font-normal text-blue-500 hover:text-blue-700'
+                    >
+                      Detail
+                    </Link>
                   </div>
                 </div>
               </div>

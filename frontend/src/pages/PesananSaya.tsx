@@ -273,7 +273,11 @@ const PesananSaya = () => {
                   value={value}
                   statusPesanan={statusPesanan}
                 />
-              ) : null}
+              ) : (
+                <div className='px-10 py-5 text-white rounded-xl pb-5 bg-dark flex justify-center items-center'>
+                  Pilih Pesanan untuk melihat rincian
+                </div>
+              )}
             </div>
           </div>
         </div>
