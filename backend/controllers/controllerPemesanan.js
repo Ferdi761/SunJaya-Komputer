@@ -300,7 +300,6 @@ const semuaPesananPelanggan = async (req, res) => {
       },
     })
 
-    //console.log(listPesanan.Pemesanan.);
     res
       .status(200)
       .json({

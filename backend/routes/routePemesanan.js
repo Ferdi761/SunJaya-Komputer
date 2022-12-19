@@ -43,7 +43,7 @@ const {
 } = require('../controllers/controllerPemesanan')
 
 routerPemesanan.route('/').get(loginCheck, daftarSemuaPesanan)
-// routerPemesanan.route('/:id').get(loginCheck, detailPesanan)
+routerPemesanan.route('/detail/:id').get(loginCheck, detailPesanan)
 routerPemesanan.route('/checkout').post(loginCheck, checkout)
 routerPemesanan
   .route('/checkout/upload/:id')
