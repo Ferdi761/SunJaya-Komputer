@@ -8,10 +8,10 @@ const TambahAkun = () => {
     email: '',
     password: '',
     noTelp: '',
-    alamat: '',
-    jenis: '',
     izin: 'karyawan',
   })
+
+  const [password, setPassword] = useState('')
 
   const navigate = useNavigate()
   const { user } = userStorage()
@@ -31,6 +31,13 @@ const TambahAkun = () => {
         const data = await res.json()
         console.log(data)
         navigate('/admin/akun')
+        setAkun({
+          nama: '',
+          email: '',
+          password: '',
+          noTelp: '',
+          izin: 'karyawan',
+        })
       })
       .catch((err) => {
         console.log(err)
@@ -104,12 +111,16 @@ const TambahAkun = () => {
             type='password'
             aria-label='password'
             placeholder='Password'
-            onChange={(e) =>
-              akun.password === e.target.value &&
-              setAkun({ ...akun, password: e.target.value })
-            }
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
         </div>
+
+        {akun.password !== password && (
+          <p className='text-red-500 text-sm'>
+            Password tidak sama, silahkan masukkan ulang password
+          </p>
+        )}
 
         <div className='mb-4'>
           <label className='block text-gray-700 text-md mb-2 font-semibold'>
