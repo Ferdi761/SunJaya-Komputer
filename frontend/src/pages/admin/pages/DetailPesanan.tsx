@@ -217,28 +217,71 @@ const DetailPesanan = () => {
             {pesanan ? formatCurrency(pesanan?.totalHargaBarang) : 0}
           </li>
         </ul>
-        <div className='mb-4 flex justify-end'>
-          <Link
-            to='/admin/chat'
-            className='text-center font-bold text-black bg-white rounded-full text-2xl py-2 px-5'
-          >
-            Diskusi Pengiriman
-          </Link>
-        </div>
-        <div className='flex flex-row gap-10'>
-          <button
-            className='font-bold bg-red-600 w-1/2 rounded-full text-2xl py-2'
-            onClick={() => handleDelete()}
-          >
-            Hapus Pesanan
-          </button>
-          <button
-            className='font-bold uppercase bg-blue-700 w-1/2 rounded-full text-2xl py-2'
-            type='submit'
-          >
-            konfirmasi
-          </button>
-        </div>
+        {pesanan?.status == 1 ? (
+          <>
+            <div className='mb-4 flex justify-end'>
+              <Link
+                to='/admin/chat'
+                className='text-center font-bold text-black bg-white rounded-full text-2xl py-2 px-5'
+              >
+                Diskusi Pengiriman
+              </Link>
+            </div>
+            <div className='flex flex-row gap-10'>
+              <button
+                className='font-bold bg-red-600 w-1/2 rounded-full text-2xl py-2'
+                onClick={() => handleDelete()}
+              >
+                Hapus Pesanan
+              </button>
+              <button
+                className='font-bold uppercase bg-blue-700 w-1/2 rounded-full text-2xl py-2'
+                type='submit'
+              >
+                konfirmasi
+              </button>
+            </div>
+          </>
+        ) : pesanan?.status == 2 ? (
+          <>
+            <div className='bg-darkGrey'>
+              <img src='' alt='' />
+            </div>
+            <div className='flex flex-row gap-10 mt-10'>
+              <Link
+                to='/admin/chat'
+                className='font-bold bg-white w-1/2 rounded-full text-2xl py-2 text-black text-center'
+              >
+                Diskusi Pengiriman
+              </Link>
+              <button
+                className='font-bold uppercase bg-blue-700 w-1/2 rounded-full text-2xl py-2'
+                type='submit'
+              >
+                lunas
+              </button>
+            </div>
+          </>
+        ) : pesanan?.status == 3 ? (
+          <div className='flex justify-center'>
+            <p className='font-bold uppercase bg-blue-700 w-1/2 rounded-full text-2xl py-2'>
+              telah dikirim
+            </p>
+          </div>
+        ) : pesanan?.status == 4 ? (
+          <ul className='flex flex-col gap-3'>
+            <li>Tanggal Pengiriman : {pesanan?.tanggalKirim}</li>
+            <li>Tanggal Diterima : -</li>
+            <li>Penilaian : -</li>
+            <li>Testimoni</li>
+            <li className='bg-darkGrey'>{pesanan?.testimoni}</li>
+            <li className='flex justify-center'>
+              <p className='font-bold uppercase bg-blue-700 w-1/2 rounded-full text-2xl py-2'>
+                telah dikirim
+              </p>
+            </li>
+          </ul>
+        ) : null}
       </form>
     </div>
   )
