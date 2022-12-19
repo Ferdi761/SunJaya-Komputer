@@ -435,7 +435,7 @@ const konfirmasiPesanan = async (req, res) => {
       dataBYD = []
 
       console.log('Waktu habis, pemesanan dibatalkan!')
-    }, 86400)
+    }, 86400000)
 
     res
       .json({

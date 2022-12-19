@@ -7,18 +7,18 @@ import { ChatSocketController } from '../../../util/ChatSocketController'
 import { userStorage } from '../../../util/userStorage'
 import Chat from './Chat'
 
-const chatSocketController = new ChatSocketController(
-  io('http://localhost:8000').connect()
-)
-
 const ChatPage = () => {
   const [chat, setChat] = useState('')
   const [id, setId] = useState(0)
   const [daftarChat, setDaftarChat] = useState<ChatData[]>([])
-  const [daftarLawanBicara, setDaftarLawanBicara] = useState<Map<number, ChatSenderData>>(new Map<number, ChatSenderData>)
-  const [daftarLawanBicaraArray, setDaftarLawanBicaraArray] = useState<ChatSenderData[]>([])
-  const [lawanBicara, setLawanBicara] = useState("")
-  const [lawanBicaraAktif, setLawanBicaraAktif] = useState("Tidak Aktif")
+  const [daftarLawanBicara, setDaftarLawanBicara] = useState<
+    Map<number, ChatSenderData>
+  >(new Map<number, ChatSenderData>())
+  const [daftarLawanBicaraArray, setDaftarLawanBicaraArray] =
+    useState<ChatSenderData[]>([])
+  const [lawanBicara, setLawanBicara] = useState('')
+  const [lawanBicaraAktif, setLawanBicaraAktif] =
+    useState('Tidak Aktif')
 
   const { user } = userStorage()
   const location = useLocation()
@@ -36,9 +36,11 @@ const ChatPage = () => {
       </div>
     )
   } else {
+    const chatSocketController = new ChatSocketController(
+      io('http://localhost:8000').connect()
+    )
 
     useEffect(() => {
-  
       chatSocketController.init(user.id)
       chatSocketController.auth(user.izin)
 
@@ -50,36 +52,45 @@ const ChatPage = () => {
           // dikirim dahulu ke server, kemudian chat akan dikirim balik oleh server
           // baru dimunculkan
           // chat yang dikirim juga ditandai sudah di read
-          setDaftarChat((chat) => [...chat, new ChatData(message, false)])
+          setDaftarChat((chat) => [
+            ...chat,
+            new ChatData(message, false),
+          ])
         }
       )
-  
+
       chatSocketController.addCallback(
         'message self unread',
         function (message: string) {
           // munculkan teks yang dikirim sendiri dengan penanda belum di read
           // sama kayak "message self read" cuman belum di read
-          setDaftarChat((chat) => [...chat, new ChatData(message, false)])
+          setDaftarChat((chat) => [
+            ...chat,
+            new ChatData(message, false),
+          ])
         }
       )
-  
+
       chatSocketController.addCallback(
         'message to',
         function (message: string) {
           // munculkan teks yang dikirim dari lawan bicara (pelanggan)
           // dapat chat dari lawan bicara (pelanggan)
-          setDaftarChat((chat) => [...chat, new ChatData(message, true)])
+          setDaftarChat((chat) => [
+            ...chat,
+            new ChatData(message, true),
+          ])
         }
       )
-  
+
       chatSocketController.addCallback(
         'aktif',
         function (message: string) {
           // mengganti tanda apakah pelanggan yang dibuka chatnya aktif atau tidak
-          setLawanBicaraAktif(message);
+          setLawanBicaraAktif(message)
         }
       )
-  
+
       chatSocketController.addCallback(
         'readall',
         function (message: string) {
@@ -88,81 +99,109 @@ const ChatPage = () => {
           // chat dari pelanggan) yang ngechat
         }
       )
-  
+
       chatSocketController.addCallback(
         'readed',
         function (message: string) {
           let customerID = parseInt(message)
           // tandai list chat pelanggan dengan ID: customerID sudah di read (sudah ada karyawan yang membuka chat ini)
-  
+
           // jadi itu yang daftar chat masuk dari pelanggan-pelanggan yang ada di kiri layar, ditandai kalau sudah
           // dibaca, ini bisa terjadi karena karyawan kan ada banyak dan yang lain bisa baca jadi ketika ada satu karyawan
           // yang sudah baca, semua karyawan diberi tahu kalau chat pelanggan tertentu sudah dibaca
           if (daftarLawanBicara.has(customerID)) {
-            let data = daftarLawanBicara.get(customerID);
-            data?.setRead(true);
+            let data = daftarLawanBicara.get(customerID)
+            data?.setRead(true)
           }
-          daftarLawanBicaraArray.sort(function (a : ChatSenderData, b : ChatSenderData) {
-            return a.getRead() ? 1 : -1;
-          });
-        
+          daftarLawanBicaraArray.sort(function (
+            a: ChatSenderData,
+            b: ChatSenderData
+          ) {
+            return a.getRead() ? 1 : -1
+          })
         }
       )
-  
+
       chatSocketController.addCallback(
         'coming unread',
         function (message: string) {
-          let parsedMessage = message.split("!$!");
+          let parsedMessage = message.split('!$!')
           // value.emit("coming " + read, socketData.id + "!$!" + socketData.name + "!$!" + message);
           // perbarui list chat pelanggan karena pelanggan dengan ID: customerID mengirim chat baru namun belum dibaca
           // Ini update daftar chat masuk dari pelanggan yang ada di kiri layar dan diberi tahu kalau chat ini belum dibaca
           // karena belum ada yang buka chatnya
           if (daftarLawanBicara.has(parseInt(parsedMessage[0]))) {
-            let data = daftarLawanBicara.get(parseInt(parsedMessage[0]));
-            data?.setRead(false);
+            let data = daftarLawanBicara.get(
+              parseInt(parsedMessage[0])
+            )
+            data?.setRead(false)
+          } else {
+            let chatSenderData: ChatSenderData = new ChatSenderData(
+              parseInt(parsedMessage[0]),
+              parsedMessage[1],
+              false
+            )
+            setDaftarLawanBicara((data) =>
+              data.set(parseInt(parsedMessage[0]), chatSenderData)
+            )
+            setDaftarLawanBicaraArray((data) => [
+              ...data,
+              chatSenderData,
+            ])
           }
-          else {
-            let chatSenderData : ChatSenderData = new ChatSenderData(parseInt(parsedMessage[0]), parsedMessage[1], false)
-            setDaftarLawanBicara((data) => data.set(parseInt(parsedMessage[0]), chatSenderData));
-            setDaftarLawanBicaraArray((data) => [...data, chatSenderData]);
-          }
-          daftarLawanBicaraArray.sort(function (a : ChatSenderData, b : ChatSenderData) {
-            return a.getRead() ? 1 : -1;
-          });
+          daftarLawanBicaraArray.sort(function (
+            a: ChatSenderData,
+            b: ChatSenderData
+          ) {
+            return a.getRead() ? 1 : -1
+          })
         }
       )
-  
+
       chatSocketController.addCallback(
         'coming read',
         function (message: string) {
-          let parsedMessage = message.split("!$!");
+          let parsedMessage = message.split('!$!')
           // perbarui list chat pelanggan karena pelanggan dengan ID: customerID mengirim chat baru dan telah dibaca
-  
+
           // sama kayak "coming unread" hanya saja sudah dibaca
           if (daftarLawanBicara.has(parseInt(parsedMessage[0]))) {
-            let data = daftarLawanBicara.get(parseInt(parsedMessage[0]));
-            data?.setRead(true);
+            let data = daftarLawanBicara.get(
+              parseInt(parsedMessage[0])
+            )
+            data?.setRead(true)
+          } else {
+            let chatSenderData: ChatSenderData = new ChatSenderData(
+              parseInt(parsedMessage[0]),
+              parsedMessage[1],
+              true
+            )
+            setDaftarLawanBicara((data) =>
+              data.set(parseInt(parsedMessage[0]), chatSenderData)
+            )
+            setDaftarLawanBicaraArray((data) => [
+              ...data,
+              chatSenderData,
+            ])
           }
-          else {
-            let chatSenderData : ChatSenderData = new ChatSenderData(parseInt(parsedMessage[0]), parsedMessage[1], true)
-            setDaftarLawanBicara((data) => data.set(parseInt(parsedMessage[0]), chatSenderData));
-            setDaftarLawanBicaraArray((data) => [...data, chatSenderData]);
-          }
-          daftarLawanBicaraArray.sort(function (a : ChatSenderData, b : ChatSenderData) {
-            return a.getRead() ? 1 : -1;
-          });
+          daftarLawanBicaraArray.sort(function (
+            a: ChatSenderData,
+            b: ChatSenderData
+          ) {
+            return a.getRead() ? 1 : -1
+          })
         }
       )
 
       return () => {
-        chatSocketController.removeCallback("message self read");
-        chatSocketController.removeCallback("message self unread");
-        chatSocketController.removeCallback("message to");
-        chatSocketController.removeCallback("aktif");
-        chatSocketController.removeCallback("readall");
-        chatSocketController.removeCallback("readed");
-        chatSocketController.removeCallback("coming unread");
-        chatSocketController.removeCallback("coming read");
+        chatSocketController.removeCallback('message self read')
+        chatSocketController.removeCallback('message self unread')
+        chatSocketController.removeCallback('message to')
+        chatSocketController.removeCallback('aktif')
+        chatSocketController.removeCallback('readall')
+        chatSocketController.removeCallback('readed')
+        chatSocketController.removeCallback('coming unread')
+        chatSocketController.removeCallback('coming read')
       }
     }, [])
 
@@ -204,24 +243,30 @@ const ChatPage = () => {
                 />
               </svg>
             </form>
-            {daftarLawanBicaraArray.map((dataLawanBicara : ChatSenderData) => 
-              (<Link
-                to={`/admin/chat/${dataLawanBicara.getID()}`}
-                className={`flex flex-col py-5 px-5 ${
-                  location.pathname === `/admin/chat/${dataLawanBicara.getID()}`
-                    ? 'bg-dark'
-                    : 'hover:bg-dark'
-                }`}
-                onClick={() => {
-                  setId(dataLawanBicara.getID())
-                  setLawanBicara(dataLawanBicara.getName())
-                }}
-              key={dataLawanBicara.getID()}>
-                <p className='font-medium text-lg'>{dataLawanBicara.getName()}</p>
-                <p className='text-sm text-gray-400'>
-                  {dataLawanBicara.getRead() ? "" : "Baru..."}
-                </p>
-              </Link>)
+            {daftarLawanBicaraArray.map(
+              (dataLawanBicara: ChatSenderData) => (
+                <Link
+                  to={`/admin/chat/${dataLawanBicara.getID()}`}
+                  className={`flex flex-col py-5 px-5 ${
+                    location.pathname ===
+                    `/admin/chat/${dataLawanBicara.getID()}`
+                      ? 'bg-dark'
+                      : 'hover:bg-dark'
+                  }`}
+                  onClick={() => {
+                    setId(dataLawanBicara.getID())
+                    setLawanBicara(dataLawanBicara.getName())
+                  }}
+                  key={dataLawanBicara.getID()}
+                >
+                  <p className='font-medium text-lg'>
+                    {dataLawanBicara.getName()}
+                  </p>
+                  <p className='text-sm text-gray-400'>
+                    {dataLawanBicara.getRead() ? '' : 'Baru...'}
+                  </p>
+                </Link>
+              )
             )}
           </div>
           <Chat

@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import CartDetail from '../components/CartDetail'
 
@@ -41,19 +41,21 @@ const Cart = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    fetch('http://localhost:8000/api/keranjang', {
-      headers: {
-        Authorization: `Bearer ${user?.token}`,
-      },
-    })
-      .then(async (res) => {
-        const data = await res.json()
-        setCart(data.data)
-      })
-      .catch((err) => {
-        console.log(err)
-      })
-  }, [cartStatus])
+    user
+      ? fetch('http://localhost:8000/api/keranjang', {
+          headers: {
+            Authorization: `Bearer ${user?.token}`,
+          },
+        })
+          .then(async (res) => {
+            const data = await res.json()
+            setCart(data.data)
+          })
+          .catch((err) => {
+            console.log(err)
+          })
+      : null
+  }, [cartStatus, user])
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -78,6 +80,20 @@ const Cart = () => {
       .catch((err) => {
         console.log(err)
       })
+  }
+
+  if (!user) {
+    return (
+      <div className='flex flex-col gap-5 justify-center items-center h-screen'>
+        <p className='text-2xl'>Login untuk membuka Keranjang</p>
+        <Link
+          to='/login'
+          className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
+        >
+          Login
+        </Link>
+      </div>
+    )
   }
 
   return (

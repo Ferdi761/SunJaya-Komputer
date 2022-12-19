@@ -11,6 +11,7 @@ const DetailPesanan = () => {
     biayaPengiriman: '',
     jasaPengiriman: '',
   })
+  const [loading, setLoading] = useState(false)
 
   const { user } = userStorage()
 
@@ -66,11 +67,16 @@ const DetailPesanan = () => {
   }
 
   useEffect(() => {
-    fetch(`http://localhost:8000/api/pemesanan/detail/1`, {
-      headers: {
-        Authorization: `Bearer ${user?.token}`,
-      },
-    })
+    fetch(
+      `http://localhost:8000/api/pemesanan/detail/${
+        pathname.split('/')[3]
+      }`,
+      {
+        headers: {
+          Authorization: `Bearer ${user?.token}`,
+        },
+      }
+    )
       .then(async (res) => {
         const data = await res.json()
         setPesanan(data.data)
@@ -79,8 +85,6 @@ const DetailPesanan = () => {
         console.log(err)
       })
   }, [])
-
-  if (!pesanan) return <p>Loading...</p>
 
   return (
     <div className='flex flex-row gap-10 mt-10 px-20'>
@@ -171,6 +175,7 @@ const DetailPesanan = () => {
             <p>Biaya Pengiriman :</p>
             {pesanan?.status == 1 ? (
               <input
+                type='number'
                 className='w-9/12 pl-3 text-black rounded-lg'
                 placeholder='-- nominal tanpa titik --'
                 value={pengiriman.biayaPengiriman}

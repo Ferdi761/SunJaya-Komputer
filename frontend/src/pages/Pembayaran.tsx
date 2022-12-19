@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, FormEvent } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 import Modal from '../components/Modal'
@@ -46,14 +46,14 @@ const Pembayaran = () => {
     setBukti(foto)
   }
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
 
     const formData = new FormData()
     formData.append('buktiPembayaran', bukti.data)
 
     fetch(
-      `http://localhost:8000/api/pemesanan/checkout/upload/${pesanan?.id}`,
+      `http://localhost:8000/api/pemesanan/checkout/upload/${id}`,
       {
         method: 'PUT',
         headers: {
@@ -81,48 +81,49 @@ const Pembayaran = () => {
         <div className='flex flex-row gap-10'>
           <div className='w-7/12'>
             {pesanan !== undefined ? (
-              pesanan.Barangs.map((data) => {
-                return (
-                  <div
-                    className='flex flex-row gap-5 mb-4 py-5 px-10 items-center rounded bg-light'
-                    style={{
-                      boxShadow: 'rgba(0, 0, 0, 0.24) 5px 5px 6px',
-                    }}
-                    key={data.id}
-                  >
-                    <div className='w-3/12'>
-                      <img
-                        src={`http://localhost:8000/produk/${
-                          data.FotoBarang.foto.split('\\')[2]
-                        }`}
-                        alt='cpu'
-                        width='128px'
-                        height='128px'
-                      />
-                    </div>
-                    <div className='w-9/12'>
-                      <p className='font-bold'>{data.nama}</p>
-                      <p>
-                        Jumlah:{' '}
-                        <span className='font-bold'>
-                          {data.BarangYangDipesan.jumlah} buah
-                        </span>
+              pesanan.Barangs.map((data) => (
+                <div
+                  className='flex flex-row gap-5 mb-4 py-5 px-10 items-center rounded bg-light'
+                  style={{
+                    boxShadow: 'rgba(0, 0, 0, 0.24) 5px 5px 6px',
+                  }}
+                  key={data.id}
+                >
+                  <div className='w-3/12'>
+                    <img
+                      src={`http://localhost:8000/produk/${
+                        data.FotoBarang.foto.split('\\')[2]
+                      }`}
+                      alt='cpu'
+                      width='128px'
+                      height='128px'
+                    />
+                  </div>
+                  <div className='w-9/12'>
+                    <p className='font-bold'>{data.nama}</p>
+                    <p>
+                      Jumlah:{' '}
+                      <span className='font-bold'>
+                        {data.BarangYangDipesan.jumlah} buah
+                      </span>
+                    </p>
+                    <div className='font-bold text-end'>
+                      <p className='text-blue-500 font-bold'>
+                        Total: {formatCurrency(data.harga)}
                       </p>
-                      <div className='font-bold text-end'>
-                        <p className='text-blue-500 font-bold'>
-                          Total: {formatCurrency(data.harga)}
-                        </p>
-                      </div>
                     </div>
                   </div>
-                )
-              })
+                </div>
+              ))
             ) : (
               <p>Fetch Gagal</p>
             )}
           </div>
           <div className='w-5/12'>
-            <div className='p-10 text-white rounded bg-dark'>
+            <form
+              className='p-10 text-white rounded bg-dark'
+              onSubmit={handleSubmit}
+            >
               <h5 className='mb-5 text-3xl'>Rincian Pesanan</h5>
               <ul className=' mb-2'>
                 <li className='text-gray-400'>
@@ -208,12 +209,11 @@ const Pembayaran = () => {
                 <button
                   className='rounded-full bg-blue-700 py-3 w-full mt-5 hover:bg-blue-900 transition-all ease-in-out duration-300'
                   type='submit'
-                  onClick={handleSubmit}
                 >
                   Simpan
                 </button>
               </div>
-            </div>
+            </form>
           </div>
         </div>
       </div>

@@ -60,7 +60,7 @@ const Register = () => {
         </h1>
         <div className='mb-4'>
           <label className='block text-black font-semibold text-lg mb-2'>
-            Nama 
+            Nama
           </label>
           <input
             className='focus:ring-2 focus:ring-black focus:outline-none appearance-none w-full text-sm leading-6 text-slate-900 placeholder-primary rounded-md py-2 pl-5 ring-1 ring-slate-200 shadow-sm bg-formInput'
@@ -80,6 +80,7 @@ const Register = () => {
           <input
             className='focus:ring-2 focus:ring-black focus:outline-none appearance-none w-full text-sm leading-6 text-slate-900 placeholder-primary rounded-md py-2 pl-5 ring-1 ring-slate-200 shadow-sm bg-formInput'
             type='text'
+            autoComplete='email'
             aria-label='email'
             placeholder='email'
             value={akun.email}
@@ -96,6 +97,7 @@ const Register = () => {
           <input
             className='focus:ring-2 focus:ring-black focus:outline-none appearance-none w-full text-sm leading-6 text-slate-900 placeholder-primary rounded-md py-2 pl-5 ring-1 ring-slate-200 shadow-sm bg-formInput'
             type='password'
+            autoComplete='new-password'
             aria-label='password'
             placeholder='password'
             value={akun.password}
@@ -112,6 +114,7 @@ const Register = () => {
           <input
             className='focus:ring-2 focus:ring-black focus:outline-none appearance-none w-full text-sm leading-6 text-slate-900 placeholder-primary rounded-md py-2 pl-5 ring-1 ring-slate-200 shadow-sm bg-formInput'
             type='password'
+            autoComplete='new-password'
             aria-label='password'
             placeholder='password'
             value={password}
