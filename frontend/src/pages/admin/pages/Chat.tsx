@@ -38,9 +38,9 @@ const Chat = ({
         <p className='font-bold text-xl'>{lawanBicara}</p>
         <p id='aktif'>{lawanBicaraAktif}</p>
       </div>
-      <div id='chats' className='flex flex-col items-center justify-center'>
+      <div id='chats' className='flex flex-col grow items-center overflow-y-scroll'>
         {chatMasuk.map((chat, index) => (
-          <div key={index} className={`${chat.isFromOther() ? "self-start" : "self-end"}`}>{chat.getMessage()}</div>
+          <div key={index} className={`${chat.isFromOther() ? "w-fit px-5 bg-gray-600 text-white rounded-full py-2 m-1 self-start" : "w-fit px-5 bg-blue-600 text-white rounded-full py-2 m-1 self-end"}`}>{chat.getMessage()}</div>
         ))}
       </div>
       <form

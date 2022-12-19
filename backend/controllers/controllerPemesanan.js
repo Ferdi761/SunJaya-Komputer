@@ -291,13 +291,19 @@ const byd = async (req, res) => {
 const semuaPesananPelanggan = async (req, res) => {
   try {
     const listPesanan = await Pemesanan.findAll({
-      include: {
-        model: Barang,
-        include: {
-          model: FotoBarang,
-          required: true,
+      include: [
+        {
+          model: Barang,
+          include: {
+            model: FotoBarang,
+            required: true,
+          },
         },
-      },
+        {
+          model: Akun,
+          attributes: ['id', 'nama'],
+        },
+      ],
     })
 
     res
@@ -358,8 +364,8 @@ const daftarKonfirmasiPesanan = async (req, res) => {
 // Admin konfirmasi pesanan pelanggan
 const konfirmasiPesanan = async (req, res) => {
   const { id } = req.params
-  
-  // for a day
+  const { biayaPengiriman, jasaPengiriman } = req.body
+  // for test time
   // let timeOut = new Date()
   // const aDay = timeOut.getTime() + 10000
 
@@ -368,6 +374,8 @@ const konfirmasiPesanan = async (req, res) => {
 
     await pesanan.update({
       status: 2,
+      biayaPengiriman,
+      jasaPengiriman,
       tanggalMulaiMenungguPembayaran: Date.now(),
     })
 
@@ -673,6 +681,10 @@ const daftarSemuaPesanan = async (req, res) => {
             model: Barang,
             include: FotoBarang,
           },
+          {
+            model: Akun,
+            attributes: ['id', 'nama'],
+          },
         ],
       },
       {
@@ -715,6 +727,10 @@ const detailPesanan = async (req, res) => {
         {
           model: Barang,
           include: FotoBarang,
+        },
+        {
+          model: Akun,
+          attributes: ['id', 'nama'],
         },
       ],
       where: {

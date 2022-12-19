@@ -37,4 +37,8 @@ export type Pesanan = {
   status: number
   akunId: number
   Barangs: Barang[]
+  Akun: {
+    id: number
+    nama: string
+  }
 }
