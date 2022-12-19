@@ -1,42 +1,69 @@
-<p align="center">
-  <a href="" rel="noopener">
- <img width=200px height=200px src="https://i.imgur.com/6wj0hh6.jpg" alt="Project logo"></a>
-</p>
+# API SunJaya Com
 
-<h3 align="center">Project Title</h3>
+## Table of Contents
 
-<div align="center">
-
-[![Status](https://img.shields.io/badge/status-active-success.svg)]()
-[![GitHub Issues](https://img.shields.io/github/issues/kylelobo/The-Documentation-Compendium.svg)](https://github.com/kylelobo/The-Documentation-Compendium/issues)
-[![GitHub Pull Requests](https://img.shields.io/github/issues-pr/kylelobo/The-Documentation-Compendium.svg)](https://github.com/kylelobo/The-Documentation-Compendium/pulls)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](/LICENSE)
-
-</div>
-
----
-
-<p align="center"> Few lines describing your project.
-    <br> 
-</p>
-
-## 📝 Table of Contents
-
-- [About](#about)
+- [Cara Penggunaan](#tutor)
+- [Akun](#akun)
 - [Getting Started](#getting_started)
-- [Deployment](#deployment)
 - [Usage](#usage)
-- [Built Using](#built_using)
-- [TODO](../TODO.md)
 - [Contributing](../CONTRIBUTING.md)
-- [Authors](#authors)
-- [Acknowledgments](#acknowledgement)
 
-## 🧐 About <a name = "about"></a>
+## Cara Penggunaan <a name="tutor"></a>
 
-Write about 1-2 paragraphs describing the purpose of your project.
+Sebelum menggunakan API SunJaya Com, clone/download repository ini ke penyimpanan komputer lokal lalu install <a href="https://www.postman.com/downloads/">Postman</a> terlebih dahulu.<br/>
+Jika telah terinstall, buka postman dan masukkan salah satu url yang tersedia dan atur juga methodnya serta atur id dan request body jika diperlukan lalu klik tombol "send".<hr/>
 
-## 🏁 Getting Started <a name = "getting_started"></a>
+## DAFTAR API
+
+### AKUN <a name = "akun"></a>
+
+API ini berfungsi mengelola akun.
+
+- Membuat Akun Baru
+
+```
+url: http://localhost:8000/api/signup/
+method: POST
+
+// contoh input body
+body: {
+"nama" : "Joko",
+"email" : "jokojosambat@gmail.com",
+"password" : "inipass123",
+"noTelp" : "083192835768"
+}
+```
+
+- Login Akun
+
+```
+url: http://localhost:8000/api/login/
+method: POST
+
+// contoh input body
+body: {
+"email" : "jokojosambat@gmail.com",
+"password" : "inipass123",
+}
+```
+
+- Logout Akun
+
+```
+url: http://localhost:8000/api/logout/
+method: POST
+```
+
+- Daftar Semua Akun
+
+API ini hanya dapat digunakan jika melakukan login dengan izin sebagai admin SunJaya Com.
+
+```
+url: http://localhost:8000/api/akun/admin/all/
+method: GET
+```
+
+## Getting Started <a name = "getting_started"></a>
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See [deployment](#deployment) for notes on how to deploy the project on a live system.
 
@@ -66,49 +93,6 @@ until finished
 
 End with an example of getting some data out of the system or using it for a little demo.
 
-## 🔧 Running the tests <a name = "tests"></a>
-
-Explain how to run the automated tests for this system.
-
-### Break down into end to end tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-## 🎈 Usage <a name="usage"></a>
+## Usage <a name = "usage"></a>
 
 Add notes about how to use the system.
-
-## 🚀 Deployment <a name = "deployment"></a>
-
-Add additional notes about how to deploy this on a live system.
-
-## ⛏️ Built Using <a name = "built_using"></a>
-
-- [MongoDB](https://www.mongodb.com/) - Database
-- [Express](https://expressjs.com/) - Server Framework
-- [VueJs](https://vuejs.org/) - Web Framework
-- [NodeJs](https://nodejs.org/en/) - Server Environment
-
-## ✍️ Authors <a name = "authors"></a>
-
-- [@kylelobo](https://github.com/kylelobo) - Idea & Initial work
-
-See also the list of [contributors](https://github.com/kylelobo/The-Documentation-Compendium/contributors) who participated in this project.
-
-## 🎉 Acknowledgements <a name = "acknowledgement"></a>
-
-- Hat tip to anyone whose code was used
-- Inspiration
-- References
