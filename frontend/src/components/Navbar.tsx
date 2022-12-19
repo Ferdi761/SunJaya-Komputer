@@ -40,7 +40,7 @@ const Navbar = () => {
 
   const { query, setQuery } = queryStorage()
   const { user, clearUser, getUser } = userStorage()
-  const { cartStatus } = cartStorage()
+  const { cartStatus, changeCart } = cartStorage()
 
   const navigate = useNavigate()
 
@@ -97,7 +97,7 @@ const Navbar = () => {
       <Link to='/keranjang'>
         <button className='text-white text-lg font-semibold p-4 rounded-md hover:bg-gray-700 relative'>
           <FaShoppingCart />
-          {cart.daftarBarang.length > 0 && (
+          {cart.daftarBarang.length > 0 && user && (
             <div className='rounded-full bg-red-600 flex justify-center items-center text-white w-7 h-7 absolute bottom-0 right-0 translate-x-1/4 translate-y-1/4'>
               {cart.daftarBarang.reduce(
                 (acc, cur) => acc + cur.jumlah,
@@ -120,7 +120,11 @@ const Navbar = () => {
       {user ? (
         <button
           className='text-white bg-dark text-lg font-semibold py-3 px-10 rounded-md hover:bg-gray-700'
-          onClick={clearUser}
+          onClick={() => {
+            clearUser()
+            changeCart()
+            navigate('/login')
+          }}
         >
           Logout
         </button>
