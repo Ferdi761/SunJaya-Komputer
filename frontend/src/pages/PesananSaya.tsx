@@ -40,6 +40,7 @@ const PesananSaya = () => {
   const [pesanan, setPesanan] = useState<Pesanan[]>([])
   const [value, setValue] = useState(6)
   const [urutan, setUrutan] = useState(0)
+  const [state, setState] = useState(false)
 
   const { user } = userStorage()
 
@@ -56,7 +57,7 @@ const PesananSaya = () => {
       .catch((err) => {
         console.log(err)
       })
-  }, [])
+  }, [state])
 
   const valueChange = (event: React.MouseEvent) => {
     setValue(parseInt((event.target as HTMLInputElement).value))
@@ -220,6 +221,7 @@ const PesananSaya = () => {
                     }
                     return acc
                   })}
+                  setState={setState}
                 />
               ) : (
                 <div className='px-10 py-5 text-white rounded-xl pb-5 bg-dark flex justify-center items-center'>

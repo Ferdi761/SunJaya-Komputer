@@ -218,16 +218,15 @@ const umpanBalik = async (req, res) => {
   const { rating, testimoni } = req.body
 
   try {
-    const pesanan = await BuktiPembayaranPemesanan.findOne(
-      { where: { pemesananId: id } },
-      { include: Pemesanan }
-    )
+    const pesanan = await Pemesanan.findOne({
+      where: {
+        id,
+      },
+    })
 
     await pesanan.update({
-      Pemesanan: {
-        rating: parseInt(rating),
-        testimoni: testimoni,
-      },
+      rating: parseInt(rating),
+      testimoni: testimoni,
     })
 
     res.status(200).json({

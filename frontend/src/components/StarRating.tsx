@@ -1,8 +1,12 @@
-import React from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 
-const StarRating = () => {
-  const [rating, setRating] = React.useState(0)
-  const [hover, setHover] = React.useState(0)
+type StarRatingProps = {
+  rating: number
+  setRating: Dispatch<SetStateAction<number>>
+}
+
+const StarRating = ({ rating, setRating }: StarRatingProps) => {
+  const [hover, setHover] = useState(0)
 
   return (
     <div className='star-rating'>
@@ -23,7 +27,8 @@ const StarRating = () => {
               setHover(0)
             }}
             onMouseEnter={() => setHover(index)}
-            onMouseLeave={() => setHover(rating)}>
+            onMouseLeave={() => setHover(rating)}
+          >
             <span className='text-3xl mx-2'>&#9733;</span>
           </button>
         )
