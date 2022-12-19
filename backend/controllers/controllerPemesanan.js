@@ -36,7 +36,8 @@ const checkout = async (req, res) => {
 
     let totalPriceItem = 0
     for (let item in Barangs) {
-      totalPriceItem += Barangs[item].harga * Barangs[item].Keranjang.jumlah
+      totalPriceItem +=
+        Barangs[item].harga * Barangs[item].Keranjang.jumlah
     }
     console.log(Barangs)
     console.log('total price item: ' + typeof totalPriceItem)
@@ -93,7 +94,7 @@ const checkout = async (req, res) => {
         message:
           'Pesanan telah dibuat, menunggu konfirmasi dari admin!',
         idPemesanan: buatPesanan.id,
-        data: buatPesanan
+        data: buatPesanan,
       })
       .end()
   } catch (err) {
@@ -121,13 +122,15 @@ const uploadBuktiBayar = async (req, res) => {
       where: { id: decoded.id },
       include: Barang,
     })
-    if (!userCart) return res.status(404).json('Akun tidak ditemukan!').end()
+    if (!userCart)
+      return res.status(404).json('Akun tidak ditemukan!').end()
 
     const buktiBayar = await BuktiPembayaranPemesanan.findOne(
       { where: { pemesananId: id } },
       { include: Pemesanan }
     )
-    if (!buktiBayar) return res.status(404).json('Pemesanan tidak ditemukan!').end()
+    if (!buktiBayar)
+      return res.status(404).json('Pemesanan tidak ditemukan!').end()
 
     await buktiBayar.update({ buktiPembayaran: imagePath })
     clearTimeout(waktuPembayaran)
@@ -169,7 +172,11 @@ const pesananSelesai = async (req, res) => {
         ],
       },
     })
-    if (!pesanan) return res.status(404).json({ message: 'Pemesanan tidak ditemukan' }).end()
+    if (!pesanan)
+      return res
+        .status(404)
+        .json({ message: 'Pemesanan tidak ditemukan' })
+        .end()
 
     res
       .status(200)
@@ -428,7 +435,7 @@ const konfirmasiPesanan = async (req, res) => {
       dataBYD = []
 
       console.log('Waktu habis, pemesanan dibatalkan!')
-    }, 10000)
+    }, 86400)
 
     res
       .json({

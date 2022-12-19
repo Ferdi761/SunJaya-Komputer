@@ -22,14 +22,16 @@ const Pembayaran = () => {
   const id = location.pathname.split('/')[2]
 
   useEffect(() => {
-    fetch(`http://localhost:8000/api/pemesanan/${id}`, {
+    fetch(`http://localhost:8000/api/pemesanan/detail/${id}`, {
       headers: {
         Authorization: `Bearer ${user?.token}`,
       },
     })
       .then(async (res) => {
         const data = await res.json()
-        setPesanan(data.data)
+        if (data.data) {
+          setPesanan(data.data)
+        }
       })
       .catch((err) => {
         console.log(err)

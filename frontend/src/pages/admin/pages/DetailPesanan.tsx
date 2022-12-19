@@ -214,34 +214,39 @@ const DetailPesanan = () => {
           </li>
           <li className='font-bold text-lg'>
             Total Biaya :{' '}
-            {pesanan ? formatCurrency(pesanan?.totalHargaBarang) : 0}
+            {pesanan
+              ? pengiriman.biayaPengiriman
+                ? formatCurrency(
+                    pesanan?.totalHargaBarang +
+                      parseInt(pengiriman.biayaPengiriman)
+                  )
+                : formatCurrency(pesanan?.totalHargaBarang)
+              : 0}
           </li>
         </ul>
         {pesanan?.status == 1 ? (
-          <>
-            <div className='mb-4 flex justify-end'>
-              <Link
-                to='/admin/chat'
-                className='text-center font-bold text-black bg-white rounded-full text-2xl py-2 px-5'
-              >
-                Diskusi Pengiriman
-              </Link>
-            </div>
-            <div className='flex flex-row gap-10'>
+          <div className='flex flex-col gap-4'>
+            <Link
+              to='/admin/chat'
+              className='text-center font-bold text-black bg-white rounded-full text-2xl py-2 px-5 hover:bg-gray-300 w-1/2 self-end'
+            >
+              Diskusi Pengiriman
+            </Link>
+            <div className='flex flex-row'>
               <button
-                className='font-bold bg-red-600 w-1/2 rounded-full text-2xl py-2'
+                className='font-bold bg-red-600 w-1/2 rounded-full text-2xl py-2 hover:bg-red-700'
                 onClick={() => handleDelete()}
               >
                 Hapus Pesanan
               </button>
               <button
-                className='font-bold uppercase bg-blue-700 w-1/2 rounded-full text-2xl py-2'
+                className='font-bold uppercase bg-blue-700 hover:bg-blue-800 w-1/2 rounded-full text-2xl py-2'
                 type='submit'
               >
                 konfirmasi
               </button>
             </div>
-          </>
+          </div>
         ) : pesanan?.status == 2 ? (
           <>
             <div className='bg-darkGrey'>
@@ -250,12 +255,12 @@ const DetailPesanan = () => {
             <div className='flex flex-row gap-10 mt-10'>
               <Link
                 to='/admin/chat'
-                className='font-bold bg-white w-1/2 rounded-full text-2xl py-2 text-black text-center'
+                className='font-bold bg-white hover:bg-gray-200 w-1/2 rounded-full text-2xl py-2 text-black text-center'
               >
                 Diskusi Pengiriman
               </Link>
               <button
-                className='font-bold uppercase bg-blue-700 w-1/2 rounded-full text-2xl py-2'
+                className='font-bold uppercase bg-blue-700 hover:bg-blue-800 w-1/2 rounded-full text-2xl py-2'
                 type='submit'
               >
                 lunas
@@ -264,7 +269,7 @@ const DetailPesanan = () => {
           </>
         ) : pesanan?.status == 3 ? (
           <div className='flex justify-center'>
-            <p className='font-bold uppercase bg-blue-700 w-1/2 rounded-full text-2xl py-2'>
+            <p className='font-bold uppercase bg-blue-700 hover:bg-blue-800 w-1/2 rounded-full text-2xl py-2'>
               telah dikirim
             </p>
           </div>
@@ -276,7 +281,7 @@ const DetailPesanan = () => {
             <li>Testimoni</li>
             <li className='bg-darkGrey'>{pesanan?.testimoni}</li>
             <li className='flex justify-center'>
-              <p className='font-bold uppercase bg-blue-700 w-1/2 rounded-full text-2xl py-2'>
+              <p className='font-bold uppercase bg-blue-700 hover:bg-blue-800 w-1/2 rounded-full text-2xl py-2'>
                 telah dikirim
               </p>
             </li>

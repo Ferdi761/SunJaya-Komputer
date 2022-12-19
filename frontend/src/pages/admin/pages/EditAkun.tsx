@@ -57,8 +57,7 @@ const EditAkun = () => {
     )
       .then(async (res) => {
         const data = await res.json()
-        setAkun(data.data)
-        console.log(data)
+        setAkun(data)
       })
       .catch((err) => {
         console.log(err)
