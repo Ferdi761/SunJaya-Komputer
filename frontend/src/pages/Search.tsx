@@ -1,31 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { formatCurrency } from '../util/formatCurrency'
+import { queryStorage } from '../util/queryStorage'
 
 const Search = () => {
-  const [error, setError] = React.useState(null)
-  const [isLoaded, setIsLoaded] = React.useState(false)
-  const [items, setItems] = React.useState([])
-
-  const [q, setQ] = React.useState('')
-  const [searchParam] = React.useState(['title', 'body'])
-
-  // const search = (posts) => {
-  //   return posts.filter((post) => {
-  //     return searchParam.some((newPost) => {
-  //       return (
-  //         post[newPost]
-  //           .toString()
-  //           .toLowerCase()
-  //           .indexOf(q.toLowerCase()) > -1
-  //       )
-  //     })
-  //   })
-  // }
-
-  // if (error) return <div>Error: </div>
-  // else if (!isLoaded) return <div>Loading...</div>
-  // else {
   const [barang, setBarang] = useState([
     {
       id: 0,
@@ -47,13 +25,11 @@ const Search = () => {
       },
     },
   ])
-  
-  const { pathname } = useLocation()
-  
+
+  const { query } = queryStorage()
+
   useEffect(() => {
-    fetch(
-      `http://localhost:8000/api/barang/?cari=${pathname.split('/')[2]}`
-    )
+    fetch(`http://localhost:8000/api/barang/?cari=${query}`)
       .then(async (res) => {
         const data = await res.json()
         setBarang(data)
@@ -61,7 +37,7 @@ const Search = () => {
       .catch((err) => {
         console.log(err)
       })
-  }, [])
+  }, [query])
 
   return (
     <div className='grid grid-cols-3 gap-6 overflow-x-scroll'>

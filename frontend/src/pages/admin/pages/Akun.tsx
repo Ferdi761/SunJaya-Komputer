@@ -112,19 +112,15 @@ const Akun = () => {
             >
               <div className='w-3/4 my-5'>
                 <div className='grid grid-cols-2 gap-5 w-fit'>
-                  <h3 className='font-semibold text-lg'>
-                    {item.nama}
+                  <h3>
+                    Nama:{' '}
+                    <span className='font-semibold text-lg'>
+                      {item.nama}
+                    </span>
                   </h3>
-                  <p></p>
                   <p>
                     ID:{' '}
                     <span className='font-semibold'>#{item.id}</span>
-                  </p>
-                  <p>
-                    Password:{' '}
-                    <span className='font-semibold'>
-                      {item.passwordHashed}
-                    </span>
                   </p>
                   <p>
                     Email:{' '}

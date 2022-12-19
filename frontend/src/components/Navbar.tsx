@@ -7,6 +7,7 @@ import { BsChatTextFill } from 'react-icons/bs'
 
 import { userStorage } from '../util/userStorage'
 import { cartStorage } from '../util/cartStorage'
+import { queryStorage } from '../util/queryStorage'
 
 const Navbar = () => {
   const [cart, setCart] = useState({
@@ -35,10 +36,9 @@ const Navbar = () => {
     totalHarga: 0,
   })
 
-  const [q, setQ] = useState('')
-
   const location = useLocation()
 
+  const { query, setQuery } = queryStorage()
   const { user, clearUser, getUser } = userStorage()
   const { cartStatus } = cartStorage()
 
@@ -66,8 +66,8 @@ const Navbar = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    if (q !== '') {
-      navigate(`/search?q=${q}`)
+    if (query !== '') {
+      navigate(`/search?q=${query}`)
     }
   }
 
@@ -84,8 +84,8 @@ const Navbar = () => {
           type='text'
           aria-label='Pencarian...'
           placeholder='Pencarian...'
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
         />
         <button
           type='submit'
