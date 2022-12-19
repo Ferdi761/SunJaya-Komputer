@@ -161,21 +161,6 @@ const EditAkun = () => {
 
         <div className='mb-4'>
           <label className='block text-gray-700 text-md mb-2 font-semibold'>
-            Alamat
-          </label>
-          <textarea
-            className='focus:ring-2 focus:ring-black focus:outline-none appearance-none w-full text-sm leading-6 text-slate-900 placeholder-slate-400 rounded-md py-2 pl-5 ring-1 ring-slate-200 shadow-sm h-36'
-            aria-label='Alamat'
-            placeholder='Alamat'
-            value={akun.alamat}
-            onChange={(e) =>
-              setAkun({ ...akun, alamat: e.target.value })
-            }
-          />
-        </div>
-
-        <div className='mb-4'>
-          <label className='block text-gray-700 text-md mb-2 font-semibold'>
             Izin
           </label>
           <input

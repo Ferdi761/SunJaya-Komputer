@@ -15,7 +15,7 @@ const loginCheck = require('../middlewares/loginCheck')
 routerAkun.route('/').get(loginCheck, isAdmin, listAkun)
 routerAkun.route('/:id').put(loginCheck, ubahDataAkun)
 routerAkun
-  .route('/detail/karyawan')
+  .route('/karyawan/all')
   .get(loginCheck, isAdmin, listKaryawan)
 routerAkun
   .route('/karyawan/:id')

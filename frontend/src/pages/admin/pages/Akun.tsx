@@ -37,7 +37,7 @@ const Akun = () => {
   }
 
   useEffect(() => {
-    fetch('http://localhost:8000/api/akun/karyawan', {
+    fetch('http://localhost:8000/api/akun/karyawan/all', {
       headers: {
         Authorization: `Bearer ${user?.token}`,
       },
