@@ -17,15 +17,14 @@ module.exports = {
         type: Sequelize.STRING,
       },
       totalHargaBarang: {
-        type: Sequelize.DECIMAL,
+        type: Sequelize.INTEGER,
         allowNull: false,
-        defaultValue: 0,
       },
       biayaPengiriman: {
-        type: Sequelize.DECIMAL,
+        type: Sequelize.INTEGER,
       },
       totalBiayaYangHarusDibayar: {
-        type: Sequelize.DECIMAL,
+        type: Sequelize.INTEGER,
       },
       tanggalMulaiMenungguPembayaran: {
         type: Sequelize.DATE,
@@ -42,7 +41,7 @@ module.exports = {
         type: Sequelize.DATE
       },
       rating: {
-        type: Sequelize.DECIMAL
+        type: Sequelize.INTEGER
       },
       testimoni: {
         type: Sequelize.TEXT

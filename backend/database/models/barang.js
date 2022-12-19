@@ -56,7 +56,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     harga: {
-      type: DataTypes.DECIMAL,
+      type: DataTypes.INTEGER,
       allowNull: false
     },
     deskripsi: {

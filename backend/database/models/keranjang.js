@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       defaultValue: 0,
       get() {
-        return this.getDataValue('jumlah');
+        return this.getDataValue('jumlah')
       }
     }
   }, {

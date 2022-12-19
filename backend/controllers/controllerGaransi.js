@@ -8,7 +8,7 @@ const {
 // FOR PELANGGAN
 const ajukanGaransi = async (req, res) => {
     // const logged = req.cookies.logged_account;
-    // const decoded = jwt.verify(logged, 'jwtAkunId');
+    const decoded = jwt.verify(logged, 'jwtAkunId');
     const idBarang = req.params.id;
     const {
         jumlah,

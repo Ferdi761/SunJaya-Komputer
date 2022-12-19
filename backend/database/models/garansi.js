@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
     diproses: DataTypes.BOOLEAN, // diisi penjual (onClick)
     disetujui: DataTypes.BOOLEAN, // diisi penjual (onClick)
     jasaPengiriman: DataTypes.STRING, // diisi penjual (req.body)
-    biayaPengiriman: DataTypes.DECIMAL, // diisi penjual (req.body)
+    biayaPengiriman: DataTypes.INTEGER, // diisi penjual (req.body)
     pembayaranLunas: DataTypes.BOOLEAN, // diisi penjual (req.body)
     tanggalKirim: DataTypes.DATE, // diisi penjual (onClick)
     tanggalSampai: DataTypes.DATE // diisi pembeli (onClick)

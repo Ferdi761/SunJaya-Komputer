@@ -15,7 +15,7 @@ module.exports = {
       },
       harga: {
         allowNull: false,
-        type: Sequelize.DECIMAL
+        type: Sequelize.INTEGER
       },
       deskripsi: {
         type: Sequelize.TEXT

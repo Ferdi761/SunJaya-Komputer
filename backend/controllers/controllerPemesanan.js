@@ -36,9 +36,9 @@ const checkout = async (req, res) => {
 
     let totalPriceItem = 0
     for (let item in Barangs) {
-      totalPriceItem +=
-        Barangs[item].harga * Barangs[item].Keranjang.jumlah
+      totalPriceItem += Barangs[item].harga * Barangs[item].Keranjang.jumlah
     }
+    console.log(Barangs)
     console.log('total price item: ' + typeof totalPriceItem)
     // console.log('total all: ' + typeof totalAll)
     //const today = new Date();
@@ -61,8 +61,6 @@ const checkout = async (req, res) => {
       })
     })
 
-    // add transaction
-    // t = await sequelize.transaction();
     dataBYD.forEach(async (item) => {
       await BarangYangDipesan.create(item)
       const barang = await Barang.findOne({
@@ -95,6 +93,7 @@ const checkout = async (req, res) => {
         message:
           'Pesanan telah dibuat, menunggu konfirmasi dari admin!',
         idPemesanan: buatPesanan.id,
+        data: buatPesanan
       })
       .end()
   } catch (err) {
@@ -122,29 +121,15 @@ const uploadBuktiBayar = async (req, res) => {
       where: { id: decoded.id },
       include: Barang,
     })
-    if (!userCart)
-      return res.status(404).json('Akun tidak ditemukan!')
+    if (!userCart) return res.status(404).json('Akun tidak ditemukan!').end()
 
     const buktiBayar = await BuktiPembayaranPemesanan.findOne(
-      {
-        where: {
-          pemesananId: id,
-        },
-      },
-      {
-        include: Pemesanan,
-      }
+      { where: { pemesananId: id } },
+      { include: Pemesanan }
     )
+    if (!buktiBayar) return res.status(404).json('Pemesanan tidak ditemukan!').end()
 
-    await buktiBayar.update({
-      buktiPembayaran: imagePath,
-    })
-    // await Keranjang.destroy({
-    //   where: {
-    //     akunId: decoded.id,
-    //   },
-    // })
-
+    await buktiBayar.update({ buktiPembayaran: imagePath })
     clearTimeout(waktuPembayaran)
 
     res
@@ -184,12 +169,7 @@ const pesananSelesai = async (req, res) => {
         ],
       },
     })
-
-    if (!pesanan) throw 'Pesanan tidak ditemukan!'
-
-    // pesanan.update({
-
-    // })
+    if (!pesanan) return res.status(404).json({ message: 'Pemesanan tidak ditemukan' }).end()
 
     res
       .status(200)
@@ -216,19 +196,13 @@ const umpanBalik = async (req, res) => {
 
   try {
     const pesanan = await BuktiPembayaranPemesanan.findOne(
-      {
-        where: {
-          pemesananId: id,
-        },
-      },
-      {
-        include: Pemesanan,
-      }
+      { where: { pemesananId: id } },
+      { include: Pemesanan }
     )
 
     await pesanan.update({
       Pemesanan: {
-        rating: parseFloat(rating),
+        rating: parseInt(rating),
         testimoni: testimoni,
       },
     })
@@ -433,10 +407,12 @@ const konfirmasiPesanan = async (req, res) => {
         const stokBarang = await barang.getDataValue('stok')
         let updateStok = stokBarang + item.jumlah
 
+        // set ulang jumlah barang
         await barang.update({
           stok: updateStok,
         })
 
+        // hapus daftar barang yang dipesan
         await BarangYangDipesan.destroy({
           where: {
             pemesananId: item.pemesananId,
@@ -445,6 +421,7 @@ const konfirmasiPesanan = async (req, res) => {
         })
       })
 
+      // hapus pesanan
       await pesanan.destroy()
 
       // set ulang array menjadi nol

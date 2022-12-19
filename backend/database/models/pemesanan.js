@@ -40,14 +40,14 @@ module.exports = (sequelize, DataTypes) => {
   Pemesanan.init({
     alamatTujuan: DataTypes.TEXT,
     jasaPengiriman: DataTypes.STRING,
-    totalHargaBarang: DataTypes.DECIMAL,
-    biayaPengiriman: DataTypes.DECIMAL,
-    totalBiayaYangHarusDibayar: DataTypes.DECIMAL,
+    totalHargaBarang: DataTypes.INTEGER,
+    biayaPengiriman: DataTypes.INTEGER,
+    totalBiayaYangHarusDibayar: DataTypes.INTEGER,
     tanggalMulaiMenungguPembayaran: DataTypes.DATE,
     pembayaranLunas: DataTypes.BOOLEAN,
     tanggalKirim: DataTypes.DATE,
     tanggalSampai: DataTypes.DATE,
-    rating: DataTypes.DECIMAL,
+    rating: DataTypes.INTEGER,
     testimoni: DataTypes.TEXT,
     status: DataTypes.INTEGER
   }, {

@@ -38,7 +38,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       biayaPengiriman: {
-        type: Sequelize.DECIMAL
+        type: Sequelize.INTEGER
       },
       pembayaranLunas: {
         type: Sequelize.BOOLEAN
