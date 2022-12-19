@@ -13,7 +13,8 @@ const isAdmin = async (req, res, next) => {
   try {
     // compare id from cookies and jwt
     const decoded = jwt.verify(logged.split(' ')[1])
-    // console.log(decode["id"]);
+    console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
+    console.log(decoded);
     // const decoded = jwt.verify(logged, 'jwtAkunId')
 
     const admin = await Akun.findByPk(decoded['id'])

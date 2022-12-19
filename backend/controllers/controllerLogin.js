@@ -10,7 +10,7 @@ const login = async (req, res) => {
     const id = akun.id
     const token = jwt.sign({ id }, 'jwtAkunId', {})
 
-    res.cookie('logged_account', token, { httpOnly: true })
+    // res.cookie('logged_account', token, { httpOnly: true })
 
     res
       .status(201)
