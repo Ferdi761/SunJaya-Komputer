@@ -313,7 +313,7 @@ const semuaPesananPelanggan = async (req, res) => {
       .status(500)
       .json({
         status: 'fail',
-        message: [err],
+        message: err,
       })
       .end()
   }
@@ -448,6 +448,36 @@ const konfirmasiPesanan = async (req, res) => {
         status: 'success',
         message:
           'Pemesanan telah dikonfirmasi, menunggu pembayaran 24 jam kedepan!',
+      })
+      .end()
+  } catch (err) {
+    console.log(err)
+    res
+      .status(500)
+      .json({
+        status: 'fail',
+        message: [err],
+      })
+      .end()
+  }
+}
+
+const pengirimanPesanan = async (req, res) => {
+  const { id } = req.params
+  const { jasaPengiriman, biayaPengiriman } = req.body
+
+  try {
+    const pesanan = await Pemesanan.findOne({ where: { id } })
+
+    await pesanan.update({
+      jasaPengiriman,
+      biayaPengiriman,
+    })
+
+    res
+      .json({
+        status: 'success',
+        message: 'Pengiriman telah ditentukan!',
       })
       .end()
   } catch (err) {
@@ -871,6 +901,7 @@ module.exports = {
   batalkanPesanan,
   ubahStatusKirim,
   konfirmasiPesananSampai,
+  pengirimanPesanan,
 
   // tampilan pesanan untuk pelanggan
   daftarSemuaPesanan,

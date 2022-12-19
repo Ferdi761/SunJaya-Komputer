@@ -5,7 +5,7 @@ const path = require('path')
 // setup multer storage
 const multer = require('multer')
 
-let destBuktiBayar = path.join(__dirname, './public/buktiPembayaran/')
+let destBuktiBayar = path.join(__dirname, './public/buktiPembayaran')
 // console.log(destBuktiBayar);
 
 const storage = multer.diskStorage({
@@ -39,6 +39,7 @@ const {
   batalkanPesanan,
   ubahStatusKirim,
   konfirmasiPesananSampai,
+  pengirimanPesanan,
 } = require('../controllers/controllerPemesanan')
 
 routerPemesanan.route('/').get(loginCheck, daftarSemuaPesanan)
@@ -62,6 +63,9 @@ routerPemesanan
 routerPemesanan
   .route('/admin/konfirmasi/:id')
   .post(loginCheck, isAdmin, konfirmasiPesanan)
+routerPemesanan
+  .route('/admin/pengiriman/:id')
+  .post(loginCheck, isAdmin, pengirimanPesanan)
 routerPemesanan
   .route('/admin/batalkan/:id')
   .delete(loginCheck, isAdmin, batalkanPesanan)
