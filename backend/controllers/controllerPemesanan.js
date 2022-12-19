@@ -291,12 +291,14 @@ const byd = async (req, res) => {
 const semuaPesananPelanggan = async (req, res) => {
   try {
     const listPesanan = await Pemesanan.findAll({
-      include: [
+      include:
         {
           model: Barang,
-          include: FotoBarang,
+          include: {
+            model: FotoBarang,
+            required: true
+          },
         },
-      ],
     })
 
     //console.log(listPesanan.Pemesanan.);
