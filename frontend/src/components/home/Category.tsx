@@ -1,4 +1,6 @@
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+
 import aksesoris from '../../assets/img/kategori/aksesoris.png'
 import kabel from '../../assets/img/kategori/kabel.png'
 import komponenKomputer from '../../assets/img/kategori/komponen-komputer.png'
@@ -8,133 +10,51 @@ import memory from '../../assets/img/kategori/memory-card.png'
 import monitor from '../../assets/img/kategori/monitor.png'
 import network from '../../assets/img/kategori/network.png'
 
-const Category = () => (
-  <div className='flex justify-center'>
-    <div className='flex flex-col gap-5 w-2/3'>
-      <h3 className='font-bold text-2xl'>Kategori</h3>
-      <div className='flex flex-row gap-5'>
-        <Link
-          to='/kategori'
-          className='flex flex-col items-center bg-light drop-shadow-xl w-28'
-        >
-          <div className='flex-none w-12 h-12 relative'>
-            <img
-              src={aksesoris}
-              alt=''
-              className='absolute w-full h-full object-cover'
-              loading='lazy'
-            />
-          </div>
-          <p className='text-center'>Aksesoris Komputer & Laptop</p>
-        </Link>
+const Category = () => {
+  const [categories, setCategories] = useState([
+    {
+      id: 0,
+      nama: '',
+    },
+  ])
 
-        <Link
-          to='/kategori'
-          className='flex flex-col justify-center items-center bg-light drop-shadow-xl w-28'
-        >
-          <div className='flex-none w-12 h-12 relative'>
-            <img
-              src={kabel}
-              alt=''
-              className='absolute w-full h-full object-cover'
-              loading='lazy'
-            />
-          </div>
-          <p className='text-center'>Kabel & Adaptor</p>
-        </Link>
+  useEffect(() => {
+    fetch('http://localhost:8000/api/jenis')
+      .then(async (res) => {
+        const data = await res.json()
+        setCategories(data.data)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }, [])
 
-        <Link
-          to='/kategori'
-          className='flex flex-col justify-center items-center bg-light drop-shadow-xl w-28'
-        >
-          <div className='flex-none w-12 h-12 relative'>
-            <img
-              src={komponenKomputer}
-              alt=''
-              className='absolute w-full h-full object-cover'
-              loading='lazy'
-            />
-          </div>
-          <p className='text-center'>Komponen Komputer</p>
-        </Link>
-
-        <Link
-          to='/kategori'
-          className='flex flex-col justify-center items-center bg-light drop-shadow-xl w-28'
-        >
-          <div className='flex-none w-12 h-12 relative'>
-            <img
-              src={komponenLaptop}
-              alt=''
-              className='absolute w-full h-full object-cover'
-              loading='lazy'
-            />
-          </div>
-          <p className='text-center'>Komponen Laptop</p>
-        </Link>
-
-        <Link
-          to='/kategori'
-          className='flex flex-col items-center bg-light drop-shadow-xl w-28'
-        >
-          <div className='flex-none w-12 h-12 relative'>
-            <img
-              src={storage}
-              alt=''
-              className='absolute w-full h-full object-cover'
-              loading='lazy'
-            />
-          </div>
-          <p className='text-center'>Media Penyimpanan Data</p>
-        </Link>
-
-        <Link
-          to='/kategori'
-          className='flex flex-col justify-center items-center bg-light drop-shadow-xl w-28'
-        >
-          <div className='flex-none w-12 h-12 relative'>
-            <img
-              src={memory}
-              alt=''
-              className='absolute w-full h-full object-cover'
-              loading='lazy'
-            />
-          </div>
-          <p className='text-center'>Memory Card</p>
-        </Link>
-
-        <Link
-          to='/kategori'
-          className='flex flex-col justify-center items-center bg-light drop-shadow-xl w-28'
-        >
-          <div className='flex-none w-12 h-12 relative'>
-            <img
-              src={monitor}
-              alt=''
-              className='absolute w-full h-full object-cover'
-              loading='lazy'
-            />
-          </div>
-          <p className='text-center'>Monitor</p>
-        </Link>
-
-        <Link
-          to='/kategori'
-          className='flex flex-col justify-center items-center bg-light drop-shadow-xl w-28'
-        >
-          <div className='flex-none w-12 h-12 relative'>
-            <img
-              src={network}
-              alt=''
-              className='absolute w-full h-full object-cover'
-              loading='lazy'
-            />
-          </div>
-          <p className='text-center'>Networking</p>
-        </Link>
+  return (
+    <div className='flex justify-center'>
+      <div className='flex flex-col gap-5 w-2/3'>
+        <h3 className='font-bold text-2xl'>Kategori</h3>
+        <div className='flex flex-row gap-5'>
+          {categories.map((category) => (
+            <Link
+              to={`/kategori/${category.nama}`}
+              className='flex flex-col items-center bg-light drop-shadow-xl w-28'
+              key={category.id}
+            >
+              <div className='flex-none w-12 h-12 relative'>
+                <img
+                  src={aksesoris}
+                  alt=''
+                  className='absolute w-full h-full object-cover'
+                  loading='lazy'
+                />
+              </div>
+              <p className='text-center'>{category.nama}</p>
+            </Link>
+          ))}
+        </div>
       </div>
     </div>
-  </div>
-)
+  )
+}
 
 export default Category

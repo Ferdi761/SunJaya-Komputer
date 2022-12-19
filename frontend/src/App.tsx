@@ -15,6 +15,7 @@ import Example from './pages/Example'
 import DetailProduk from './pages/DetailProduk'
 import Cart from './pages/Cart'
 import Admin from './pages/admin/Admin'
+import Kategori from './pages/Kategori'
 
 const App = () => (
   <>
@@ -31,6 +32,7 @@ const App = () => (
       <Route path='/bayar/:id' element={<Pembayaran />} />
       <Route path='/garansi' element={<FormGaransi />} />
       <Route path='/search' element={<Search />} />
+      <Route path='/kategori/:slug' element={<Kategori />} />
       <Route path='/example' element={<Example />} />
     </Routes>
     <Footer />

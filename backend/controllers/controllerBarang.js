@@ -41,7 +41,7 @@ const kategoriBarang = async (req, res) => {
         },
       },
       where: {
-        slug: slug,
+        '$Barang.JenisBarang.nama$': slug,
       },
     })
 
