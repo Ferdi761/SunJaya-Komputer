@@ -1,24 +1,22 @@
 import moment from 'moment'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import StarRating from './StarRating'
 import type { Pesanan } from '../util/type'
 import { userStorage } from '../util/userStorage'
 import { formatCurrency } from '../util/formatCurrency'
+import { cartStorage } from '../util/cartStorage'
 
 type RincianPesananProps = {
   dataPesanan: Pesanan
-  statusPesanan: { id: number; status: string }[]
-  value: number
 }
 
-const RincianPesanan = ({
-  dataPesanan,
-  statusPesanan,
-  value,
-}: RincianPesananProps) => {
+const RincianPesanan = ({ dataPesanan }: RincianPesananProps) => {
   const [rating, setRating] = useState(0)
+
+  const [, updateState] = useState<any>()
+  const forceUpdate = useCallback(() => updateState({}), [])
 
   const { user } = userStorage()
 
@@ -29,7 +27,7 @@ const RincianPesanan = ({
 
   const handleConfirm = () => {
     fetch(
-      `http://localhost:8000/api/pemesanan/selesai/${dataPesanan.id}`,
+      `http://localhost:8000/api/pemesanan/sampai/${dataPesanan.id}`,
       {
         method: 'PUT',
         headers: {
@@ -40,7 +38,10 @@ const RincianPesanan = ({
     )
       .then(async (res) => {
         const data = await res.json()
-        console.log(data)
+        if (data.success) {
+          alert(data.message)
+          forceUpdate()
+        }
       })
       .catch((err) => {
         console.log(err)

@@ -638,6 +638,7 @@ const konfirmasiPesananSampai = async (req, res) => {
     })
 
     pesanan.update({
+      status: 5,
       tanggalSampai: Date.now(),
     })
 

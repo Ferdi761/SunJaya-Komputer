@@ -220,8 +220,6 @@ const PesananSaya = () => {
                     }
                     return acc
                   })}
-                  value={value}
-                  statusPesanan={statusPesanan}
                 />
               ) : (
                 <div className='px-10 py-5 text-white rounded-xl pb-5 bg-dark flex justify-center items-center'>

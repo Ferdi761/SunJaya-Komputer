@@ -367,7 +367,7 @@ const DetailPesanan = () => {
               <li className='bg-darkGrey'>{pesanan?.testimoni}</li>
               <li className='flex justify-center'>
                 <button className='font-bold uppercase bg-blue-700 hover:bg-blue-800 w-1/2 rounded-full text-2xl py-2'>
-                  telah dikirim
+                  telah sampai
                 </button>
               </li>
             </ul>
