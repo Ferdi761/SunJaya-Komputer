@@ -31,9 +31,6 @@ const {
   cariBarang,
 } = require('../controllers/controllerBarang')
 
-const {
-  tambahKeKeranjang,
-} = require('../controllers/controllerKeranjang')
 const isAdmin = require('../middlewares/isAdmin')
 
 routerBarang.route('/').get(daftarBarang)
@@ -41,11 +38,11 @@ routerBarang.route('kategori/:slug').get(kategoriBarang)
 routerBarang.route('/cari').get(cariBarang)
 routerBarang
   .route('/tambah')
-  .post(upload.single('foto'), isAdmin, tambahBarang)
+  .post(loginCheck, isAdmin, upload.single('foto'), tambahBarang)
 routerBarang.route('/:id').get(detailBarang)
 routerBarang
   .route('/edit/:id')
-  .put(upload.single('foto'), isAdmin, ubahDataBarang)
+  .put(loginCheck, isAdmin, upload.single('foto'), ubahDataBarang)
 routerBarang.route('/hapus/:id').delete(isAdmin, hapusBarang)
 
 module.exports = routerBarang
