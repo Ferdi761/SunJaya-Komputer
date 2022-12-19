@@ -49,6 +49,9 @@ routerPemesanan.route('/checkout').post(loginCheck, checkout)
 routerPemesanan
   .route('/checkout/upload/:id')
   .put(loginCheck, upload.single('buktiPembayaran'), uploadBuktiBayar)
+routerPemesanan
+  .route('/sampai/:id')
+  .put(loginCheck, konfirmasiPesananSampai)
 routerPemesanan.route('/selesai/:id').put(loginCheck, pesananSelesai)
 routerPemesanan.route('/ulasan/:id').put(loginCheck, umpanBalik)
 // check only
@@ -76,8 +79,5 @@ routerPemesanan
 routerPemesanan
   .route('/admin/kirim/:id')
   .put(loginCheck, isAdmin, ubahStatusKirim)
-routerPemesanan
-  .route('/admin/sampai/:id')
-  .put(loginCheck, isAdmin, konfirmasiPesananSampai)
 
 module.exports = routerPemesanan
