@@ -21,7 +21,6 @@ module.exports = (sequelize, DataTypes) => {
   FotoBarang.init({
     foto: {
       type: DataTypes.STRING,
-      defaultValue: null
     }
   }, {
     sequelize,

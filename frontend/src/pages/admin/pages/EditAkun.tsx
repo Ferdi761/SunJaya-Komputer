@@ -21,7 +21,7 @@ const EditAkun = () => {
     e.preventDefault()
 
     fetch(
-      `http://localhost:8000/api/karyawan/${
+      `http://localhost:8000/api/akun/karyawan/${
         location.pathname.split('/')[3]
       }`,
       {
