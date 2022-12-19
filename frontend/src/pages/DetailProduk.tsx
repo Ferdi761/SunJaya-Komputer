@@ -80,10 +80,9 @@ const DetailProduk = () => {
             >
               <div className='flex justify-center bg-black rounded-t-xl'>
                 <img
-                  // src={`http://localhost:8000/produk/${
-                  //   barang.foto.split('\\')[2]
-                  // }`}
-                  src=''
+                  src={`http://localhost:8000/produk/${
+                    barang.foto.split('\\')[2]
+                  }`}
                   alt='cpu'
                   className='w-60 h-60'
                 />
