@@ -3,19 +3,19 @@ const {
     Pemesanan,
     BarangYangDipesan,
     Akun
-} = require('../database/models');
+} = require('../database/models')
 
 // FOR PELANGGAN
 const ajukanGaransi = async (req, res) => {
     // const logged = req.cookies.logged_account;
-    const decoded = jwt.verify(logged, 'jwtAkunId');
-    const idBarang = req.params.id;
+    const decoded = jwt.verify(logged, 'jwtAkunId')
+    const idBarang = req.params.id
     const {
         jumlah,
         keluhan,
-        alamatTujuan,
-        fotoPendukung
-    } = req.body;
+        alamatTujuan
+    } = req.body
+    const { fotoPendukung } = req.file
 
     try {
 
