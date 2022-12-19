@@ -2,6 +2,7 @@ import { HiPencil, HiTrash } from 'react-icons/hi'
 import { BsPlusCircleFill } from 'react-icons/bs'
 import ModalRekening from '../components/ModalRekening'
 import { useEffect, useState } from 'react'
+import { userStorage } from '../../../util/userStorage'
 
 const Rekening = () => {
   const [bank, setBank] = useState([
@@ -37,7 +38,7 @@ const Rekening = () => {
       )
     )
   }
-
+  const { user } = userStorage()
   useEffect(() => {
     fetch('http://localhost:8000/api/rekening')
       .then(async (res) => {
@@ -52,6 +53,9 @@ const Rekening = () => {
   const deleteJenis = (id: number) => {
     fetch(`http://localhost:8000/api/rekening/hapus/${id}`, {
       method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${user?.token}`
+      }
     })
       .then(async (res) => {
         const data = await res.json()
