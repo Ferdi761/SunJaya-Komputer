@@ -36,7 +36,9 @@ const isAdmin = require('../middlewares/isAdmin')
 routerBarang.route('/').get(daftarBarang)
 routerBarang.route('kategori/:slug').get(kategoriBarang)
 routerBarang.route('/cari').get(cariBarang)
-routerBarang.route('/tambah').post(loginCheck, isAdmin, upload.single('foto'), tambahBarang)
+routerBarang
+  .route('/tambah')
+  .post(loginCheck, isAdmin, upload.single('foto'), tambahBarang)
 routerBarang.route('/:id').get(detailBarang)
 routerBarang
   .route('/edit/:id')

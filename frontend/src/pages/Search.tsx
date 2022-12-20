@@ -29,7 +29,7 @@ const Search = () => {
   const { query } = queryStorage()
 
   useEffect(() => {
-    fetch(`http://localhost:8000/api/barang/?cari=${query}`)
+    fetch(`http://localhost:8000/api/barang/cari?nama=${query}`)
       .then(async (res) => {
         const data = await res.json()
         setBarang(data)

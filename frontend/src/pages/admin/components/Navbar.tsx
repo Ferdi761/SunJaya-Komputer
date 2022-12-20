@@ -2,6 +2,7 @@ import { Transition, Menu } from '@headlessui/react'
 import { Fragment } from 'react'
 import { BsChatTextFill } from 'react-icons/bs'
 import { Link, useNavigate } from 'react-router-dom'
+
 import { userStorage } from '../../../util/userStorage'
 
 const Navbar = () => {
@@ -25,11 +26,11 @@ const Navbar = () => {
             Pesanan
           </button>
         </Link>
-        <Link to='/admin/garansi'>
+        {/* <Link to='/admin/garansi'>
           <button className='text-white text-lg font-semibold px-4 py-2 rounded-md hover:bg-gray-700'>
             Garansi
           </button>
-        </Link>
+        </Link> */}
         <Link to='/admin/chat/0'>
           <button className='text-white text-lg font-semibold p-4 rounded-md hover:bg-gray-700'>
             <BsChatTextFill />

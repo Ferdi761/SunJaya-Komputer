@@ -467,51 +467,51 @@ const batalkanPesanan = async (req, res) => {
   const { id } = req.params
 
   try {
-    const pesanan = await BuktiPembayaranPemesanan.findOne(
-      {
-        where: {
-          pemesananId: id,
-        },
+    const pesanan = await Pemesanan.findOne({
+      where: { id },
+      include: {
+        model: BuktiPembayaranPemesanan,
       },
-      {
-        include: Pemesanan,
-      }
-    )
+    })
+
+    console.log(pesanan)
 
     // delete photo from local storage
     fs.unlink(`${pesanan.buktiPembayaran}`, (err) => {
       if (err)
-        return res.status(500).json({ status: 'fail', message: err })
+        console.log(
+          'Gagal menghapus foto dari penyimpanan lokal, mungkin foto tidak ada!'
+        )
       else
         console.log('Berhasil menghapus foto dari penyimpanan lokal!')
     })
 
     // -----------------------------
     // hapus dari db
-    dataBYD.forEach(async (item) => {
-      let barang = await Barang.findOne({
-        where: {
-          id: item.BarangId,
-        },
-      })
+    // dataBYD.forEach(async (item) => {
+    //   let barang = await Barang.findOne({
+    //     where: {
+    //       id: item.BarangId,
+    //     },
+    //   })
 
-      const stokBarang = await barang.getDataValue('stok')
-      let updateStok = stokBarang + item.jumlah
+    //   const stokBarang = await barang.getDataValue('stok')
+    //   let updateStok = stokBarang + item.jumlah
 
-      await barang.update({
-        stok: updateStok,
-      })
+    //   await barang.update({
+    //     stok: updateStok,
+    //   })
 
-      await BarangYangDipesan.destroy({
-        where: {
-          pemesananId: item.pemesananId,
-          BarangId: item.BarangId,
-        },
-      })
-    })
+    //   await BarangYangDipesan.destroy({
+    //     where: {
+    //       pemesananId: item.pemesananId,
+    //       BarangId: item.BarangId,
+    //     },
+    //   })
+    // })
 
-    await pesanan.destroy()
-    dataBYD = []
+    // await pesanan.destroy()
+    // dataBYD = []
     // --------------------------------
 
     res
