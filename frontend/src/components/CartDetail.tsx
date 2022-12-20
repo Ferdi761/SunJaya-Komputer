@@ -56,13 +56,14 @@ const CartDetail = (props: CartItemProps) => {
   }
 
   const handleChange = () => {
+    const data = jumlah - 1
     fetch(`http://localhost:8000/api/keranjang/${BarangId}`, {
       method: 'PUT',
       headers: {
         Authorization: `Bearer ${user?.token}`,
       },
       body: JSON.stringify({
-        jumlah: jumlah - 1,
+        jumlah: data,
       }),
     })
       .then(async (res) => {

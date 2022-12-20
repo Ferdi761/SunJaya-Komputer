@@ -143,7 +143,7 @@ const DetailPesanan = () => {
 
   return (
     <div className='flex flex-row gap-10 mt-10 px-20 mb-10'>
-      <div className='w-1/2'>
+      <div className='w-1/2 flex flex-col gap-10'>
         {pesanan?.Barangs.map((barang) => (
           <div
             key={barang.id}

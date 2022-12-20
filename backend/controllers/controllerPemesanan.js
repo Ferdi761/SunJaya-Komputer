@@ -32,6 +32,7 @@ const checkout = async (req, res) => {
     if (!userCart)
       return res.status(404).json('Akun tidak ditemukan!')
 
+    console.log(userCart)
     const { Barangs } = userCart
 
     let totalPriceItem = 0
@@ -51,6 +52,8 @@ const checkout = async (req, res) => {
       totalHargaBarang: totalPriceItem,
       status: 1,
     })
+
+    console.log(buatPesanan)
 
     await BuktiPembayaranPemesanan.create(
       {
@@ -729,9 +732,6 @@ const detailPesanan = async (req, res) => {
         [Op.and]: [
           {
             id: id,
-          },
-          {
-            akunId: decoded.id,
           },
         ],
       },

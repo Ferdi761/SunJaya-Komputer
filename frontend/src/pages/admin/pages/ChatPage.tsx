@@ -7,6 +7,10 @@ import { ChatSocketController } from '../../../util/ChatSocketController'
 import { userStorage } from '../../../util/userStorage'
 import Chat from './Chat'
 
+const chatSocketController = new ChatSocketController(
+  io('http://localhost:8000').connect()
+)
+
 const ChatPage = () => {
   const [chat, setChat] = useState('')
   const [id, setId] = useState(0)
@@ -36,10 +40,6 @@ const ChatPage = () => {
       </div>
     )
   } else {
-    const chatSocketController = new ChatSocketController(
-      io('http://localhost:8000').connect()
-    )
-
     useEffect(() => {
       chatSocketController.init(user.id)
       chatSocketController.auth(user.izin)

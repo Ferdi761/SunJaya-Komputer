@@ -89,7 +89,7 @@ const Pemesanan = () => {
           <div className='rounded-lg bg-light py-2 mb-10'>
             <div className='flex flex-row gap-10 px-5 mb-2 shadow-lg'>
               <p>
-                Achmad Ferdiansyah
+                {item.Akun.nama}
                 <br />
                 ID: #{item.akunId}
               </p>

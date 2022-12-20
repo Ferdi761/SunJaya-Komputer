@@ -200,7 +200,6 @@ const ubahJumlahBarang = async (req, res) => {
   // const logged = req.cookies.logged_account
   const decoded = jwt.verify(logged, 'jwtAkunId')
   const { id } = req.params
-  const { jumlah } = req.body
 
   try {
     const akun = await Akun.findByPk(decoded.id)
@@ -220,8 +219,10 @@ const ubahJumlahBarang = async (req, res) => {
       },
     })
 
+    const currJumlah = keranjang.getDataValue('jumlah')
+
     const ubahJumlah = await keranjang.update({
-      jumlah,
+      jumlah: currJumlah - 1,
     })
     if (!ubahJumlah)
       return res.status(500).json({
@@ -234,6 +235,7 @@ const ubahJumlahBarang = async (req, res) => {
       .json({
         status: 'success',
         message: 'Berhasil mengubah jumlah barang!',
+        jumlah: ubahJumlah,
       })
       .end()
   } catch (err) {

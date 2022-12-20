@@ -5,6 +5,9 @@ import { ChatSocketController } from '../util/ChatSocketController'
 import { userStorage } from '../util/userStorage'
 import { ChatData } from '../util/ChatData'
 
+const chatSocketController: ChatSocketController =
+  new ChatSocketController(io('http://localhost:8000').connect())
+
 const ChatPage = () => {
   const [chat, setChat] = useState('')
   const [daftarChat, setDaftarChat] = useState<ChatData[]>([])
@@ -24,9 +27,6 @@ const ChatPage = () => {
       </div>
     )
   } else {
-    const chatSocketController: ChatSocketController =
-      new ChatSocketController(io('http://localhost:8000').connect())
-
     useEffect(() => {
       if (chatSocketController != undefined) {
         chatSocketController.init(user.id)
