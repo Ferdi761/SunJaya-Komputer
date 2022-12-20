@@ -16,11 +16,6 @@ import GaransiDiskusi from './pages/detail-garansi/GaransiDiskusi'
 import GaransiBelumDikirim from './pages/detail-garansi/GaransiBelumDikirim'
 import GaransiDikirim from './pages/detail-garansi/GaransiDikirim'
 import GaransiSelesai from './pages/detail-garansi/GaransiSelesai'
-import PesananDiskusi from './pages/detail-pesanan/PesananDiskusi'
-import PesananPembayaran from './pages/detail-pesanan/PesananPembayaran'
-import PesananBelumDikirim from './pages/detail-pesanan/PesananBelumDikirim'
-import PesananDikirim from './pages/detail-pesanan/PesananDikirim'
-import PesananSelesai from './pages/detail-pesanan/PesananSelesai'
 import ChatPage from './pages/ChatPage'
 
 import { userStorage } from '../../util/userStorage'
@@ -43,26 +38,6 @@ const Admin = () => {
             <Route path='/' element={<Dashboard />} />
             <Route path='/pesanan' element={<Pemesanan />} />
             <Route path='/pesanan/:id' element={<DetailPesanan />} />
-            <Route
-              path='/pesanan/diskusi'
-              element={<PesananDiskusi />}
-            />
-            <Route
-              path='/pesanan/pembayaran'
-              element={<PesananPembayaran />}
-            />
-            <Route
-              path='/pesanan/belum-dikirim'
-              element={<PesananBelumDikirim />}
-            />
-            <Route
-              path='/pesanan/dikirim'
-              element={<PesananDikirim />}
-            />
-            <Route
-              path='/pesanan/selesai'
-              element={<PesananSelesai />}
-            />
             <Route path='/garansi' element={<Garansi />} />
             <Route
               path='/garansi/pembayaran'
