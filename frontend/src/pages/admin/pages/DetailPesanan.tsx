@@ -134,6 +134,7 @@ const DetailPesanan = () => {
         const data = await res.json()
         setPesanan(data.data.pesanan)
         setBukti(data.data.buktiPembayaran)
+        console.log(data)
       })
       .catch((err) => {
         console.log(err)

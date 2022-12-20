@@ -670,23 +670,19 @@ const daftarSemuaPesanan = async (req, res) => {
   const decoded = jwt.verify(logged, 'jwtAkunId')
 
   try {
-    const listPesanan = await Pemesanan.findAll(
-      {
-        include: [
-          {
-            model: Barang,
-            include: FotoBarang,
-          },
-          {
-            model: Akun,
-            attributes: ['id', 'nama'],
-          },
-        ],
-      },
-      {
-        where: { akunId: decoded.id },
-      }
-    )
+    const listPesanan = await Pemesanan.findAll({
+      where: { akunId: decoded.id },
+      include: [
+        {
+          model: Barang,
+          include: FotoBarang,
+        },
+        {
+          model: Akun,
+          attributes: ['id', 'nama'],
+        },
+      ],
+    })
 
     //console.log(listPesanan.Pemesanan.);
     res

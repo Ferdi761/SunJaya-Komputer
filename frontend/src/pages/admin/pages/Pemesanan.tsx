@@ -44,12 +44,12 @@ const Pemesanan = () => {
             <li className='text-lg'>Dikirim</li>
             <li className='text-lg'>Selesai</li>
           </ul>
-          <Link
+          {/* <Link
             to='/admin/garansi'
             className='text-blue-600 font-semibold hover:text-blue-700'
           >
             Daftar Klaim Garansi
-          </Link>
+          </Link> */}
         </div>
         <form className='group relative w-1/4 mt-5'>
           <svg

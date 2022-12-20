@@ -54,7 +54,8 @@ const kategoriBarang = async (req, res) => {
 
 // admin only
 const tambahBarang = async (req, res) => {
-  const { namaBarang, merek, berat, jenis, harga, stok, deskripsi } = req.body
+  const { namaBarang, merek, berat, jenis, harga, stok, deskripsi } =
+    req.body
   let foto = req.file.path
 
   try {

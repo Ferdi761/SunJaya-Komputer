@@ -38,7 +38,9 @@ const Navbar = () => {
 
   const location = useLocation()
 
-  const { query, setQuery } = queryStorage()
+  const [query, changeQuery] = useState('')
+
+  const { setQuery } = queryStorage()
   const { user, clearUser, getUser } = userStorage()
   const { cartStatus, changeCart } = cartStorage()
 
@@ -85,7 +87,7 @@ const Navbar = () => {
           aria-label='Pencarian...'
           placeholder='Pencarian...'
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(e) => changeQuery(e.target.value)}
         />
         <button
           type='submit'

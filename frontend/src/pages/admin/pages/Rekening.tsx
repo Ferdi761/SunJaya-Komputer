@@ -44,6 +44,7 @@ const Rekening = () => {
       .then(async (res) => {
         const data = await res.json()
         setBank(data)
+        console.log(data)
       })
       .catch((err) => {
         console.log(err)
@@ -54,8 +55,8 @@ const Rekening = () => {
     fetch(`http://localhost:8000/api/rekening/hapus/${id}`, {
       method: 'DELETE',
       headers: {
-        Authorization: `Bearer ${user?.token}`
-      }
+        Authorization: `Bearer ${user?.token}`,
+      },
     })
       .then(async (res) => {
         const data = await res.json()
